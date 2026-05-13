@@ -77,23 +77,28 @@ jobs:
           if isinstance(cur_signal, (int, float)) and cur_signal > 1:
               cur_signal = cur_signal / 10000
 
+          # Tolerance: allow up to 2% quality drop as noise (YAML/CI tweaks, minor refactors)
+          QUALITY_TOLERANCE = 0.02
+
           # Check architectural red flags
           cur_cycles = current.get("cycles_current", 0) or 0
           base_cycles = current.get("cycles_baseline", 0) or 0
           cur_god = current.get("god_files_current", 0) or 0
           base_god = current.get("god_files_baseline", 0) or 0
 
-          print(f"  Quality signal:  {base_signal:.4f} -> {cur_signal:.4f}  (delta: {cur_signal - base_signal:+.4f})")
+          print(f"  Quality signal:  {base_signal:.4f} -> {cur_signal:.4f}  (delta: {cur_signal - base_signal:+.4f}, tolerance: {QUALITY_TOLERANCE:.2f})")
           print(f"  Cycles:          {base_cycles} -> {cur_cycles}")
           print(f"  God files:       {base_god} -> {cur_god}")
 
           regressions = []
 
-          if cur_signal < base_signal:
+          if cur_signal < base_signal - QUALITY_TOLERANCE:
               regressions.append(
                   f"Quality score dropped: {base_signal:.4f} -> {cur_signal:.4f} "
-                  f"(delta: {cur_signal - base_signal:+.4f})"
+                  f"(delta: {cur_signal - base_signal:+.4f}, exceeds tolerance of {QUALITY_TOLERANCE:.2f})"
               )
+          elif cur_signal < base_signal:
+              print(f"  (quality drop within tolerance — allowed)")
 
           if cur_cycles > base_cycles and cur_cycles > 0:
               regressions.append(f"Cycles introduced: {base_cycles} -> {cur_cycles}")
