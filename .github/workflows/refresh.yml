@@ -134,7 +134,19 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add data/ assets/quality-dashboard.svg README.md .sentrux/baseline.json
-          git diff --staged --quiet || git commit -m "data: nightly refresh [skip ci]"
+          if git diff --staged --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          git commit -m "data: nightly refresh [skip ci]"
+          # Rebase onto latest master; -X ours keeps pipeline-generated data on conflict
+          git fetch origin master
+          git rebase -X ours origin/master || {
+            git rebase --abort
+            echo "Rebase failed — force-pushing since pipeline data is authoritative"
+            git push --force-with-lease origin master
+            exit 0
+          }
           git push origin master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

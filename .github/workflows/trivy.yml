@@ -122,17 +122,23 @@ jobs:
           severity: HIGH,CRITICAL
           exit-code: 0
 
-      - name: Generate security dashboard SVG
-        run: python pipeline/trivy_dashboard_svg.py
-
-      - name: Commit dashboard SVG
+      - name: Generate and commit security dashboard SVG
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          # Fetch latest master to avoid merge conflicts on generated files
+          git fetch origin master
+          git reset --hard origin/master
+          # Regenerate dashboard from latest code
+          python pipeline/trivy_dashboard_svg.py
+          # Commit and push
           git add assets/security-dashboard.svg
-          git diff --staged --quiet || git commit -m "data: update security dashboard [skip ci]"
-          git pull --rebase origin master
-          git push origin master
+          if git diff --staged --quiet; then
+            echo "No dashboard changes to commit."
+          else
+            git commit -m "data: update security dashboard [skip ci]"
+            git push origin master
+          fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
