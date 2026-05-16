@@ -15,10 +15,7 @@ import requests
 
 from synonyms import expand_query
 
-WORKER_URL = os.environ.get(
-    "WORKER_URL",
-    "https://rolelens-worker.russo-antonio76.workers.dev",
-)
+WORKER_URL = os.environ.get("WORKER_URL", "")
 
 # Format: (query, expected_min_role_at_rank_1)
 # When adding new pills to the frontend, add expectations here.
@@ -84,6 +81,10 @@ def run_pill(query: str, expected_role: str) -> tuple[bool, str]:
 
 
 def main() -> int:
+    if not WORKER_URL:
+        print("WORKER_URL is not set — skipping pill tests.")
+        return 0
+
     print(f"Running {len(EXPECTATIONS)} pill tests against {WORKER_URL}")
     print("(queries expanded via pipeline/synonyms.py before API call)")
     print(f"({len(KNOWN_FAILURES)} pills in KNOWN_FAILURES suppression list)")

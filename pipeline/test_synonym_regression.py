@@ -17,6 +17,7 @@ Informational only — exit 0 always. The output is a signal for human
 review, not a CI gate. Synonyms have legitimate trade-offs across queries.
 """
 
+import os
 import sys
 from pathlib import Path
 
@@ -26,7 +27,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 from synonyms import expand_query
 from test_pills import EXPECTATIONS
 
-WORKER_URL = "https://rolelens-worker.russo-antonio76.workers.dev"
+WORKER_URL = os.environ.get("WORKER_URL", "")
 
 
 def fetch_top_role(query: str) -> str | None:
@@ -45,6 +46,10 @@ def fetch_top_role(query: str) -> str | None:
 
 
 def main() -> int:
+    if not WORKER_URL:
+        print("WORKER_URL is not set — skipping synonym regression check.")
+        return 0
+
     print(f"Synonym expansion regression check — {len(EXPECTATIONS)} pills")
     print(f"Endpoint: {WORKER_URL}")
     print("=" * 90)

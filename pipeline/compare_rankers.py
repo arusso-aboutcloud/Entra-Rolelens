@@ -12,10 +12,7 @@ from urllib.parse import quote
 
 import requests
 
-WORKER_URL = os.environ.get(
-    "WORKER_URL",
-    "https://rolelens-worker.russo-antonio76.workers.dev",
-)
+WORKER_URL = os.environ.get("WORKER_URL", "")
 
 # 30 queries covering categorical breadth.
 # 10 placeholder slots for user-added queries from real usage instinct.

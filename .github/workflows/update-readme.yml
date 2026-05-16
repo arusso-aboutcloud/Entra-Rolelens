@@ -52,8 +52,10 @@ jobs:
       # ── 3. Fetch live stats ────────────────────────────────────────────────
       - name: Fetch live stats from Worker API
         id: stats
+        env:
+          WORKER_URL: ${{ secrets.ROLELENS_WORKER_URL }}
         run: |
-          WORKER_URL="https://rolelens-worker.russo-antonio76.workers.dev/api/status"
+          WORKER_URL="${WORKER_URL}/api/status"
           RESPONSE=$(curl -sf "$WORKER_URL" || echo '{}')
           ROLE_COUNT=$(echo "$RESPONSE"   | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('role_count','?'))"        2>/dev/null || echo "?")
           TASK_COUNT=$(echo "$RESPONSE"   | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('task_count','?'))"        2>/dev/null || echo "?")
