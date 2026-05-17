@@ -137,7 +137,8 @@ jobs:
             echo "No dashboard changes to commit."
           else
             git commit -m "data: update security dashboard [skip ci]"
-            git config "http.https://github.com/.extraheader" "AUTHORIZATION: basic $(echo -n "x-access-token:${GH_PUSH_TOKEN}" | base64)"
+            git config --unset-all "http.https://github.com/.extraheader" || true
+            git config "http.https://github.com/.extraheader" "AUTHORIZATION: basic $(echo -n "x-access-token:${GH_PUSH_TOKEN}" | base64 -w 0)"
             git push origin master
           fi
         env:
