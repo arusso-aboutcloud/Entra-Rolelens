@@ -137,8 +137,8 @@ jobs:
             echo "No dashboard changes to commit."
           else
             git commit -m "data: update security dashboard [skip ci]"
-            git remote set-url origin "https://x-access-token:${GH_PUSH_TOKEN}@github.com/arusso-aboutcloud/Entra-Rolelens.git"
-          git push origin master
+            git config "http.https://github.com/.extraheader" "AUTHORIZATION: basic $(echo -n "x-access-token:${GH_PUSH_TOKEN}" | base64)"
+            git push origin master
           fi
         env:
           GH_PUSH_TOKEN: ${{ secrets.GH_PUSH_TOKEN }}
