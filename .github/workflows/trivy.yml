@@ -93,6 +93,8 @@ jobs:
           egress-policy: audit
 
       - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
 
       - name: Set up Python 3.11
         uses: actions/setup-python@v6
@@ -127,6 +129,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           # Fetch latest master to avoid merge conflicts on generated files
+          # (public repo — no credentials needed for fetch)
           git fetch origin master
           git reset --hard origin/master
           # Regenerate dashboard from latest code
@@ -137,7 +140,6 @@ jobs:
             echo "No dashboard changes to commit."
           else
             git commit -m "data: update security dashboard [skip ci]"
-            git config --unset-all "http.https://github.com/.extraheader" || true
             git config "http.https://github.com/.extraheader" "AUTHORIZATION: basic $(echo -n "x-access-token:${GH_PUSH_TOKEN}" | base64 -w 0)"
             git push origin master
           fi
