@@ -26,6 +26,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Azure Login
         uses: azure/login@v3
@@ -139,18 +140,17 @@ jobs:
             exit 0
           fi
           git commit -m "data: nightly refresh [skip ci]"
+          # Set push credentials (persist-credentials: false means no header was pre-set)
+          git config "http.https://github.com/.extraheader" "AUTHORIZATION: basic $(echo -n "x-access-token:${GH_PUSH_TOKEN}" | base64 -w 0)"
           # Rebase onto latest master; -X ours keeps pipeline-generated data on conflict
+          # (public repo — fetch needs no credentials)
           git fetch origin master
           git rebase -X ours origin/master || {
             git rebase --abort
             echo "Rebase failed — force-pushing since pipeline data is authoritative"
-            git config --unset-all "http.https://github.com/.extraheader" || true
-            git config "http.https://github.com/.extraheader" "AUTHORIZATION: basic $(echo -n "x-access-token:${GH_PUSH_TOKEN}" | base64 -w 0)"
             git push --force-with-lease origin master
             exit 0
           }
-          git config --unset-all "http.https://github.com/.extraheader" || true
-          git config "http.https://github.com/.extraheader" "AUTHORIZATION: basic $(echo -n "x-access-token:${GH_PUSH_TOKEN}" | base64 -w 0)"
           git push origin master
         env:
           GH_PUSH_TOKEN: ${{ secrets.GH_PUSH_TOKEN }}
