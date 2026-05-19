@@ -5229,7 +5229,7 @@
   },
   {
     "id": "db506228-d27e-4b7d-95e5-295956d6615f",
-    "description": "Manage all aspects of agents in a tenant including identity lifecycle operations for agent blueprints, agent service principals, agent identities, and agentic users.",
+    "description": "Manage all aspects of agents in a tenant including identity lifecycle operations for agent blueprints, agent identity blueprint principals, agent identities, and agentic users.",
     "displayName": "Agent ID Administrator",
     "isBuiltIn": true,
     "isEnabled": true,
@@ -5266,6 +5266,7 @@
           "microsoft.directory/groups.unified/createAsOwner",
           "microsoft.directory/organization/standard/read",
           "microsoft.directory/policies/standard/read",
+          "microsoft.directory/signInReports/allProperties/read",
           "microsoft.office365.serviceHealth/allEntities/allTasks",
           "microsoft.office365.supportTickets/allEntities/allTasks"
         ],

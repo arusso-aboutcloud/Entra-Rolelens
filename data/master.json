@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-18T05:03:25.035172+00:00",
+  "generated_at": "2026-05-19T04:55:38.848034+00:00",
   "role_count": 143,
   "task_count": 237,
   "shadow_role_count": 11,
@@ -3346,6 +3346,7 @@
         "microsoft.directory/groups.unified/createAsOwner",
         "microsoft.directory/organization/standard/read",
         "microsoft.directory/policies/standard/read",
+        "microsoft.directory/signInReports/allProperties/read",
         "microsoft.office365.serviceHealth/allEntities/allTasks",
         "microsoft.office365.supportTickets/allEntities/allTasks"
       ],
