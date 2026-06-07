@@ -9,15 +9,19 @@ on:
     - cron: "0 6 * * 0" # Weekly Sunday 06:00 UTC
   workflow_dispatch: # Manual trigger
 
+# Least privilege: read-only by default. Write scopes are granted per-job below
+# only where needed (SARIF upload -> security-events; dashboard commit -> contents).
 permissions:
   contents: read
-  security-events: write # For SARIF upload
 
 jobs:
   # ── Dependency vulnerability scan (filesystem) ──
   vuln-scan:
     name: Vuln Scan
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write # SARIF upload
     strategy:
       fail-fast: false
       matrix:
@@ -52,6 +56,9 @@ jobs:
   config-scan:
     name: Config Scan
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write # SARIF upload
     steps:
       - name: Harden Runner
         uses: step-security/harden-runner@v2

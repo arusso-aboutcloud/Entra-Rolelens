@@ -12,9 +12,10 @@ on:
         required: false
         default: ''
 
+# Least privilege: read-only by default; the single job below requests the
+# write/model scopes it actually needs (git push + GitHub Models inference).
 permissions:
-  contents: write
-  models: read          # GitHub Copilot / GitHub Models — no extra secret needed
+  contents: read
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
@@ -22,6 +23,9 @@ env:
 jobs:
   update-readme:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write       # git push README update
+      models: read          # GitHub Models inference — no extra secret needed
 
     steps:
       - name: Harden Runner
