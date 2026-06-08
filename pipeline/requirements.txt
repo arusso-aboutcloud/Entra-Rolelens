@@ -5,4 +5,4 @@
 requests==2.33.0
 beautifulsoup4==4.13.4
 lxml==6.1.1
-azure-identity==1.25.1
+azure-identity==1.25.3
