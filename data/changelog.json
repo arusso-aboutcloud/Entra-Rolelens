@@ -110,5 +110,29 @@
     "role_name": "Identity Governance Administrator",
     "field": "isPrivileged",
     "detail": "isPrivileged changed: false -> true"
+  },
+  {
+    "date": "2026-06-13",
+    "change_type": "MODIFIED",
+    "role_id": "db506228-d27e-4b7d-95e5-295956d6615f",
+    "role_name": "Agent ID Administrator",
+    "field": "permissions",
+    "detail": "6 permissions added, 2 permissions removed"
+  },
+  {
+    "date": "2026-06-13",
+    "change_type": "MODIFIED",
+    "role_id": "adb2368d-a9be-41b5-8667-d96778e081b0",
+    "role_name": "Agent ID Developer",
+    "field": "permissions",
+    "detail": "1 permission added"
+  },
+  {
+    "date": "2026-06-13",
+    "change_type": "MODIFIED",
+    "role_id": "62e90394-69f5-4237-9190-012177145e10",
+    "role_name": "Global Administrator",
+    "field": "permissions",
+    "detail": "2 permissions added, 19 permissions removed"
   }
 ]
