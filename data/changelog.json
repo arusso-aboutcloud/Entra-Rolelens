@@ -134,5 +134,13 @@
     "role_name": "Global Administrator",
     "field": "permissions",
     "detail": "2 permissions added, 19 permissions removed"
+  },
+  {
+    "date": "2026-06-17",
+    "change_type": "MODIFIED",
+    "role_id": "1fe13547-53f6-408d-ac04-7f8eed167b38",
+    "role_name": "AI Reader",
+    "field": "permissions",
+    "detail": "1 permission removed"
   }
 ]

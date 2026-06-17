@@ -60,6 +60,7 @@ The shadow role count is logged in every pipeline run and visible in the pipelin
 - 🔄 **Agent ID Administrator** — modified (2026-06-13)
 - 🔄 **Agent ID Developer** — modified (2026-06-13)
 - 🔄 **Global Administrator** — modified (2026-06-13)
+- 🔄 **AI Reader** — modified (2026-06-17)
 <!-- WHATS_NEW_END -->
 
 ---
