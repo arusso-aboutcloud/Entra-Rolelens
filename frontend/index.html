@@ -937,6 +937,10 @@
       opacity: 0.7;
       padding: 0 1px;
     }
+    /* When a deletion sits directly against an insertion (the connecting space
+       fell to one side), add a small gap so they don't read as one word. */
+    .wn-worddiff del + ins,
+    .wn-worddiff ins + del { margin-left: 5px; }
 
     /* Count badges in the summary row (+N added / −N removed, privileged). */
     .wn-badges { display: inline-flex; gap: 5px; align-items: center; }
