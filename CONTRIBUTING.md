@@ -14,6 +14,11 @@ If you searched for a task and got no results, please open a GitHub Issue:
 Microsoft Learn is the authoritative source for all task-to-role mappings:
 <https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/delegate-by-task>
 
+> **Tip:** the nightly pipeline auto-maintains a single
+> [**Roles awaiting task coverage**](https://github.com/arusso-aboutcloud/entra-rolelens/issues?q=label%3Acoverage)
+> issue listing new or undocumented roles that don't have a task yet. It's a great
+> place to find a high-impact contribution — pick a role and add a task for it.
+
 ---
 
 ## Submitting a task mapping via Pull Request
