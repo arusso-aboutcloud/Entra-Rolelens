@@ -21,7 +21,11 @@
     "role_id": "db506228-d27e-4b7d-95e5-295956d6615f",
     "role_name": "Agent ID Administrator",
     "field": "permissions",
-    "detail": "2 permissions added"
+    "detail": "2 permissions added",
+    "added_permissions": [
+      "microsoft.directory/agentUsers/photo/update",
+      "microsoft.directory/agentUsers/reprocessLicenseAssignment"
+    ]
   },
   {
     "date": "2026-04-30",
@@ -29,7 +33,9 @@
     "role_id": "adb2368d-a9be-41b5-8667-d96778e081b0",
     "role_name": "Agent ID Developer",
     "field": "description",
-    "detail": "description changed: \"Create an agent blueprint and its service principal in a tenant. User will be added as an owner of the agent blueprint and its service principal.\" -> \"Create an agent identity blueprint and its agent identity blueprint principal in a tenant. User will be added as an owner of the created agent identity blueprint and its agent identity blueprint principal.\""
+    "detail": "description changed: \"Create an agent blueprint and its service principal in a tenant. User will be added as an owner of the agent blueprint and its service principal.\" -> \"Create an agent identity blueprint and its agent identity blueprint principal in a tenant. User will be added as an owner of the created agent identity blueprint and its agent identity blueprint principal.\"",
+    "old": "Create an agent blueprint and its service principal in a tenant. User will be added as an owner of the agent blueprint and its service principal.",
+    "new": "Create an agent identity blueprint and its agent identity blueprint principal in a tenant. User will be added as an owner of the created agent identity blueprint and its agent identity blueprint principal."
   },
   {
     "date": "2026-04-30",
@@ -37,7 +43,9 @@
     "role_id": "e3973bdf-4987-49ae-837a-ba8e231c7286",
     "role_name": "Azure DevOps Administrator",
     "field": "description",
-    "detail": "description changed: \"Can manage Azure DevOps policies and settings.\" -> \"Manage Azure DevOps policies and settings.\""
+    "detail": "description changed: \"Can manage Azure DevOps policies and settings.\" -> \"Manage Azure DevOps policies and settings.\"",
+    "old": "Can manage Azure DevOps policies and settings.",
+    "new": "Manage Azure DevOps policies and settings."
   },
   {
     "date": "2026-04-30",
@@ -45,7 +53,9 @@
     "role_id": "892c5842-a9a6-463a-8041-72aa08ca3cf6",
     "role_name": "Cloud App Security Administrator",
     "field": "description",
-    "detail": "description changed: \"Can manage all aspects of the Defender for Cloud Apps product.\" -> \"Manage all aspects of the Defender for Cloud Apps product.\""
+    "detail": "description changed: \"Can manage all aspects of the Defender for Cloud Apps product.\" -> \"Manage all aspects of the Defender for Cloud Apps product.\"",
+    "old": "Can manage all aspects of the Defender for Cloud Apps product.",
+    "new": "Manage all aspects of the Defender for Cloud Apps product."
   },
   {
     "date": "2026-04-30",
@@ -53,7 +63,9 @@
     "role_id": "a9ea8996-122f-4c74-9520-8edcd192826c",
     "role_name": "Fabric Administrator",
     "field": "description",
-    "detail": "description changed: \"Can manage all aspects of the Fabric and Power BI products.\" -> \"Manage all aspects of the Fabric and Power BI products.\""
+    "detail": "description changed: \"Can manage all aspects of the Fabric and Power BI products.\" -> \"Manage all aspects of the Fabric and Power BI products.\"",
+    "old": "Can manage all aspects of the Fabric and Power BI products.",
+    "new": "Manage all aspects of the Fabric and Power BI products."
   },
   {
     "date": "2026-04-30",
@@ -61,7 +73,10 @@
     "role_id": "62e90394-69f5-4237-9190-012177145e10",
     "role_name": "Global Administrator",
     "field": "permissions",
-    "detail": "1 permission added"
+    "detail": "1 permission added",
+    "added_permissions": [
+      "microsoft.commerce.tenantRelationships/customerDelegatedAdminPrivileges/allProperties/allTasks"
+    ]
   },
   {
     "date": "2026-04-30",
@@ -69,7 +84,10 @@
     "role_id": "8ac3fc64-6eca-42ea-9e69-59f4c7b60eb2",
     "role_name": "Hybrid Identity Administrator",
     "field": "permissions",
-    "detail": "1 permission added"
+    "detail": "1 permission added",
+    "added_permissions": [
+      "microsoft.directory/applications/disablement/update"
+    ]
   },
   {
     "date": "2026-04-30",
@@ -77,7 +95,9 @@
     "role_id": "31e939ad-9672-4796-9c2e-873181342d2d",
     "role_name": "Insights Business Leader",
     "field": "description",
-    "detail": "description changed: \"Can view and share dashboards and insights via the Microsoft 365 Insights app.\" -> \"View and share dashboards and insights via the Microsoft Viva Insights app.\""
+    "detail": "description changed: \"Can view and share dashboards and insights via the Microsoft 365 Insights app.\" -> \"View and share dashboards and insights via the Microsoft Viva Insights app.\"",
+    "old": "Can view and share dashboards and insights via the Microsoft 365 Insights app.",
+    "new": "View and share dashboards and insights via the Microsoft Viva Insights app."
   },
   {
     "date": "2026-04-30",
@@ -85,7 +105,9 @@
     "role_id": "744ec460-397e-42ad-a462-8b3f9747a02c",
     "role_name": "Knowledge Manager",
     "field": "description",
-    "detail": "description changed: \"Can organize, create, manage, and promote topics and knowledge.\" -> \"Organize, create, manage, and promote topics and knowledge.\""
+    "detail": "description changed: \"Can organize, create, manage, and promote topics and knowledge.\" -> \"Organize, create, manage, and promote topics and knowledge.\"",
+    "old": "Can organize, create, manage, and promote topics and knowledge.",
+    "new": "Organize, create, manage, and promote topics and knowledge."
   },
   {
     "date": "2026-04-30",
@@ -93,7 +115,9 @@
     "role_id": "11648597-926c-4cf3-9c36-bcebb0ba8dcc",
     "role_name": "Power Platform Administrator",
     "field": "description",
-    "detail": "description changed: \"Can create and manage all aspects of Microsoft Dynamics 365, Power Apps and Power Automate.\" -> \"Manage all aspects of Microsoft Dynamics 365, Power Apps and Power Automate.\""
+    "detail": "description changed: \"Can create and manage all aspects of Microsoft Dynamics 365, Power Apps and Power Automate.\" -> \"Manage all aspects of Microsoft Dynamics 365, Power Apps and Power Automate.\"",
+    "old": "Can create and manage all aspects of Microsoft Dynamics 365, Power Apps and Power Automate.",
+    "new": "Manage all aspects of Microsoft Dynamics 365, Power Apps and Power Automate."
   },
   {
     "date": "2026-05-27",
@@ -101,7 +125,9 @@
     "role_id": "db506228-d27e-4b7d-95e5-295956d6615f",
     "role_name": "Agent ID Administrator",
     "field": "description",
-    "detail": "description changed: \"Manage all aspects of agents in a tenant including identity lifecycle operations for agent blueprints, agent service principals, agent identities, and agentic users.\" -> \"Manage all aspects of agents in a tenant including identity lifecycle operations for agent blueprints, agent identity blueprint principals, agent identities, and agentic users.\""
+    "detail": "description changed: \"Manage all aspects of agents in a tenant including identity lifecycle operations for agent blueprints, agent service principals, agent identities, and agentic users.\" -> \"Manage all aspects of agents in a tenant including identity lifecycle operations for agent blueprints, agent identity blueprint principals, agent identities, and agentic users.\"",
+    "old": "Manage all aspects of agents in a tenant including identity lifecycle operations for agent blueprints, agent service principals, agent identities, and agentic users.",
+    "new": "Manage all aspects of agents in a tenant including identity lifecycle operations for agent blueprints, agent identity blueprint principals, agent identities, and agentic users."
   },
   {
     "date": "2026-05-27",
@@ -109,7 +135,9 @@
     "role_id": "45d8d3c5-c802-45c6-b32a-1d70b5e1e86e",
     "role_name": "Identity Governance Administrator",
     "field": "isPrivileged",
-    "detail": "isPrivileged changed: false -> true"
+    "detail": "isPrivileged changed: false -> true",
+    "old": false,
+    "new": true
   },
   {
     "date": "2026-06-13",
@@ -117,7 +145,19 @@
     "role_id": "db506228-d27e-4b7d-95e5-295956d6615f",
     "role_name": "Agent ID Administrator",
     "field": "permissions",
-    "detail": "6 permissions added, 2 permissions removed"
+    "detail": "6 permissions added, 2 permissions removed",
+    "added_permissions": [
+      "microsoft.directory/agentIdentities/authentication/update",
+      "microsoft.directory/agentIdentityBlueprintPrincipals/authentication/update",
+      "microsoft.directory/deletedItems.agentIdentities/delete",
+      "microsoft.directory/deletedItems.agentIdentities/restore",
+      "microsoft.directory/deletedItems.agentIdentityBlueprintPrincipals/delete",
+      "microsoft.directory/deletedItems.agentIdentityBlueprintPrincipals/restore"
+    ],
+    "removed_permissions": [
+      "microsoft.directory/agentIdentityBlueprints/verification/update",
+      "microsoft.directory/groups.unified/createAsOwner"
+    ]
   },
   {
     "date": "2026-06-13",
@@ -125,7 +165,10 @@
     "role_id": "adb2368d-a9be-41b5-8667-d96778e081b0",
     "role_name": "Agent ID Developer",
     "field": "permissions",
-    "detail": "1 permission added"
+    "detail": "1 permission added",
+    "added_permissions": [
+      "microsoft.directory/agentIdentityBlueprints/createAsOwner"
+    ]
   },
   {
     "date": "2026-06-13",
@@ -133,7 +176,32 @@
     "role_id": "62e90394-69f5-4237-9190-012177145e10",
     "role_name": "Global Administrator",
     "field": "permissions",
-    "detail": "2 permissions added, 19 permissions removed"
+    "detail": "2 permissions added, 19 permissions removed",
+    "added_permissions": [
+      "microsoft.directory/agentIdentities/authentication/update",
+      "microsoft.directory/agentIdentityBlueprintPrincipals/authentication/update"
+    ],
+    "removed_permissions": [
+      "microsoft.directory/agentIdentityBlueprints/allProperties/read",
+      "microsoft.directory/agentIdentityBlueprints/verification/update",
+      "microsoft.directory/agentUsers/assignLicense",
+      "microsoft.directory/agentUsers/basic/update",
+      "microsoft.directory/agentUsers/create",
+      "microsoft.directory/agentUsers/delete",
+      "microsoft.directory/agentUsers/disable",
+      "microsoft.directory/agentUsers/enable",
+      "microsoft.directory/agentUsers/invalidateAllRefreshTokens",
+      "microsoft.directory/agentUsers/lifeCycleInfo/read",
+      "microsoft.directory/agentUsers/lifeCycleInfo/update",
+      "microsoft.directory/agentUsers/manager/update",
+      "microsoft.directory/agentUsers/photo/update",
+      "microsoft.directory/agentUsers/reprocessLicenseAssignment",
+      "microsoft.directory/agentUsers/restore",
+      "microsoft.directory/agentUsers/revokeSignInSessions",
+      "microsoft.directory/agentUsers/sponsors/update",
+      "microsoft.directory/agentUsers/usageLocation/update",
+      "microsoft.directory/agentUsers/userPrincipalName/update"
+    ]
   },
   {
     "date": "2026-06-17",
@@ -141,6 +209,9 @@
     "role_id": "1fe13547-53f6-408d-ac04-7f8eed167b38",
     "role_name": "AI Reader",
     "field": "permissions",
-    "detail": "1 permission removed"
+    "detail": "1 permission removed",
+    "removed_permissions": [
+      "microsoft.office365.usageReports/allEntities/allProperties/read"
+    ]
   }
 ]
