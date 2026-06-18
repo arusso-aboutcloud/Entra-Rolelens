@@ -38,6 +38,27 @@ GH_API = "https://api.github.com"
 ISSUE_TITLE = "Roles awaiting task coverage"
 ISSUE_LABEL = "coverage"
 
+# Implicit / default / system directory roles that Microsoft does not list on
+# the delegate-by-task page and never will (default user buckets, device
+# registration roles, sync/service accounts). They legitimately have no task,
+# so they are excluded from the actionable "needs attention" list — otherwise
+# the coverage issue could never reach empty. They still appear in the full
+# data/coverage.json breakdown.
+IMPLICIT_ROLES = {
+    "user",
+    "guest user",
+    "restricted guest user",
+    "device join",
+    "workplace device join",
+    "device users",
+    "device managers",
+    "device administrators",
+    "on premises directory sync account",
+    "directory synchronization accounts",
+    "partner tier1 support",
+    "partner tier2 support",
+}
+
 
 def load(path: Path, default=None):
     if not path.exists():
@@ -172,7 +193,11 @@ def main() -> None:
     recent_ids = recently_added_ids(changelog, cutoff)
 
     attention = sorted(
-        (_slim(r) for r in uncovered if r.get("isShadowRole") or r.get("id") in recent_ids),
+        (
+            _slim(r) for r in uncovered
+            if (r.get("isShadowRole") or r.get("id") in recent_ids)
+            and r.get("displayName", "").strip().lower() not in IMPLICIT_ROLES
+        ),
         key=lambda r: r["displayName"].lower(),
     )
 
