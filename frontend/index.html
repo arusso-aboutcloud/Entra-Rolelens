@@ -942,6 +942,28 @@
     .wn-worddiff del + ins,
     .wn-worddiff ins + del { margin-left: 5px; }
 
+    /* isPrivileged change: a plain Was / Now layout (no strikethrough) + why. */
+    .wn-privnote { font-family: var(--font-body); }
+    .wn-priv-row {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+    }
+    .wn-priv-tag {
+      color: var(--muted);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      width: 34px;
+      flex-shrink: 0;
+    }
+    .wn-priv-from { color: var(--muted); }
+    .wn-priv-to   { color: var(--text); }
+    .wn-priv-to.is-priv { color: var(--warn); font-weight: 600; }
+    .wn-priv-why  { font-size: 12px; color: var(--muted); line-height: 1.55; max-width: 70ch; margin-top: 5px; }
+
     /* Count badges in the summary row (+N added / −N removed, privileged). */
     .wn-badges { display: inline-flex; gap: 5px; align-items: center; }
     .wn-badge {
@@ -2681,9 +2703,9 @@ Content-Type: application/json
 
   // Inner detail HTML revealed when a row is expanded ('' = nothing to expand).
   // Permission changes list the added (green) / removed (red) permissions;
-  // description/rename show a word-level diff. isPrivileged is conveyed solely
-  // by the row badge. Historical permission entries (counts only, no names)
-  // return '' and stay non-expandable.
+  // description/rename show a word-level diff; an isPrivileged flip explains the
+  // before/after and why it matters. Historical permission entries (counts only,
+  // no names) return '' and stay non-expandable.
   function _wnDetailInner(c) {
     if (c.field === 'permissions') {
       return _wnPermSection(c.added_permissions, 'added', '+', 'Added') +
@@ -2698,6 +2720,24 @@ Content-Type: application/json
       if (oldV === undefined && newV === undefined) return '';
       return `<div class="wn-worddiff">${_wnDiffWords(String(oldV ?? ''), String(newV ?? ''))}</div>`;
     }
+    if (c.field === 'isPrivileged') {
+      let now = c.new, was = c.old;
+      if (typeof now !== 'boolean') {
+        const m = (c.detail || '').match(/:\s*(true|false)\s*->\s*(true|false)/);
+        if (m) { was = m[1] === 'true'; now = m[2] === 'true'; }
+      }
+      if (typeof now !== 'boolean') return '';
+      const fromTxt = was === false ? 'Not privileged' : was === true ? 'Privileged' : 'Unknown';
+      const toTxt   = now ? 'Privileged' : 'Not privileged';
+      const why = now
+        ? 'Microsoft now classifies this as a privileged role: it can perform security-sensitive directory operations, so it warrants tighter governance (e.g. PIM, time-bound activation, access reviews).'
+        : 'Microsoft no longer classifies this as a privileged role.';
+      const toCls = now ? ' is-priv' : '';
+      return `<div class="wn-privnote">` +
+        `<div class="wn-priv-row"><span class="wn-priv-tag">Was</span><span class="wn-priv-from">${esc(fromTxt)}</span></div>` +
+        `<div class="wn-priv-row"><span class="wn-priv-tag">Now</span><span class="wn-priv-to${toCls}">${esc(toTxt)}</span></div>` +
+        `<div class="wn-priv-why">${esc(why)}</div></div>`;
+    }
     return '';
   }
 
@@ -2706,13 +2746,18 @@ Content-Type: application/json
       const type   = c.change_type?.toUpperCase() ?? 'MODIFIED';
       const glyph  = _WN_GLYPHS[type] ?? '•';
       const gcls   = _WN_GLYPH_CLASS[type] ?? '';
-      const fresh  = c.date >= cutoff24h ? ' wn-fresh' : '';
+      const isFresh = c.date >= cutoff24h;
+      const fresh  = isFresh ? ' wn-fresh' : '';
       const inner  = _wnDetailInner(c);
       const exp    = inner !== '';
-      const handlers = exp ? ' role="button" tabindex="0" aria-expanded="false" title="Show details" onclick="_wnToggle(this)" onkeydown="_wnKey(event,this)"' : '';
+      const tparts = [];
+      if (exp)     tparts.push('Show details');
+      if (isFresh) tparts.push('changed in the last 24h');
+      const titleAttr = tparts.length ? ` title="${tparts.join(' · ')}"` : '';
+      const handlers  = exp ? ' role="button" tabindex="0" aria-expanded="false" onclick="_wnToggle(this)" onkeydown="_wnKey(event,this)"' : '';
       return `<div class="wn-item${exp ? ' wn-expandable' : ''}">` +
-        `<div class="whats-new-entry type-${gcls}${fresh}" data-idx="${startIdx + i}"${handlers}>` +
-          `<span class="wn-fresh-dot"></span>` +
+        `<div class="whats-new-entry type-${gcls}${fresh}" data-idx="${startIdx + i}"${handlers}${titleAttr}>` +
+          `<span class="wn-fresh-dot"${isFresh ? ' title="changed in the last 24h"' : ''}></span>` +
           `<span class="wn-glyph ${gcls}">${glyph}</span>` +
           `<span class="wn-name">${esc(c.role_name ?? '')}</span>` +
           `<span class="wn-action">${_wnActionHtml(c)}</span>` +
