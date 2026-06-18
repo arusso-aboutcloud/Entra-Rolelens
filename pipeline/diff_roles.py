@@ -86,19 +86,32 @@ def compute_changes(old_roles: dict, new_roles: dict) -> list[dict]:
                         f"{json.dumps(old_role.get(field))} -> "
                         f"{json.dumps(new_role.get(field))}"
                     ),
+                    # Structured before/after so the UI can render the change
+                    # directly instead of parsing the detail string.
+                    "old": old_role.get(field),
+                    "new": new_role.get(field),
                 })
 
         old_perms = old_role.get("permissions", [])
         new_perms = new_role.get("permissions", [])
         if set(old_perms) != set(new_perms):
-            changes.append({
+            added = sorted(set(new_perms) - set(old_perms))
+            removed = sorted(set(old_perms) - set(new_perms))
+            entry = {
                 "date": TODAY,
                 "change_type": "MODIFIED",
                 "role_id": rid,
                 "role_name": new_role["displayName"],
                 "field": "permissions",
                 "detail": diff_permissions(old_perms, new_perms),
-            })
+            }
+            # Persist the actual permission names that changed so "What's new"
+            # can show exactly what Microsoft added/removed, not just a count.
+            if added:
+                entry["added_permissions"] = added
+            if removed:
+                entry["removed_permissions"] = removed
+            changes.append(entry)
 
     return changes
 
