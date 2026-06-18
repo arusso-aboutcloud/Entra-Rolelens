@@ -1,14 +1,18 @@
 name: Dependabot auto-merge
 
-# Approves and enables auto-merge for low-risk Dependabot updates
-# (patch + minor). Auto-merge waits for required status checks
-# (Sentrux quality gate, Trivy) before merging, so nothing lands red.
-# Major version bumps are intentionally excluded and stay manual.
+# Enables auto-merge for low-risk Dependabot updates (patch + minor).
+# Auto-merge waits for the required status checks (vuln-scan, config-scan,
+# quality-gate) before merging, so nothing lands red. Major version bumps
+# are intentionally excluded and stay manual.
+#
+# No approval step: master has no required-review rule, and the default
+# GITHUB_TOKEN is not permitted to approve PRs. Enabling auto-merge is all
+# that's needed for the merge to proceed once checks pass.
 
 on: pull_request
 
-# Least privilege: read-only at the top level so nothing is inherited
-# implicitly. The single job is granted exactly the write scopes it needs.
+# Least privilege: read-only at the top level; the single job is granted
+# exactly the write scope it needs to enable auto-merge.
 permissions:
   contents: read
 
@@ -16,11 +20,10 @@ jobs:
   auto-merge:
     name: Auto-merge Dependabot PRs
     runs-on: ubuntu-latest
-    # Only act on Dependabot-authored PRs
     if: github.actor == 'dependabot[bot]'
     permissions:
       contents: write        # enable auto-merge / squash-merge
-      pull-requests: write   # approve the PR
+      pull-requests: write   # update PR auto-merge state
     steps:
       - name: Harden Runner
         uses: step-security/harden-runner@9af89fc71515a100421586dfdb3dc9c984fbf411 # v2.19.4
@@ -33,13 +36,11 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Approve and enable auto-merge (patch & minor)
+      - name: Enable auto-merge (patch & minor)
         if: >-
           steps.meta.outputs.update-type == 'version-update:semver-patch' ||
           steps.meta.outputs.update-type == 'version-update:semver-minor'
-        run: |
-          gh pr review --approve "$PR_URL"
-          gh pr merge --auto --squash "$PR_URL"
+        run: gh pr merge --auto --squash "$PR_URL"
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
