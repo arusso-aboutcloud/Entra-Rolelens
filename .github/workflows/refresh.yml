@@ -71,6 +71,12 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPO: ${{ github.repository }}
 
+      - name: Role task-coverage report
+        run: python pipeline/coverage_report.py
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPO: ${{ github.repository }}
+
       - name: Sentrux structural quality gate
         run: |
           set -e
