@@ -3,6 +3,6 @@
 # OSV "Vulnerabilities" finding (historical lxml/requests CVEs surfaced because the
 # packages were unpinned) and makes builds reproducible.
 requests==2.34.2
-beautifulsoup4==4.13.4
+beautifulsoup4==4.15.0
 lxml==6.1.1
 azure-identity==1.25.3
