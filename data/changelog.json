@@ -213,5 +213,32 @@
     "removed_permissions": [
       "microsoft.office365.usageReports/allEntities/allProperties/read"
     ]
+  },
+  {
+    "date": "2026-06-18",
+    "change_type": "MODIFIED",
+    "role_id": "d2562ede-74db-457e-a7b6-544e236ebb61",
+    "role_name": "AI Administrator",
+    "field": "permissions",
+    "detail": "17 permissions added",
+    "added_permissions": [
+      "microsoft.directory/agentUsers/assignLicense",
+      "microsoft.directory/agentUsers/basic/update",
+      "microsoft.directory/agentUsers/create",
+      "microsoft.directory/agentUsers/delete",
+      "microsoft.directory/agentUsers/disable",
+      "microsoft.directory/agentUsers/enable",
+      "microsoft.directory/agentUsers/invalidateAllRefreshTokens",
+      "microsoft.directory/agentUsers/lifeCycleInfo/read",
+      "microsoft.directory/agentUsers/lifeCycleInfo/update",
+      "microsoft.directory/agentUsers/manager/update",
+      "microsoft.directory/agentUsers/photo/update",
+      "microsoft.directory/agentUsers/reprocessLicenseAssignment",
+      "microsoft.directory/agentUsers/restore",
+      "microsoft.directory/agentUsers/revokeSignInSessions",
+      "microsoft.directory/agentUsers/sponsors/update",
+      "microsoft.directory/agentUsers/usageLocation/update",
+      "microsoft.directory/agentUsers/userPrincipalName/update"
+    ]
   }
 ]

@@ -75,6 +75,7 @@ This keeps the one remaining manual step — seeding a task for a role Microsoft
 - 🔄 **Agent ID Developer** — modified (2026-06-13)
 - 🔄 **Global Administrator** — modified (2026-06-13)
 - 🔄 **AI Reader** — modified (2026-06-17)
+- 🔄 **AI Administrator** — modified (2026-06-18)
 <!-- WHATS_NEW_END -->
 
 ---
