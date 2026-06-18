@@ -854,17 +854,43 @@
       font-size: 14px;
     }
 
-    /* Inline "what exactly changed" detail shown under the summary row. */
-    .wn-detail {
-      padding: 2px 0 10px 26px;
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
+    /* Expandable rows: chevron affordance + click-to-open detail. */
+    .wn-chev, .wn-chev-spacer {
+      width: 12px;
+      flex-shrink: 0;
+      color: var(--muted);
+      font-size: 11px;
+      text-align: center;
+      transition: transform 0.18s ease;
     }
+    .wn-item.wn-open .wn-chev { transform: rotate(90deg); }
+    .wn-expandable > .whats-new-entry { cursor: pointer; border-radius: 6px; }
+    .wn-expandable > .whats-new-entry:hover { background: var(--surface2); }
+    .wn-expandable > .whats-new-entry:focus-visible {
+      outline: 1px solid var(--accent); outline-offset: -1px;
+    }
+
+    /* Expanded "what exactly changed" detail (block flow — not flex column). */
+    .wn-detail { padding: 2px 0 12px 26px; }
+    .wn-detail[hidden] { display: none; }
+
+    .wn-pgroup { margin-top: 8px; }
+    .wn-pgroup:first-child { margin-top: 2px; }
+    .wn-phead {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 4px;
+      opacity: 0.85;
+    }
+    .wn-phead.added   { color: var(--accent); }
+    .wn-phead.removed { color: var(--danger); }
     .wn-perm {
+      display: block;
       font-family: var(--font-mono);
       font-size: 11.5px;
-      line-height: 1.45;
+      line-height: 1.55;
       color: var(--muted);
       word-break: break-all;
     }
@@ -873,8 +899,7 @@
     .wn-perm .wn-sign { display: inline-block; width: 12px; font-weight: 700; }
     .wn-perm-rest[hidden] { display: none; }
     .wn-more-btn {
-      align-self: flex-start;
-      margin-top: 3px;
+      margin-top: 4px;
       background: none;
       border: 1px solid var(--border);
       border-radius: 6px;
@@ -885,6 +910,7 @@
       cursor: pointer;
     }
     .wn-more-btn:hover { color: var(--text); border-color: var(--muted); }
+
     /* Word-level diff: full text in context, only changed words highlighted. */
     .wn-worddiff {
       font-family: var(--font-body);
@@ -2628,29 +2654,31 @@ Content-Type: application/json
     return s;
   }
 
-  // Renders one permission group (added or removed), capping at _WN_PERM_CAP
-  // with a "+N more" toggle for the remainder.
-  function _wnPermGroup(perms, cls, sign) {
+  // One permission section (Added / Removed) with a header + count, capping at
+  // _WN_PERM_CAP rows with a "+N more" toggle for the remainder.
+  function _wnPermSection(perms, cls, sign, title) {
     if (!perms || !perms.length) return '';
     const row  = p => `<div class="wn-perm ${cls}"><span class="wn-sign">${sign}</span>${esc(p)}</div>`;
     const head = perms.slice(0, _WN_PERM_CAP).map(row).join('');
     const rest = perms.slice(_WN_PERM_CAP);
-    if (!rest.length) return head;
-    const id = `wnp-${_wnUid++}`;
-    return head +
-      `<div class="wn-perm-rest" id="${id}" hidden>${rest.map(row).join('')}</div>` +
-      `<button class="wn-more-btn" onclick="_wnMore('${id}', this)">+${rest.length} more</button>`;
+    let body = head;
+    if (rest.length) {
+      const id = `wnp-${_wnUid++}`;
+      body += `<div class="wn-perm-rest" id="${id}" hidden>${rest.map(row).join('')}</div>` +
+        `<button class="wn-more-btn" onclick="_wnMore('${id}', this)">+${rest.length} more</button>`;
+    }
+    return `<div class="wn-pgroup ${cls}"><div class="wn-phead ${cls}">${title} (${perms.length})</div>${body}</div>`;
   }
 
-  // Inline detail block under a summary row. Permission changes list the actual
-  // added/removed permissions; scalar changes (description, privileged, rename)
-  // show before → after. Falls back gracefully for historical entries that
-  // predate the structured fields.
-  function _wnDetailHtml(c) {
+  // Inner detail HTML revealed when a row is expanded ('' = nothing to expand).
+  // Permission changes list the added (green) / removed (red) permissions;
+  // description/rename show a word-level diff. isPrivileged is conveyed solely
+  // by the row badge. Historical permission entries (counts only, no names)
+  // return '' and stay non-expandable.
+  function _wnDetailInner(c) {
     if (c.field === 'permissions') {
-      const detail = _wnPermGroup(c.added_permissions, 'added', '+') +
-                     _wnPermGroup(c.removed_permissions, 'removed', '−');
-      return detail ? `<div class="wn-detail">${detail}</div>` : '';
+      return _wnPermSection(c.added_permissions, 'added', '+', 'Added') +
+             _wnPermSection(c.removed_permissions, 'removed', '−', 'Removed');
     }
     if (c.field === 'description' || c.field === 'displayName') {
       let oldV = c.old, newV = c.new;
@@ -2659,9 +2687,8 @@ Content-Type: application/json
         if (m) { oldV = _unquote(m[1]); newV = _unquote(m[2]); }
       }
       if (oldV === undefined && newV === undefined) return '';
-      return `<div class="wn-detail wn-worddiff">${_wnDiffWords(String(oldV ?? ''), String(newV ?? ''))}</div>`;
+      return `<div class="wn-worddiff">${_wnDiffWords(String(oldV ?? ''), String(newV ?? ''))}</div>`;
     }
-    // isPrivileged is fully conveyed by the row badge — no detail block.
     return '';
   }
 
@@ -2671,17 +2698,36 @@ Content-Type: application/json
       const glyph  = _WN_GLYPHS[type] ?? '•';
       const gcls   = _WN_GLYPH_CLASS[type] ?? '';
       const fresh  = c.date >= cutoff24h ? ' wn-fresh' : '';
-      return `<div class="wn-item">` +
-        `<div class="whats-new-entry type-${gcls}${fresh}" data-idx="${startIdx + i}">` +
+      const inner  = _wnDetailInner(c);
+      const exp    = inner !== '';
+      const handlers = exp ? ' role="button" tabindex="0" onclick="_wnToggle(this)" onkeydown="_wnKey(event,this)"' : '';
+      return `<div class="wn-item${exp ? ' wn-expandable' : ''}">` +
+        `<div class="whats-new-entry type-${gcls}${fresh}" data-idx="${startIdx + i}"${handlers}>` +
           `<span class="wn-fresh-dot"></span>` +
           `<span class="wn-glyph ${gcls}">${glyph}</span>` +
           `<span class="wn-name">${esc(c.role_name ?? '')}</span>` +
           `<span class="wn-action">${_wnActionHtml(c)}</span>` +
           `<span class="wn-date">${esc(c.date ?? '')}</span>` +
+          (exp ? `<span class="wn-chev">▸</span>` : `<span class="wn-chev-spacer"></span>`) +
         `</div>` +
-        _wnDetailHtml(c) +
+        (exp ? `<div class="wn-detail" hidden>${inner}</div>` : '') +
         `</div>`;
     }).join('');
+  }
+
+  // Expand/collapse a single row's detail. The summary row and its detail are
+  // siblings, so clicks inside the detail (e.g. "+N more") don't toggle it.
+  function _wnToggle(rowEl) {
+    const item = rowEl.closest('.wn-item');
+    if (!item) return;
+    const detail = item.querySelector('.wn-detail');
+    if (!detail) return;
+    const open = item.classList.toggle('wn-open');
+    detail.hidden = !open;
+  }
+
+  function _wnKey(e, rowEl) {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); _wnToggle(rowEl); }
   }
 
   function _wnMore(id, btn) {
