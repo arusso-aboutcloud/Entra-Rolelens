@@ -856,16 +856,21 @@
 
     /* Expandable rows: chevron affordance + click-to-open detail. */
     .wn-chev, .wn-chev-spacer {
-      width: 12px;
+      width: 16px;
       flex-shrink: 0;
-      color: var(--muted);
-      font-size: 11px;
       text-align: center;
-      transition: transform 0.18s ease;
+      transition: transform 0.18s ease, color 0.18s ease;
     }
-    .wn-item.wn-open .wn-chev { transform: rotate(90deg); }
+    .wn-chev {
+      color: var(--text);
+      opacity: 0.5;
+      font-size: 14px;
+      line-height: 1;
+    }
+    .wn-item.wn-open .wn-chev { transform: rotate(90deg); color: var(--accent); opacity: 1; }
     .wn-expandable > .whats-new-entry { cursor: pointer; border-radius: 6px; }
     .wn-expandable > .whats-new-entry:hover { background: var(--surface2); }
+    .wn-expandable > .whats-new-entry:hover .wn-chev { color: var(--accent); opacity: 1; }
     .wn-expandable > .whats-new-entry:focus-visible {
       outline: 1px solid var(--accent); outline-offset: -1px;
     }
@@ -2700,7 +2705,7 @@ Content-Type: application/json
       const fresh  = c.date >= cutoff24h ? ' wn-fresh' : '';
       const inner  = _wnDetailInner(c);
       const exp    = inner !== '';
-      const handlers = exp ? ' role="button" tabindex="0" onclick="_wnToggle(this)" onkeydown="_wnKey(event,this)"' : '';
+      const handlers = exp ? ' role="button" tabindex="0" aria-expanded="false" title="Show details" onclick="_wnToggle(this)" onkeydown="_wnKey(event,this)"' : '';
       return `<div class="wn-item${exp ? ' wn-expandable' : ''}">` +
         `<div class="whats-new-entry type-${gcls}${fresh}" data-idx="${startIdx + i}"${handlers}>` +
           `<span class="wn-fresh-dot"></span>` +
@@ -2724,6 +2729,7 @@ Content-Type: application/json
     if (!detail) return;
     const open = item.classList.toggle('wn-open');
     detail.hidden = !open;
+    rowEl.setAttribute('aria-expanded', String(open));
   }
 
   function _wnKey(e, rowEl) {
