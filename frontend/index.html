@@ -885,15 +885,44 @@
       cursor: pointer;
     }
     .wn-more-btn:hover { color: var(--text); border-color: var(--muted); }
-    .wn-diff {
+    /* Word-level diff: full text in context, only changed words highlighted. */
+    .wn-worddiff {
       font-family: var(--font-body);
       font-size: 12px;
       color: var(--muted);
-      line-height: 1.5;
+      line-height: 1.6;
     }
-    .wn-diff .wn-old { color: var(--danger); }
-    .wn-diff .wn-new { color: var(--accent); }
-    .wn-diff .wn-arrow { color: var(--muted); margin: 0 6px; }
+    .wn-worddiff ins {
+      text-decoration: none;
+      color: var(--accent);
+      background: rgba(0, 229, 163, 0.13);
+      border-radius: 3px;
+      padding: 0 2px;
+    }
+    .wn-worddiff del {
+      text-decoration: line-through;
+      text-decoration-thickness: 1px;
+      color: var(--danger);
+      opacity: 0.7;
+      padding: 0 1px;
+    }
+
+    /* Count badges in the summary row (+N added / −N removed, privileged). */
+    .wn-badges { display: inline-flex; gap: 5px; align-items: center; }
+    .wn-badge {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      font-weight: 700;
+      line-height: 1.5;
+      padding: 1px 7px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+    .wn-badge.add  { color: var(--accent); background: rgba(0, 229, 163, 0.13); }
+    .wn-badge.rem  { color: var(--danger); background: rgba(248, 113, 113, 0.13); }
+    .wn-badge.priv { color: var(--warn);   background: rgba(251, 191, 36, 0.13); }
+    .wn-badge.unpriv { color: var(--muted); background: var(--surface2); }
+    .wn-label-soft { color: var(--muted); }
 
     .wn-fresh-dot {
       width: 7px;
@@ -2524,27 +2553,71 @@ Content-Type: application/json
 
   // Accurate label for the change, derived from the field that actually
   // changed — not a blanket "permissions updated".
-  function _wnLabel(c) {
+  // Permission add/remove counts: from the stored name arrays when present,
+  // otherwise parsed from the historical "N permissions added" detail string.
+  function _wnCounts(c) {
+    let added   = c.added_permissions?.length   ?? null;
+    let removed = c.removed_permissions?.length ?? null;
+    if (added === null && removed === null) {
+      const ma = (c.detail || '').match(/(\d+)\s+permissions?\s+added/);
+      const mr = (c.detail || '').match(/(\d+)\s+permissions?\s+removed/);
+      added   = ma ? +ma[1] : 0;
+      removed = mr ? +mr[1] : 0;
+    }
+    return { added: added || 0, removed: removed || 0 };
+  }
+
+  // Summary-row label. Permission changes carry +N/−N badges; a privileged
+  // flip is a single badge, not "false → true".
+  function _wnActionHtml(c) {
     const type = c.change_type?.toUpperCase() ?? 'MODIFIED';
-    if (type === 'ADDED')   return 'new role';
-    if (type === 'REMOVED') return 'role removed';
+    if (type === 'ADDED')   return `<span class="wn-label-soft">new role</span>`;
+    if (type === 'REMOVED') return `<span class="wn-label-soft">role removed</span>`;
     switch (c.field) {
       case 'permissions': {
-        const na = c.added_permissions?.length;
-        const nr = c.removed_permissions?.length;
-        if (na || nr) {
-          const parts = [];
-          if (na) parts.push(`+${na}`);
-          if (nr) parts.push(`−${nr}`);  // minus sign
-          return `permissions ${parts.join(' ')}`;
-        }
-        return c.detail || 'permissions updated';   // historical: count only
+        const { added, removed } = _wnCounts(c);
+        const badges = [];
+        if (added)   badges.push(`<span class="wn-badge add">+${added}</span>`);
+        if (removed) badges.push(`<span class="wn-badge rem">−${removed}</span>`);
+        const b = badges.length ? `<span class="wn-badges">${badges.join('')}</span>` : '';
+        return `<span class="wn-label-soft">permissions</span> ${b}`;
       }
-      case 'description':  return 'description updated';
-      case 'isPrivileged': return (c.new === true || /->\s*true/.test(c.detail || '')) ? 'marked privileged' : 'privileged removed';
-      case 'displayName':  return 'renamed';
-      default:             return 'updated';
+      case 'description':  return `<span class="wn-label-soft">description updated</span>`;
+      case 'displayName':  return `<span class="wn-label-soft">renamed</span>`;
+      case 'isPrivileged': {
+        const nowPriv = c.new === true || /->\s*true/.test(c.detail || '');
+        return nowPriv
+          ? `<span class="wn-badge priv">now privileged</span>`
+          : `<span class="wn-badge unpriv">no longer privileged</span>`;
+      }
+      default: return `<span class="wn-label-soft">updated</span>`;
     }
+  }
+
+  // Word-level diff (LCS over whitespace-preserving tokens). Renders the new
+  // text in context with only the changed words wrapped in <ins>/<del>.
+  function _wnDiffWords(oldS, newS) {
+    const tok = s => String(s).split(/(\s+)/);
+    const a = tok(oldS), b = tok(newS);
+    const n = a.length, m = b.length;
+    const dp = Array.from({ length: n + 1 }, () => new Int32Array(m + 1));
+    for (let i = n - 1; i >= 0; i--)
+      for (let j = m - 1; j >= 0; j--)
+        dp[i][j] = a[i] === b[j] ? dp[i + 1][j + 1] + 1 : Math.max(dp[i + 1][j], dp[i][j + 1]);
+    let i = 0, j = 0, out = '', del = '', ins = '';
+    const flush = () => {
+      if (del) { out += `<del>${esc(del)}</del>`; del = ''; }
+      if (ins) { out += `<ins>${esc(ins)}</ins>`; ins = ''; }
+    };
+    while (i < n && j < m) {
+      if (a[i] === b[j]) { flush(); out += esc(a[i]); i++; j++; }
+      else if (dp[i + 1][j] >= dp[i][j + 1]) { del += a[i++]; }
+      else { ins += b[j++]; }
+    }
+    while (i < n) del += a[i++];
+    while (j < m) ins += b[j++];
+    flush();
+    return out;
   }
 
   function _unquote(s) {
@@ -2579,18 +2652,16 @@ Content-Type: application/json
                      _wnPermGroup(c.removed_permissions, 'removed', '−');
       return detail ? `<div class="wn-detail">${detail}</div>` : '';
     }
-    if (c.field === 'description' || c.field === 'isPrivileged' || c.field === 'displayName') {
+    if (c.field === 'description' || c.field === 'displayName') {
       let oldV = c.old, newV = c.new;
       if (oldV === undefined && newV === undefined) {
         const m = (c.detail || '').match(/changed:\s*([\s\S]+?)\s*->\s*([\s\S]+)$/);
         if (m) { oldV = _unquote(m[1]); newV = _unquote(m[2]); }
       }
       if (oldV === undefined && newV === undefined) return '';
-      return `<div class="wn-detail wn-diff">` +
-        `<span class="wn-old">${esc(String(oldV))}</span>` +
-        `<span class="wn-arrow">→</span>` +
-        `<span class="wn-new">${esc(String(newV))}</span></div>`;
+      return `<div class="wn-detail wn-worddiff">${_wnDiffWords(String(oldV ?? ''), String(newV ?? ''))}</div>`;
     }
+    // isPrivileged is fully conveyed by the row badge — no detail block.
     return '';
   }
 
@@ -2599,14 +2670,13 @@ Content-Type: application/json
       const type   = c.change_type?.toUpperCase() ?? 'MODIFIED';
       const glyph  = _WN_GLYPHS[type] ?? '•';
       const gcls   = _WN_GLYPH_CLASS[type] ?? '';
-      const action = _wnLabel(c);
       const fresh  = c.date >= cutoff24h ? ' wn-fresh' : '';
       return `<div class="wn-item">` +
         `<div class="whats-new-entry type-${gcls}${fresh}" data-idx="${startIdx + i}">` +
           `<span class="wn-fresh-dot"></span>` +
           `<span class="wn-glyph ${gcls}">${glyph}</span>` +
           `<span class="wn-name">${esc(c.role_name ?? '')}</span>` +
-          `<span class="wn-action">${esc(action)}</span>` +
+          `<span class="wn-action">${_wnActionHtml(c)}</span>` +
           `<span class="wn-date">${esc(c.date ?? '')}</span>` +
         `</div>` +
         _wnDetailHtml(c) +
