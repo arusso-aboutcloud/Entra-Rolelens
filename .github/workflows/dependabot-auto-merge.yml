@@ -1,0 +1,41 @@
+name: Dependabot auto-merge
+
+# Approves and enables auto-merge for low-risk Dependabot updates
+# (patch + minor). Auto-merge waits for required status checks
+# (Sentrux quality gate, Trivy) before merging, so nothing lands red.
+# Major version bumps are intentionally excluded and stay manual.
+
+on: pull_request
+
+permissions:
+  contents: write        # enable auto-merge / squash-merge
+  pull-requests: write   # approve the PR
+
+jobs:
+  auto-merge:
+    name: Auto-merge Dependabot PRs
+    runs-on: ubuntu-latest
+    # Only act on Dependabot-authored PRs
+    if: github.actor == 'dependabot[bot]'
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@9af89fc71515a100421586dfdb3dc9c984fbf411 # v2.19.4
+        with:
+          egress-policy: audit
+
+      - name: Fetch Dependabot metadata
+        id: meta
+        uses: dependabot/fetch-metadata@25dd0e34f4fe68f24cc83900b1fe3fe149efef98 # v3.1.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Approve and enable auto-merge (patch & minor)
+        if: >-
+          steps.meta.outputs.update-type == 'version-update:semver-patch' ||
+          steps.meta.outputs.update-type == 'version-update:semver-minor'
+        run: |
+          gh pr review --approve "$PR_URL"
+          gh pr merge --auto --squash "$PR_URL"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
