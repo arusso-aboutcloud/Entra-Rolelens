@@ -842,15 +842,58 @@
       border-top: 1px solid var(--border);
     }
 
+    /* Each change is a wrapper: the summary row + an optional inline detail. */
+    .wn-item { border-bottom: 1px solid var(--border); }
+    .wn-item:last-child { border-bottom: none; }
+
     .whats-new-entry {
       display: flex;
       align-items: center;
       gap: 10px;
       padding: 9px 0;
-      border-bottom: 1px solid var(--border);
       font-size: 14px;
     }
-    .whats-new-entry:last-child { border-bottom: none; }
+
+    /* Inline "what exactly changed" detail shown under the summary row. */
+    .wn-detail {
+      padding: 2px 0 10px 26px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .wn-perm {
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      line-height: 1.45;
+      color: var(--muted);
+      word-break: break-all;
+    }
+    .wn-perm.added   { color: var(--accent); }
+    .wn-perm.removed { color: var(--danger); }
+    .wn-perm .wn-sign { display: inline-block; width: 12px; font-weight: 700; }
+    .wn-perm-rest[hidden] { display: none; }
+    .wn-more-btn {
+      align-self: flex-start;
+      margin-top: 3px;
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--muted);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 2px 8px;
+      cursor: pointer;
+    }
+    .wn-more-btn:hover { color: var(--text); border-color: var(--muted); }
+    .wn-diff {
+      font-family: var(--font-body);
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    .wn-diff .wn-old { color: var(--danger); }
+    .wn-diff .wn-new { color: var(--accent); }
+    .wn-diff .wn-arrow { color: var(--muted); margin: 0 6px; }
 
     .wn-fresh-dot {
       width: 7px;
@@ -2476,22 +2519,105 @@ Content-Type: application/json
   const _WN_GLYPHS      = { ADDED: '✦', REMOVED: '⊘', MODIFIED: '◆' };
   const _WN_GLYPH_CLASS = { ADDED: 'added', REMOVED: 'removed', MODIFIED: 'modified' };
   const _WN_PREVIEW     = 5;
+  const _WN_PERM_CAP    = 8;   // permissions shown per group before "+N more"
+  let   _wnUid          = 0;
+
+  // Accurate label for the change, derived from the field that actually
+  // changed — not a blanket "permissions updated".
+  function _wnLabel(c) {
+    const type = c.change_type?.toUpperCase() ?? 'MODIFIED';
+    if (type === 'ADDED')   return 'new role';
+    if (type === 'REMOVED') return 'role removed';
+    switch (c.field) {
+      case 'permissions': {
+        const na = c.added_permissions?.length;
+        const nr = c.removed_permissions?.length;
+        if (na || nr) {
+          const parts = [];
+          if (na) parts.push(`+${na}`);
+          if (nr) parts.push(`−${nr}`);  // minus sign
+          return `permissions ${parts.join(' ')}`;
+        }
+        return c.detail || 'permissions updated';   // historical: count only
+      }
+      case 'description':  return 'description updated';
+      case 'isPrivileged': return (c.new === true || /->\s*true/.test(c.detail || '')) ? 'marked privileged' : 'privileged removed';
+      case 'displayName':  return 'renamed';
+      default:             return 'updated';
+    }
+  }
+
+  function _unquote(s) {
+    s = (s ?? '').trim();
+    if (s.length >= 2 && s[0] === '"' && s[s.length - 1] === '"') {
+      try { return JSON.parse(s); } catch { return s.slice(1, -1); }
+    }
+    return s;
+  }
+
+  // Renders one permission group (added or removed), capping at _WN_PERM_CAP
+  // with a "+N more" toggle for the remainder.
+  function _wnPermGroup(perms, cls, sign) {
+    if (!perms || !perms.length) return '';
+    const row  = p => `<div class="wn-perm ${cls}"><span class="wn-sign">${sign}</span>${esc(p)}</div>`;
+    const head = perms.slice(0, _WN_PERM_CAP).map(row).join('');
+    const rest = perms.slice(_WN_PERM_CAP);
+    if (!rest.length) return head;
+    const id = `wnp-${_wnUid++}`;
+    return head +
+      `<div class="wn-perm-rest" id="${id}" hidden>${rest.map(row).join('')}</div>` +
+      `<button class="wn-more-btn" onclick="_wnMore('${id}', this)">+${rest.length} more</button>`;
+  }
+
+  // Inline detail block under a summary row. Permission changes list the actual
+  // added/removed permissions; scalar changes (description, privileged, rename)
+  // show before → after. Falls back gracefully for historical entries that
+  // predate the structured fields.
+  function _wnDetailHtml(c) {
+    if (c.field === 'permissions') {
+      const detail = _wnPermGroup(c.added_permissions, 'added', '+') +
+                     _wnPermGroup(c.removed_permissions, 'removed', '−');
+      return detail ? `<div class="wn-detail">${detail}</div>` : '';
+    }
+    if (c.field === 'description' || c.field === 'isPrivileged' || c.field === 'displayName') {
+      let oldV = c.old, newV = c.new;
+      if (oldV === undefined && newV === undefined) {
+        const m = (c.detail || '').match(/changed:\s*([\s\S]+?)\s*->\s*([\s\S]+)$/);
+        if (m) { oldV = _unquote(m[1]); newV = _unquote(m[2]); }
+      }
+      if (oldV === undefined && newV === undefined) return '';
+      return `<div class="wn-detail wn-diff">` +
+        `<span class="wn-old">${esc(String(oldV))}</span>` +
+        `<span class="wn-arrow">→</span>` +
+        `<span class="wn-new">${esc(String(newV))}</span></div>`;
+    }
+    return '';
+  }
 
   function _wnBuildEntries(items, startIdx, cutoff24h) {
     return items.map((c, i) => {
       const type   = c.change_type?.toUpperCase() ?? 'MODIFIED';
       const glyph  = _WN_GLYPHS[type] ?? '•';
       const gcls   = _WN_GLYPH_CLASS[type] ?? '';
-      const action = type === 'MODIFIED' ? 'permissions updated' : (c.change_type?.toLowerCase() ?? '');
+      const action = _wnLabel(c);
       const fresh  = c.date >= cutoff24h ? ' wn-fresh' : '';
-      return `<div class="whats-new-entry type-${gcls}${fresh}" data-idx="${startIdx + i}">` +
-        `<span class="wn-fresh-dot"></span>` +
-        `<span class="wn-glyph ${gcls}">${glyph}</span>` +
-        `<span class="wn-name">${esc(c.role_name ?? '')}</span>` +
-        `<span class="wn-action">${esc(action)}</span>` +
-        `<span class="wn-date">${esc(c.date ?? '')}</span>` +
+      return `<div class="wn-item">` +
+        `<div class="whats-new-entry type-${gcls}${fresh}" data-idx="${startIdx + i}">` +
+          `<span class="wn-fresh-dot"></span>` +
+          `<span class="wn-glyph ${gcls}">${glyph}</span>` +
+          `<span class="wn-name">${esc(c.role_name ?? '')}</span>` +
+          `<span class="wn-action">${esc(action)}</span>` +
+          `<span class="wn-date">${esc(c.date ?? '')}</span>` +
+        `</div>` +
+        _wnDetailHtml(c) +
         `</div>`;
     }).join('');
+  }
+
+  function _wnMore(id, btn) {
+    const el = document.getElementById(id);
+    if (el) el.hidden = false;
+    if (btn) btn.remove();
   }
 
   function _wnShowAllBtn(total) {
