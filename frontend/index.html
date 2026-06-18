@@ -2652,8 +2652,10 @@ Content-Type: application/json
     }
   }
 
-  // Word-level diff (LCS over whitespace-preserving tokens). Renders the new
-  // text in context with only the changed words wrapped in <ins>/<del>.
+  // Renders the NEW text only, with the added words highlighted (<ins>).
+  // Removed words are not shown — a struck-through old word inline reads as
+  // clutter; the reader just wants the current wording with what's new flagged.
+  // LCS over whitespace-preserving tokens decides which new tokens are additions.
   function _wnDiffWords(oldS, newS) {
     const tok = s => String(s).split(/(\s+)/);
     const a = tok(oldS), b = tok(newS);
@@ -2662,23 +2664,14 @@ Content-Type: application/json
     for (let i = n - 1; i >= 0; i--)
       for (let j = m - 1; j >= 0; j--)
         dp[i][j] = a[i] === b[j] ? dp[i + 1][j + 1] + 1 : Math.max(dp[i + 1][j], dp[i][j + 1]);
-    let i = 0, j = 0, out = '', del = '', ins = '';
-    const flush = () => {
-      // A deletion that is replaced by an insertion at the same spot: separate
-      // them with a real space so "service" + "identity" reads as two words,
-      // not "serviceidentity".
-      if (del && ins) { out += `<del>${esc(del)}</del> <ins>${esc(ins)}</ins>`; }
-      else if (del)   { out += `<del>${esc(del)}</del>`; }
-      else if (ins)   { out += `<ins>${esc(ins)}</ins>`; }
-      del = ''; ins = '';
-    };
+    let i = 0, j = 0, out = '', ins = '';
+    const flush = () => { if (ins) { out += `<ins>${esc(ins)}</ins>`; ins = ''; } };
     while (i < n && j < m) {
-      if (a[i] === b[j]) { flush(); out += esc(a[i]); i++; j++; }
-      else if (dp[i + 1][j] >= dp[i][j + 1]) { del += a[i++]; }
-      else { ins += b[j++]; }
+      if (a[i] === b[j]) { flush(); out += esc(b[j]); i++; j++; }   // kept word
+      else if (dp[i + 1][j] >= dp[i][j + 1]) { i++; }               // removed word — emit nothing
+      else { ins += b[j++]; }                                       // added word
     }
-    while (i < n) del += a[i++];
-    while (j < m) ins += b[j++];
+    while (j < m) ins += b[j++];   // trailing additions
     flush();
     return out;
   }
