@@ -7,9 +7,10 @@ name: Dependabot auto-merge
 
 on: pull_request
 
+# Least privilege: read-only at the top level so nothing is inherited
+# implicitly. The single job is granted exactly the write scopes it needs.
 permissions:
-  contents: write        # enable auto-merge / squash-merge
-  pull-requests: write   # approve the PR
+  contents: read
 
 jobs:
   auto-merge:
@@ -17,6 +18,9 @@ jobs:
     runs-on: ubuntu-latest
     # Only act on Dependabot-authored PRs
     if: github.actor == 'dependabot[bot]'
+    permissions:
+      contents: write        # enable auto-merge / squash-merge
+      pull-requests: write   # approve the PR
     steps:
       - name: Harden Runner
         uses: step-security/harden-runner@9af89fc71515a100421586dfdb3dc9c984fbf411 # v2.19.4
