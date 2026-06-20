@@ -54,6 +54,9 @@ def compute_changes(old_roles: dict, new_roles: dict) -> list[dict]:
                 "role_name": role["displayName"],
                 "field": None,
                 "detail": f"New built-in role added: {role['displayName']}",
+                # Permission count at add time — lets "What's new" show how much
+                # the new role grants (0 = a workload role governed outside Entra).
+                "permission_count": len(role.get("permissions", [])),
             })
 
     for rid, role in old_roles.items():
