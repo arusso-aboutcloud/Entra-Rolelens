@@ -980,7 +980,13 @@
     .wn-badge.rem  { color: var(--danger); background: rgba(248, 113, 113, 0.13); }
     .wn-badge.priv { color: var(--warn);   background: rgba(251, 191, 36, 0.13); }
     .wn-badge.unpriv { color: var(--muted); background: var(--surface2); }
+    .wn-badge.count { color: var(--text);  background: var(--surface2); }
+    .wn-badge.zero  { color: var(--muted); background: var(--surface2); }
     .wn-label-soft { color: var(--muted); }
+
+    /* New-role expanded detail (description + permission list / no-perms note). */
+    .wn-role-desc { font-size: 12px; color: var(--muted); line-height: 1.55; margin-bottom: 8px; }
+    .wn-role-note { font-size: 12px; color: var(--muted); line-height: 1.55; font-style: italic; }
 
     .wn-fresh-dot {
       width: 7px;
@@ -2196,6 +2202,11 @@
     `);
   }
 
+  // Canonical "new" window: a role shows as NEW (badge in search + diff) for
+  // this many days after it was added — also the What's-new panel history span.
+  // (The 24h "fresh" dot is a separate finer signal; coverage uses its own
+  // longer lead-time window server-side.)
+  const NEW_ROLE_DAYS = 30;
   const _newRoleIds = new Set();
   function isNewRole(roleId) {
     return roleId ? _newRoleIds.has(roleId) : false;
@@ -2629,7 +2640,13 @@ Content-Type: application/json
   // flip is a single badge, not "false → true".
   function _wnActionHtml(c) {
     const type = c.change_type?.toUpperCase() ?? 'MODIFIED';
-    if (type === 'ADDED')   return `<span class="wn-label-soft">new role</span>`;
+    if (type === 'ADDED') {
+      const n = c.permission_count;
+      const badge = typeof n === 'number'
+        ? ` <span class="wn-badge ${n > 0 ? 'count' : 'zero'}">${n} ${n === 1 ? 'perm' : 'perms'}</span>`
+        : '';
+      return `<span class="wn-label-soft">new role</span>${badge}`;
+    }
     if (type === 'REMOVED') return `<span class="wn-label-soft">role removed</span>`;
     switch (c.field) {
       case 'permissions': {
@@ -2706,6 +2723,11 @@ Content-Type: application/json
   // before/after and why it matters. Historical permission entries (counts only,
   // no names) return '' and stay non-expandable.
   function _wnDetailInner(c) {
+    // New role: lazy-load its description + permission list from /api/role on
+    // expand (same endpoint as role detail — always current, no per-role code).
+    if ((c.change_type?.toUpperCase()) === 'ADDED' && c.role_id) {
+      return `<div class="wn-lazy" data-role="${esc(c.role_id)}"></div>`;
+    }
     if (c.field === 'permissions') {
       return _wnPermSection(c.added_permissions, 'added', '+', 'Added') +
              _wnPermSection(c.removed_permissions, 'removed', '−', 'Removed');
@@ -2778,6 +2800,50 @@ Content-Type: application/json
     const open = item.classList.toggle('wn-open');
     detail.hidden = !open;
     rowEl.setAttribute('aria-expanded', String(open));
+    // New-role rows lazy-load their permissions from /api/role on first open.
+    if (open) {
+      const lazy = detail.querySelector('.wn-lazy:not([data-loaded])');
+      if (lazy) {
+        lazy.setAttribute('data-loaded', '1');
+        _wnLoadRole(lazy, lazy.getAttribute('data-role'));
+      }
+    }
+  }
+
+  // Renders a new role's permission list (neutral) with a "+N more" cap.
+  function _wnPermList(perms) {
+    const row  = p => `<div class="wn-perm">${esc(p)}</div>`;
+    const head = perms.slice(0, _WN_PERM_CAP).map(row).join('');
+    const rest = perms.slice(_WN_PERM_CAP);
+    let body = `<div class="wn-phead">Permissions (${perms.length})</div>` + head;
+    if (rest.length) {
+      const id = `wnp-${_wnUid++}`;
+      body += `<div class="wn-perm-rest" id="${id}" hidden>${rest.map(row).join('')}</div>` +
+        `<button class="wn-more-btn" onclick="_wnMore('${id}', this)">+${rest.length} more</button>`;
+    }
+    return `<div class="wn-pgroup">${body}</div>`;
+  }
+
+  // Fetch a new role from the same endpoint role-detail uses, then show its
+  // description + permissions — or a clear note when it has none (workload
+  // roles like Purview's are governed outside Entra, so they carry 0 actions).
+  async function _wnLoadRole(container, roleId) {
+    container.innerHTML = `<div class="wn-role-note">Loading…</div>`;
+    try {
+      const res = await fetch(`${API}/api/role/${encodeURIComponent(roleId)}`);
+      if (!res.ok) throw new Error(String(res.status));
+      const role = await res.json();
+      const perms = role.permissions || [];
+      let html = '';
+      if (role.description) html += `<div class="wn-role-desc">${esc(role.description)}</div>`;
+      html += perms.length
+        ? _wnPermList(perms)
+        : `<div class="wn-role-note">No Entra directory permissions — this role is assigned and managed outside Entra (e.g. via the Microsoft Purview portal).</div>`;
+      container.innerHTML = html;
+    } catch {
+      container.removeAttribute('data-loaded'); // allow retry on next open
+      container.innerHTML = `<div class="wn-role-note">Couldn't load permissions just now — try again.</div>`;
+    }
   }
 
   function _wnKey(e, rowEl) {
@@ -2807,13 +2873,16 @@ Content-Type: application/json
       const res = await fetch(CHANGELOG_URL);
       if (!res.ok) return;
       const changelog = await res.json();
+      // Time-bound the NEW badge: only roles added within NEW_ROLE_DAYS count
+      // as new (previously every role ever added stayed "NEW" forever).
+      const newCutoff = new Date(Date.now() - NEW_ROLE_DAYS * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
       changelog.forEach(c => {
-        if (c.change_type?.toUpperCase() === 'ADDED' && c.role_id) {
+        if (c.change_type?.toUpperCase() === 'ADDED' && c.role_id && c.date >= newCutoff) {
           _newRoleIds.add(c.role_id);
         }
       });
 
-      const cutoff   = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+      const cutoff   = new Date(Date.now() - NEW_ROLE_DAYS * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
       const today    = new Date().toISOString().slice(0, 10);
       const cutoff24h = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
       const recent   = changelog.filter(c => c.date >= cutoff).slice(0, 50);
