@@ -197,6 +197,12 @@ def main() -> None:
             _slim(r) for r in uncovered
             if (r.get("isShadowRole") or r.get("id") in recent_ids)
             and r.get("displayName", "").strip().lower() not in IMPLICIT_ROLES
+            # Property-based, future-proof: a role with zero Entra directory
+            # actions (e.g. Purview/other workload roles governed in their own
+            # service portal) can never be a least-privilege answer for a task,
+            # so it never "needs task coverage". Excludes all such roles by
+            # nature, not by name.
+            and len(r.get("permissions") or []) > 0
         ),
         key=lambda r: r["displayName"].lower(),
     )

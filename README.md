@@ -58,7 +58,7 @@ A role only appears as a least-privilege *recommendation* once a task points to 
 `coverage_report.py` runs every night and:
 
 - writes [`data/coverage.json`](data/coverage.json) with the full breakdown (covered vs. uncovered roles), and
-- maintains a single idempotent **[Roles awaiting task coverage](https://github.com/arusso-aboutcloud/entra-rolelens/issues?q=label%3Acoverage)** issue listing only the *new/undocumented* roles that still need a task — updated each run and closed automatically when the list is empty.
+- maintains a single idempotent **[Roles awaiting task coverage](https://github.com/arusso-aboutcloud/entra-rolelens/issues?q=label%3Acoverage)** issue listing only the *new/undocumented* roles that still need a task — updated each run and closed automatically when the list is empty. Implicit/default directory roles and **zero-permission workload roles** (e.g. Purview content roles, which grant no Entra directory actions and are governed in their own service portal) are excluded — they can't take a task mapping.
 
 This keeps the one remaining manual step — seeding a task for a role Microsoft hasn't documented yet — explicit and visible, rather than silent.
 

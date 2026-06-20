@@ -2836,9 +2836,12 @@ Content-Type: application/json
       const perms = role.permissions || [];
       let html = '';
       if (role.description) html += `<div class="wn-role-desc">${esc(role.description)}</div>`;
+      // Service-agnostic note: any role with zero Entra directory actions is a
+      // workload role governed in its own service (the description above names
+      // which). Don't hardcode a specific product here.
       html += perms.length
         ? _wnPermList(perms)
-        : `<div class="wn-role-note">No Entra directory permissions — this role is assigned and managed outside Entra (e.g. via the Microsoft Purview portal).</div>`;
+        : `<div class="wn-role-note">No Entra directory permissions — this role grants no Entra directory actions; it's assigned and managed in its own service portal, not the Entra admin center.</div>`;
       container.innerHTML = html;
     } catch {
       container.removeAttribute('data-loaded'); // allow retry on next open
