@@ -436,7 +436,11 @@ def update_readme_whats_new(changelog_path: Path, readme_path: Path) -> None:
     with open(changelog_path, encoding="utf-8") as f:
         changelog = json.load(f)
 
-    cutoff = (datetime.utcnow() - timedelta(days=30)).date().isoformat()
+    # "New" window for the README feed. Keep in sync with the frontend's
+    # NEW_ROLE_DAYS constant (frontend/index.html) so the README and the live
+    # "What's new" panel agree on how long an entry is considered new.
+    NEW_ROLE_DAYS = 30
+    cutoff = (datetime.utcnow() - timedelta(days=NEW_ROLE_DAYS)).date().isoformat()
     recent = [c for c in changelog if c.get("date", "") >= cutoff]
 
     if not recent:
