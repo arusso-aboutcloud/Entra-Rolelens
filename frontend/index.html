@@ -2206,6 +2206,7 @@
   // this many days after it was added — also the What's-new panel history span.
   // (The 24h "fresh" dot is a separate finer signal; coverage uses its own
   // longer lead-time window server-side.)
+  // Mirror this value in pipeline/push_to_cloudflare.py (README "What's new" feed).
   const NEW_ROLE_DAYS = 30;
   const _newRoleIds = new Set();
   function isNewRole(roleId) {
