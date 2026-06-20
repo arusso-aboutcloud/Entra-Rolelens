@@ -240,5 +240,29 @@
       "microsoft.directory/agentUsers/usageLocation/update",
       "microsoft.directory/agentUsers/userPrincipalName/update"
     ]
+  },
+  {
+    "date": "2026-06-20",
+    "change_type": "ADDED",
+    "role_id": "3f04f91a-4ad7-4bd3-bcfa-49882ea1a88a",
+    "role_name": "Purview Workload Content Administrator",
+    "field": null,
+    "detail": "New built-in role added: Purview Workload Content Administrator"
+  },
+  {
+    "date": "2026-06-20",
+    "change_type": "ADDED",
+    "role_id": "e07494ad-1654-4dd2-922e-6f81a71bf00f",
+    "role_name": "Purview Workload Content Reader",
+    "field": null,
+    "detail": "New built-in role added: Purview Workload Content Reader"
+  },
+  {
+    "date": "2026-06-20",
+    "change_type": "ADDED",
+    "role_id": "02d5655b-c1cf-4e5f-98da-5fb919085bf6",
+    "role_name": "Purview Workload Content Writer",
+    "field": null,
+    "detail": "New built-in role added: Purview Workload Content Writer"
   }
 ]

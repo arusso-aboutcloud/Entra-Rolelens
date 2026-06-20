@@ -2293,6 +2293,30 @@
     ]
   },
   {
+    "id": "3f04f91a-4ad7-4bd3-bcfa-49882ea1a88a",
+    "displayName": "Purview Workload Content Administrator",
+    "description": "Manage or purge data from Microsoft 365 when accessing from the Microsoft Purview portal.",
+    "isBuiltIn": true,
+    "isPrivileged": false,
+    "permissions": []
+  },
+  {
+    "id": "e07494ad-1654-4dd2-922e-6f81a71bf00f",
+    "displayName": "Purview Workload Content Reader",
+    "description": "Read data from Microsoft 365 when accessing from the Microsoft Purview portal.",
+    "isBuiltIn": true,
+    "isPrivileged": false,
+    "permissions": []
+  },
+  {
+    "id": "02d5655b-c1cf-4e5f-98da-5fb919085bf6",
+    "displayName": "Purview Workload Content Writer",
+    "description": "Read and edit data from Microsoft 365 when accessing from the Microsoft Purview portal.",
+    "isBuiltIn": true,
+    "isPrivileged": false,
+    "permissions": []
+  },
+  {
     "id": "4a5d8f65-41da-4de4-8968-e035b65339cf",
     "displayName": "Reports Reader",
     "description": "Can read sign-in and audit reports.",

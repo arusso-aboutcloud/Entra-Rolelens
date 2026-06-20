@@ -1,8 +1,8 @@
 {
-  "generated_at": "2026-06-19T06:11:32.674355+00:00",
+  "generated_at": "2026-06-20T05:07:37.278215+00:00",
   "role_count": 144,
   "task_count": 237,
-  "shadow_role_count": 12,
+  "shadow_role_count": 9,
   "roles": [
     {
       "id": "62e90394-69f5-4237-9190-012177145e10",
@@ -3466,7 +3466,7 @@
       "isBuiltIn": true,
       "isPrivileged": false,
       "permissions": [],
-      "isShadowRole": true
+      "isShadowRole": false
     },
     {
       "id": "02d5655b-c1cf-4e5f-98da-5fb919085bf6",
@@ -3475,7 +3475,7 @@
       "isBuiltIn": true,
       "isPrivileged": false,
       "permissions": [],
-      "isShadowRole": true
+      "isShadowRole": false
     },
     {
       "id": "3f04f91a-4ad7-4bd3-bcfa-49882ea1a88a",
@@ -3484,7 +3484,7 @@
       "isBuiltIn": true,
       "isPrivileged": false,
       "permissions": [],
-      "isShadowRole": true
+      "isShadowRole": false
     },
     {
       "id": "fc8ad4e2-40e4-4724-8317-bcda7503ecbf",

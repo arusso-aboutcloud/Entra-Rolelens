@@ -76,6 +76,9 @@ This keeps the one remaining manual step — seeding a task for a role Microsoft
 - 🔄 **Global Administrator** — modified (2026-06-13)
 - 🔄 **AI Reader** — modified (2026-06-17)
 - 🔄 **AI Administrator** — modified (2026-06-18)
+- ✅ **Purview Workload Content Administrator** — added (2026-06-20)
+- ✅ **Purview Workload Content Reader** — added (2026-06-20)
+- ✅ **Purview Workload Content Writer** — added (2026-06-20)
 <!-- WHATS_NEW_END -->
 
 ---
@@ -259,7 +262,7 @@ entra-rolelens/
 ## Data quality
 - **144+ built-in roles** - covers all named Entra ID built-in roles including preview roles
 - **237 task mappings** - sourced from Microsoft's official documentation and community contributions
-- **12 unlisted roles** - present in the Graph API but not yet in Microsoft's public documentation
+- **9 unlisted roles** - present in the Graph API but not yet in Microsoft's public documentation
 - **0 partially documented roles** - in roles reference but missing from task mappings
 - **Nightly diff** - every permission change Microsoft makes is logged to the role_changes D1 table
 - **Self-healing pipeline** - validation gate prevents bad data reaching production

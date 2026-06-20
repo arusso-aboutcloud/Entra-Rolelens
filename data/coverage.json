@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-19T06:11:32.953264+00:00",
+  "generated_at": "2026-06-20T05:07:37.566056+00:00",
   "builtin_role_count": 144,
   "covered_role_count": 49,
   "coverage_pct": 34.0,
@@ -19,17 +19,17 @@
     {
       "id": "3f04f91a-4ad7-4bd3-bcfa-49882ea1a88a",
       "displayName": "Purview Workload Content Administrator",
-      "isShadowRole": true
+      "isShadowRole": false
     },
     {
       "id": "e07494ad-1654-4dd2-922e-6f81a71bf00f",
       "displayName": "Purview Workload Content Reader",
-      "isShadowRole": true
+      "isShadowRole": false
     },
     {
       "id": "02d5655b-c1cf-4e5f-98da-5fb919085bf6",
       "displayName": "Purview Workload Content Writer",
-      "isShadowRole": true
+      "isShadowRole": false
     }
   ],
   "uncovered": [
@@ -366,17 +366,17 @@
     {
       "id": "3f04f91a-4ad7-4bd3-bcfa-49882ea1a88a",
       "displayName": "Purview Workload Content Administrator",
-      "isShadowRole": true
+      "isShadowRole": false
     },
     {
       "id": "e07494ad-1654-4dd2-922e-6f81a71bf00f",
       "displayName": "Purview Workload Content Reader",
-      "isShadowRole": true
+      "isShadowRole": false
     },
     {
       "id": "02d5655b-c1cf-4e5f-98da-5fb919085bf6",
       "displayName": "Purview Workload Content Writer",
-      "isShadowRole": true
+      "isShadowRole": false
     },
     {
       "id": "2af84b1e-32c8-42b7-82bc-daa82404023b",
