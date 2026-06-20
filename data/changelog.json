@@ -5,7 +5,8 @@
     "role_id": "1fe13547-53f6-408d-ac04-7f8eed167b38",
     "role_name": "AI Reader",
     "field": null,
-    "detail": "New built-in role added: AI Reader"
+    "detail": "New built-in role added: AI Reader",
+    "permission_count": 42
   },
   {
     "date": "2026-04-30",
@@ -13,7 +14,8 @@
     "role_id": "fc8ad4e2-40e4-4724-8317-bcda7503ecbf",
     "role_name": "Customer Delegated Admin Relationship Administrator",
     "field": null,
-    "detail": "New built-in role added: Customer Delegated Admin Relationship Administrator"
+    "detail": "New built-in role added: Customer Delegated Admin Relationship Administrator",
+    "permission_count": 2
   },
   {
     "date": "2026-04-30",
@@ -247,7 +249,8 @@
     "role_id": "3f04f91a-4ad7-4bd3-bcfa-49882ea1a88a",
     "role_name": "Purview Workload Content Administrator",
     "field": null,
-    "detail": "New built-in role added: Purview Workload Content Administrator"
+    "detail": "New built-in role added: Purview Workload Content Administrator",
+    "permission_count": 0
   },
   {
     "date": "2026-06-20",
@@ -255,7 +258,8 @@
     "role_id": "e07494ad-1654-4dd2-922e-6f81a71bf00f",
     "role_name": "Purview Workload Content Reader",
     "field": null,
-    "detail": "New built-in role added: Purview Workload Content Reader"
+    "detail": "New built-in role added: Purview Workload Content Reader",
+    "permission_count": 0
   },
   {
     "date": "2026-06-20",
@@ -263,6 +267,7 @@
     "role_id": "02d5655b-c1cf-4e5f-98da-5fb919085bf6",
     "role_name": "Purview Workload Content Writer",
     "field": null,
-    "detail": "New built-in role added: Purview Workload Content Writer"
+    "detail": "New built-in role added: Purview Workload Content Writer",
+    "permission_count": 0
   }
 ]
