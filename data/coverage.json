@@ -1,10 +1,10 @@
 {
-  "generated_at": "2026-06-20T19:45:00.729494+00:00",
+  "generated_at": "2026-06-21T05:57:09.547209+00:00",
   "builtin_role_count": 144,
   "covered_role_count": 49,
   "coverage_pct": 34.0,
   "uncovered_role_count": 95,
-  "attention_count": 5,
+  "attention_count": 2,
   "attention": [
     {
       "id": "fc8ad4e2-40e4-4724-8317-bcda7503ecbf",
@@ -15,21 +15,6 @@
       "id": "d35481f7-cda1-4fa2-8344-5a21f7f3724d",
       "displayName": "Entra Customer Lockbox Approver",
       "isShadowRole": true
-    },
-    {
-      "id": "3f04f91a-4ad7-4bd3-bcfa-49882ea1a88a",
-      "displayName": "Purview Workload Content Administrator",
-      "isShadowRole": false
-    },
-    {
-      "id": "e07494ad-1654-4dd2-922e-6f81a71bf00f",
-      "displayName": "Purview Workload Content Reader",
-      "isShadowRole": false
-    },
-    {
-      "id": "02d5655b-c1cf-4e5f-98da-5fb919085bf6",
-      "displayName": "Purview Workload Content Writer",
-      "isShadowRole": false
     }
   ],
   "uncovered": [
