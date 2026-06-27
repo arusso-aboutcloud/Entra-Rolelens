@@ -69,8 +69,6 @@ This keeps the one remaining manual step — seeding a task for a role Microsoft
 > Auto-generated from the nightly pipeline · Last updated by GitHub Actions
 
 <!-- WHATS_NEW_START -->
-- 🔄 **Agent ID Administrator** — modified (2026-05-27)
-- 🔄 **Identity Governance Administrator** — modified (2026-05-27)
 - 🔄 **Agent ID Administrator** — modified (2026-06-13)
 - 🔄 **Agent ID Developer** — modified (2026-06-13)
 - 🔄 **Global Administrator** — modified (2026-06-13)
@@ -79,6 +77,8 @@ This keeps the one remaining manual step — seeding a task for a role Microsoft
 - ✅ **Purview Workload Content Administrator** — added (2026-06-20)
 - ✅ **Purview Workload Content Reader** — added (2026-06-20)
 - ✅ **Purview Workload Content Writer** — added (2026-06-20)
+- 🔄 **AI Administrator** — modified (2026-06-26)
+- 🔄 **AI Reader** — modified (2026-06-26)
 <!-- WHATS_NEW_END -->
 
 ---
