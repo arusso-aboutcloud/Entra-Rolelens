@@ -1,16 +1,11 @@
 {
-  "generated_at": "2026-06-29T05:26:08.407508+00:00",
+  "generated_at": "2026-06-30T04:58:54.252326+00:00",
   "builtin_role_count": 144,
   "covered_role_count": 49,
   "coverage_pct": 34.0,
   "uncovered_role_count": 95,
-  "attention_count": 2,
+  "attention_count": 1,
   "attention": [
-    {
-      "id": "fc8ad4e2-40e4-4724-8317-bcda7503ecbf",
-      "displayName": "Customer Delegated Admin Relationship Administrator",
-      "isShadowRole": false
-    },
     {
       "id": "d35481f7-cda1-4fa2-8344-5a21f7f3724d",
       "displayName": "Entra Customer Lockbox Approver",
