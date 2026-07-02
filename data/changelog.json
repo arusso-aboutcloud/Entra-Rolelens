@@ -333,5 +333,74 @@
       "microsoft.directory/agentIdentityBlueprintPrincipals/allProperties/read",
       "microsoft.directory/agentIdentityBlueprints/allProperties/read"
     ]
+  },
+  {
+    "date": "2026-07-02",
+    "change_type": "MODIFIED",
+    "role_id": "db506228-d27e-4b7d-95e5-295956d6615f",
+    "role_name": "Agent ID Administrator",
+    "field": "permissions",
+    "detail": "1 permission added",
+    "added_permissions": [
+      "microsoft.directory/groups.unified/createAsOwner"
+    ]
+  },
+  {
+    "date": "2026-07-02",
+    "change_type": "MODIFIED",
+    "role_id": "5f2222b1-57c3-48ba-8ad5-d4759f1fde6f",
+    "role_name": "Security Operator",
+    "field": "permissions",
+    "detail": "4 permissions added",
+    "added_permissions": [
+      "microsoft.directory/users/disable",
+      "microsoft.directory/users/enable",
+      "microsoft.directory/users/invalidateAllRefreshTokens",
+      "microsoft.directory/users/password/update"
+    ]
+  },
+  {
+    "date": "2026-07-02",
+    "change_type": "MODIFIED",
+    "role_id": "1981f584-96e9-4a6f-95b0-f522373f8fae",
+    "role_name": "Tenant Governance Administrator",
+    "field": "permissions",
+    "detail": "1 permission added",
+    "added_permissions": [
+      "microsoft.office365.webPortal/allEntities/standard/read"
+    ]
+  },
+  {
+    "date": "2026-07-02",
+    "change_type": "MODIFIED",
+    "role_id": "e0a4caa6-fe82-443f-b92f-d87341d17b2e",
+    "role_name": "Tenant Governance Reader",
+    "field": "permissions",
+    "detail": "1 permission added",
+    "added_permissions": [
+      "microsoft.office365.webPortal/allEntities/standard/read"
+    ]
+  },
+  {
+    "date": "2026-07-02",
+    "change_type": "MODIFIED",
+    "role_id": "b8e31d83-1534-480f-9b10-0338ded51b7e",
+    "role_name": "Tenant Governance Relationship Administrator",
+    "field": "permissions",
+    "detail": "1 permission added",
+    "added_permissions": [
+      "microsoft.office365.webPortal/allEntities/standard/read"
+    ]
+  },
+  {
+    "date": "2026-07-02",
+    "change_type": "MODIFIED",
+    "role_id": "124577f8-48ed-456a-839f-13b419002e33",
+    "role_name": "Tenant Governance Relationship Reader",
+    "field": "permissions",
+    "detail": "1 permission added",
+    "added_permissions": [
+      "microsoft.office365.webPortal/allEntities/standard/read"
+    ]
   }
 ]
