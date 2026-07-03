@@ -174,7 +174,7 @@ This tool requires zero manual maintenance for daily operation. Every night at *
 ├── fetch_roles.py     Calls Microsoft Graph API via OIDC token (live source of truth)
 │   ├── Graph API      graph.microsoft.com/v1.0/roleManagement/directory/roleDefinitions
 │   │                  Authenticated via OIDC token
-│   │                  → data/roles_graph_raw.json  (source of truth for IDs + permissions)
+│   │                  → data/roles_graph_raw.json  (source of truth for IDs; permissions reconciled with docs)
 │   └── Docs scrape    Also scrapes MicrosoftDocs/entra-docs for descriptions
 │                      → data/roles.json            (human-readable metadata)
 │
@@ -187,6 +187,7 @@ This tool requires zero manual maintenance for daily operation. Every night at *
 │                      Logs every change with timestamp to D1 role_changes table
 │
 ├── enrich.py          Cross-references roles_graph_raw.json vs roles.json
+│                      Permissions = union of Graph + docs (never under-states a role)
 │                      Roles in Graph API but not in docs → isShadowRole: true
 │                      Builds master.json and resolves role names to IDs
 │
@@ -223,7 +224,7 @@ entra-rolelens/
 │   ├── fetch_roles.py             # Graph API (OIDC) + docs scrape — dual source
 │   ├── scrape_tasks.py            # Scrapes task → role mappings
 │   ├── diff_roles.py              # Detects role changes
-│   ├── enrich.py                  # Shadow role detection + builds master.json
+│   ├── enrich.py                  # Union permissions + shadow detection → master.json
 │   ├── validate.py                # Quality gate
 │   ├── coverage_report.py         # Flags new roles lacking task coverage
 │   └── push_to_cloudflare.py      # Writes to KV + D1
@@ -255,7 +256,7 @@ entra-rolelens/
 | MicrosoftDocs/entra-docs | `github.com/MicrosoftDocs/entra-docs` | Role descriptions · metadata |
 | Microsoft Learn | `learn.microsoft.com/.../delegate-by-task` | Task → minimum role mappings · 211 tasks |
 
-**Why dual sources?** The Graph API is the authoritative source for role IDs and permissions but does not expose task → role mappings. The documentation scrape fills that gap. Together they enable the shadow role detector: roles that Microsoft has deployed to the API but not yet announced in documentation.
+**Why dual sources?** The Graph API is authoritative for role IDs; the documentation scrape supplies task → role mappings and human-readable metadata. The two sources also disagree on a role's **permissions** during Microsoft rollout windows — the docs lead for brand-new roles (e.g. the agent-identity permissions), the Graph API leads for some mature roles. RoleLens reconciles them with a **union per role**, so the catalog never *under-states* what a role grants — keeping role detail, diff, and least-privilege search consistent with what Microsoft has published (and with "What's new"). This dual sourcing also powers the shadow role detector: roles Microsoft has deployed to the API but not yet documented.
 
 ---
 

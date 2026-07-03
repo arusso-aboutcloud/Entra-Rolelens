@@ -11,7 +11,13 @@ Data sources:
 Cross-reference logic:
   - Roles in Graph API AND docs: merge, use docs isPrivileged + description
   - Roles in Graph API but NOT docs: flag isShadowRole: true
-  - Permissions: flattened from Graph API rolePermissions[].allowedResourceActions
+  - Permissions: UNION of the Graph API and docs permission sets per role. The
+    two sources each lead during Microsoft rollout windows — the docs lead for
+    brand-new roles (e.g. the agent-identity permissions), the Graph API leads
+    for some mature roles — so unioning them keeps the catalog from ever
+    *under-stating* what a role grants (the safe direction for a least-privilege
+    tool, and it keeps role detail/diff/search consistent with "What's new").
+    Shadow roles (Graph-only) use the Graph permissions as-is.
 
 Output: data/master.json with shadow_role_count field added.
 """
