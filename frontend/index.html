@@ -1280,9 +1280,11 @@
       max-width: 100%;
     }
     .secops-icon  {
-      font-size: 16px; line-height: 1;
-      filter: drop-shadow(0 0 6px currentColor);
+      display: inline-flex; line-height: 1;
+      color: currentColor;
+      filter: drop-shadow(0 0 7px currentColor);
     }
+    .secops-icon svg { display: block; }
     .secops-label {
       color: currentColor;
       font-weight: 700;
@@ -1501,7 +1503,7 @@
 
       <!-- Sentrux quality strip -->
       <div class="secops-bar" id="secops-bar" data-state="unknown" style="display:none" title="Trivy vulnerability scan — from GitHub code scanning, refreshed daily">
-        <span class="secops-icon">🛡</span>
+        <span class="secops-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 2 4 5v6c0 5 3.4 8.5 8 10 4.6-1.5 8-5 8-10V5l-8-3z"/></svg></span>
         <span class="secops-label">Trivy</span>
         <span class="secops-status" id="secops-status">—</span>
         <div class="secops-track">
