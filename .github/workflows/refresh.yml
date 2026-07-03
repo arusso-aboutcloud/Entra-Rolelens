@@ -20,6 +20,7 @@ jobs:
       contents: write
       issues: write
       id-token: write # MANDATORY: Allows GitHub to request the OIDC token from Entra
+      security-events: read # read Trivy code-scanning alerts for the app's security strip
 
     steps:
       - name: Harden Runner
@@ -73,6 +74,12 @@ jobs:
 
       - name: Role task-coverage report
         run: python pipeline/coverage_report.py
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPO: ${{ github.repository }}
+
+      - name: Security scan summary
+        run: python pipeline/security_summary.py
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPO: ${{ github.repository }}

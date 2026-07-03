@@ -222,19 +222,32 @@ def d1_run_many(account_id: str, database_id: str, token: str,
 # Push: KV
 # ---------------------------------------------------------------------------
 
+def _load_security() -> dict | None:
+    """Trivy security posture written by security_summary.py (optional)."""
+    path = DATA_DIR / "security.json"
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+
+
 def push_kv(account_id: str, namespace_id: str, token: str,
             master: dict) -> None:
     print("Pushing to Cloudflare KV...")
     kv_put(account_id, namespace_id, token,
            "master", json.dumps(master, ensure_ascii=False))
+    status = {
+        "last_updated": TODAY,
+        "role_count": master["role_count"],
+        "task_count": master["task_count"],
+        "shadow_role_count": master.get("shadow_role_count", 0),
+        "pipeline": "healthy",
+    }
+    security = _load_security()
+    if security:
+        status["security"] = security
     kv_put(account_id, namespace_id, token,
-           "pipeline_status", json.dumps({
-               "last_updated": TODAY,
-               "role_count": master["role_count"],
-               "task_count": master["task_count"],
-               "shadow_role_count": master.get("shadow_role_count", 0),
-               "pipeline": "healthy",
-           }))
+           "pipeline_status", json.dumps(status))
 
 
 # ---------------------------------------------------------------------------
