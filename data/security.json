@@ -1,0 +1,10 @@
+{
+  "scanned_at": "2026-07-03T13:36:08.931704+00:00",
+  "tool": "Trivy",
+  "critical": 0,
+  "high": 0,
+  "medium": 0,
+  "low": 0,
+  "total": 0,
+  "status": "clean"
+}
