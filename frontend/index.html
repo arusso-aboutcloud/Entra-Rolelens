@@ -2889,7 +2889,13 @@ Content-Type: application/json
       const cutoff   = new Date(Date.now() - NEW_ROLE_DAYS * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
       const today    = new Date().toISOString().slice(0, 10);
       const cutoff24h = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
-      const recent   = changelog.filter(c => c.date >= cutoff).slice(0, 50);
+      // Newest first: the changelog is stored oldest→newest (append log), so
+      // sort descending by date so the most recent changes sit at the top and
+      // are visible without expanding.
+      const recent   = changelog
+        .filter(c => c.date >= cutoff)
+        .sort((a, b) => (b.date || '').localeCompare(a.date || ''))
+        .slice(0, 50);
       if (!recent.length) return;
 
       const todayItems = recent.filter(c => c.date >= today);

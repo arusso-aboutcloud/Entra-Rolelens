@@ -85,10 +85,17 @@ def build_merged_roles(
         docs_role = docs_by_id.get(role_id)
 
         # Flatten permissions from Graph API structure
-        permissions = flatten_graph_permissions(graph_role)
+        graph_permissions = flatten_graph_permissions(graph_role)
 
         if docs_role:
-            # Known role — merge, prefer docs for isPrivileged and description
+            # Reconcile the two permission sources. The Graph roleDefinition and
+            # the docs permissions-reference can each lead during Microsoft rollout
+            # windows: docs lead for brand-new roles (e.g. AI Administrator's
+            # agentIdentities/* set), Graph leads for some mature roles. Take the
+            # UNION so the catalog never *under*-states what a role grants — the
+            # safe direction for a least-privilege tool, and it keeps the worker's
+            # role detail/diff/search consistent with the docs-based "What's new".
+            permissions = sorted(set(graph_permissions) | set(docs_role.get("permissions", [])))
             merged.append({
                 "id":           role_id,
                 "displayName":  graph_role.get("displayName", docs_role.get("displayName", "")),
@@ -99,7 +106,7 @@ def build_merged_roles(
                 "isShadowRole": False,
             })
         else:
-            # Shadow role — present in API, absent from docs
+            # Shadow role — present in API, absent from docs (Graph is all we have)
             display_name = graph_role.get("displayName", role_id)
             shadow_names.append(display_name)
             merged.append({
@@ -108,7 +115,7 @@ def build_merged_roles(
                 "description":  graph_role.get("description", ""),
                 "isBuiltIn":    graph_role.get("isBuiltIn", True),
                 "isPrivileged": False,
-                "permissions":  permissions,
+                "permissions":  graph_permissions,
                 "isShadowRole": True,
             })
 
