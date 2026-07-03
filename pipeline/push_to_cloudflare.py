@@ -441,7 +441,14 @@ def update_readme_whats_new(changelog_path: Path, readme_path: Path) -> None:
     # "What's new" panel agree on how long an entry is considered new.
     NEW_ROLE_DAYS = 30
     cutoff = (datetime.utcnow() - timedelta(days=NEW_ROLE_DAYS)).date().isoformat()
-    recent = [c for c in changelog if c.get("date", "") >= cutoff]
+    # Newest first: the changelog is stored oldest→newest, so sort descending by
+    # date before taking the top slice — the most recent changes lead the list
+    # (matches the app's "What's new" panel ordering).
+    recent = sorted(
+        (c for c in changelog if c.get("date", "") >= cutoff),
+        key=lambda c: c.get("date", ""),
+        reverse=True,
+    )
 
     if not recent:
         return
