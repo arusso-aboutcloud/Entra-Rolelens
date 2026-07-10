@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-09T04:46:07.966991+00:00",
+  "generated_at": "2026-07-10T04:45:36.912199+00:00",
   "role_count": 144,
   "task_count": 237,
   "shadow_role_count": 9,
@@ -1929,7 +1929,7 @@
     {
       "id": "5f2222b1-57c3-48ba-8ad5-d4759f1fde6f",
       "displayName": "Security Operator",
-      "description": "Creates and manages security events.",
+      "description": "Creates and manages security events and performs identity containment actions during security incidents.",
       "isBuiltIn": true,
       "isPrivileged": true,
       "permissions": [

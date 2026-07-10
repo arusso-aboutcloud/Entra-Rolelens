@@ -402,5 +402,15 @@
     "added_permissions": [
       "microsoft.office365.webPortal/allEntities/standard/read"
     ]
+  },
+  {
+    "date": "2026-07-10",
+    "change_type": "MODIFIED",
+    "role_id": "5f2222b1-57c3-48ba-8ad5-d4759f1fde6f",
+    "role_name": "Security Operator",
+    "field": "description",
+    "detail": "description changed: \"Creates and manages security events.\" -> \"Creates and manages security events and performs identity containment actions during security incidents.\"",
+    "old": "Creates and manages security events.",
+    "new": "Creates and manages security events and performs identity containment actions during security incidents."
   }
 ]
