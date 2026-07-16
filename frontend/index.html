@@ -53,7 +53,7 @@
       flex-direction: column;
     }
 
-    /* Dot-grid background */
+    /* Dot-grid background — fallback for no-WebGL / prefers-reduced-motion */
     body::before {
       content: '';
       position: fixed;
@@ -63,6 +63,17 @@
       opacity: 0.45;
       pointer-events: none;
       z-index: 0;
+    }
+    /* Node-graph canvas takes over from the dot-grid once it boots successfully */
+    body.has-bg-canvas::before { display: none; }
+    #bg-graph {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+      display: block;
     }
 
     /* ── Layout ─────────────────────────────────────────────────────── */
@@ -1449,6 +1460,8 @@
 </head>
 <body>
 
+<canvas id="bg-graph" aria-hidden="true"></canvas>
+
 <!-- ── Header ──────────────────────────────────────────────────────── -->
 <header>
   <div class="container">
@@ -1736,6 +1749,264 @@
   let allRoles = [];         // [{id, display_name, is_privileged}]
   let selectedRoleA = null;  // display_name string
   let selectedRoleB = null;
+
+  // ── Background node-graph (decorative WebGL) ───────────────────────────
+  // Drifting dots (roles/permissions/tasks) linked when close, with the
+  // occasional pulse traveling an edge — a nod to the RBAC graph this app
+  // is exploring. Fails silently (leaves the CSS dot-grid in place) if
+  // WebGL is unavailable or the visitor prefers reduced motion.
+  function initBgGraph() {
+    try {
+      if (!window.matchMedia('(prefers-reduced-motion: no-preference)').matches) return;
+      const canvas = document.getElementById('bg-graph');
+      if (!canvas) return;
+      const glOpts = { alpha: true, antialias: true, premultipliedAlpha: false };
+      const gl = canvas.getContext('webgl', glOpts) || canvas.getContext('experimental-webgl', glOpts);
+      if (!gl) return;
+
+      function compileShader(type, src) {
+        const s = gl.createShader(type);
+        gl.shaderSource(s, src);
+        gl.compileShader(s);
+        if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) {
+          gl.deleteShader(s);
+          return null;
+        }
+        return s;
+      }
+      function makeProgram(vsSrc, fsSrc) {
+        const vs = compileShader(gl.VERTEX_SHADER, vsSrc);
+        const fs = compileShader(gl.FRAGMENT_SHADER, fsSrc);
+        if (!vs || !fs) return null;
+        const p = gl.createProgram();
+        gl.attachShader(p, vs);
+        gl.attachShader(p, fs);
+        gl.linkProgram(p);
+        if (!gl.getProgramParameter(p, gl.LINK_STATUS)) return null;
+        return p;
+      }
+
+      const VS = `
+        attribute vec2 aPosition;
+        attribute float aAlpha;
+        attribute float aSize;
+        uniform vec2 uResolution;
+        varying float vAlpha;
+        void main() {
+          vec2 clip = (aPosition / uResolution) * 2.0 - 1.0;
+          clip.y = -clip.y;
+          gl_Position = vec4(clip, 0.0, 1.0);
+          gl_PointSize = aSize;
+          vAlpha = aAlpha;
+        }
+      `;
+      const FS_LINE = `
+        precision mediump float;
+        varying float vAlpha;
+        uniform vec3 uColor;
+        void main() { gl_FragColor = vec4(uColor, vAlpha); }
+      `;
+      const FS_POINT = `
+        precision mediump float;
+        varying float vAlpha;
+        uniform vec3 uColor;
+        void main() {
+          float d = length(gl_PointCoord - vec2(0.5));
+          float a = smoothstep(0.5, 0.0, d) * vAlpha;
+          gl_FragColor = vec4(uColor, a);
+        }
+      `;
+
+      const lineProg = makeProgram(VS, FS_LINE);
+      const pointProg = makeProgram(VS, FS_POINT);
+      if (!lineProg || !pointProg) return;
+
+      function locs(p) {
+        return {
+          program: p,
+          aPosition: gl.getAttribLocation(p, 'aPosition'),
+          aAlpha: gl.getAttribLocation(p, 'aAlpha'),
+          aSize: gl.getAttribLocation(p, 'aSize'),
+          uResolution: gl.getUniformLocation(p, 'uResolution'),
+          uColor: gl.getUniformLocation(p, 'uColor'),
+        };
+      }
+      const L = locs(lineProg);
+      const P = locs(pointProg);
+
+      const posBuf = gl.createBuffer();
+      const alphaBuf = gl.createBuffer();
+      const sizeBuf = gl.createBuffer();
+
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const MAX_DIST = 170;
+      const ACCENT = [47 / 255, 158 / 255, 245 / 255];
+      const PULSE_COLOR = [0.75, 0.9, 1.0];
+
+      let width = 0, height = 0, nodes = [], pulses = [], lastPulseAt = 0, rafId = null;
+
+      function initNodes() {
+        const count = Math.max(24, Math.min(70, Math.floor((width * height) / 16000)));
+        nodes = new Array(count).fill(0).map(() => ({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          vx: (Math.random() - 0.5) * 14,
+          vy: (Math.random() - 0.5) * 14,
+          size: 2 + Math.random() * 2.5,
+        }));
+      }
+
+      function resize() {
+        width = window.innerWidth;
+        height = window.innerHeight;
+        canvas.width = Math.floor(width * dpr);
+        canvas.height = Math.floor(height * dpr);
+        gl.viewport(0, 0, canvas.width, canvas.height);
+        initNodes();
+      }
+
+      function spawnPulse(edges, now) {
+        if (!edges.length) return;
+        const e = edges[Math.floor(Math.random() * edges.length)];
+        pulses.push({ a: e.a, b: e.b, start: now, dur: 900 + Math.random() * 700 });
+      }
+
+      let lastT = performance.now();
+
+      function frame(now) {
+        const dt = Math.min(now - lastT, 50) / 1000;
+        lastT = now;
+
+        for (const n of nodes) {
+          n.x += n.vx * dt;
+          n.y += n.vy * dt;
+          if (n.x < -20) n.x = width + 20;
+          if (n.x > width + 20) n.x = -20;
+          if (n.y < -20) n.y = height + 20;
+          if (n.y > height + 20) n.y = -20;
+        }
+
+        const edges = [];
+        for (let i = 0; i < nodes.length; i++) {
+          for (let j = i + 1; j < nodes.length; j++) {
+            const dx = nodes[i].x - nodes[j].x, dy = nodes[i].y - nodes[j].y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < MAX_DIST) edges.push({ a: i, b: j, dist });
+          }
+        }
+
+        if (now - lastPulseAt > 1400 + Math.random() * 1400) {
+          spawnPulse(edges, now);
+          lastPulseAt = now;
+        }
+        pulses = pulses.filter(p => now - p.start < p.dur);
+
+        gl.clear(gl.COLOR_BUFFER_BIT);
+        gl.enable(gl.BLEND);
+        gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
+
+        // edges
+        const linePos = new Float32Array(edges.length * 4);
+        const lineAlpha = new Float32Array(edges.length * 2);
+        edges.forEach((e, i) => {
+          const na = nodes[e.a], nb = nodes[e.b];
+          const a = (1 - e.dist / MAX_DIST) * 0.22;
+          linePos[i * 4] = na.x * dpr; linePos[i * 4 + 1] = na.y * dpr;
+          linePos[i * 4 + 2] = nb.x * dpr; linePos[i * 4 + 3] = nb.y * dpr;
+          lineAlpha[i * 2] = a; lineAlpha[i * 2 + 1] = a;
+        });
+        gl.useProgram(L.program);
+        gl.uniform2f(L.uResolution, canvas.width, canvas.height);
+        gl.uniform3fv(L.uColor, ACCENT);
+        gl.bindBuffer(gl.ARRAY_BUFFER, posBuf);
+        gl.bufferData(gl.ARRAY_BUFFER, linePos, gl.DYNAMIC_DRAW);
+        gl.enableVertexAttribArray(L.aPosition);
+        gl.vertexAttribPointer(L.aPosition, 2, gl.FLOAT, false, 0, 0);
+        gl.bindBuffer(gl.ARRAY_BUFFER, alphaBuf);
+        gl.bufferData(gl.ARRAY_BUFFER, lineAlpha, gl.DYNAMIC_DRAW);
+        gl.enableVertexAttribArray(L.aAlpha);
+        gl.vertexAttribPointer(L.aAlpha, 1, gl.FLOAT, false, 0, 0);
+        if (L.aSize >= 0) gl.disableVertexAttribArray(L.aSize);
+        if (edges.length) gl.drawArrays(gl.LINES, 0, edges.length * 2);
+
+        // nodes
+        const nodePos = new Float32Array(nodes.length * 2);
+        const nodeAlpha = new Float32Array(nodes.length);
+        const nodeSize = new Float32Array(nodes.length);
+        nodes.forEach((n, i) => {
+          nodePos[i * 2] = n.x * dpr; nodePos[i * 2 + 1] = n.y * dpr;
+          nodeAlpha[i] = 0.55;
+          nodeSize[i] = n.size * dpr;
+        });
+        gl.useProgram(P.program);
+        gl.uniform2f(P.uResolution, canvas.width, canvas.height);
+        gl.uniform3fv(P.uColor, ACCENT);
+        gl.bindBuffer(gl.ARRAY_BUFFER, posBuf);
+        gl.bufferData(gl.ARRAY_BUFFER, nodePos, gl.DYNAMIC_DRAW);
+        gl.enableVertexAttribArray(P.aPosition);
+        gl.vertexAttribPointer(P.aPosition, 2, gl.FLOAT, false, 0, 0);
+        gl.bindBuffer(gl.ARRAY_BUFFER, alphaBuf);
+        gl.bufferData(gl.ARRAY_BUFFER, nodeAlpha, gl.DYNAMIC_DRAW);
+        gl.enableVertexAttribArray(P.aAlpha);
+        gl.vertexAttribPointer(P.aAlpha, 1, gl.FLOAT, false, 0, 0);
+        gl.bindBuffer(gl.ARRAY_BUFFER, sizeBuf);
+        gl.bufferData(gl.ARRAY_BUFFER, nodeSize, gl.DYNAMIC_DRAW);
+        gl.enableVertexAttribArray(P.aSize);
+        gl.vertexAttribPointer(P.aSize, 1, gl.FLOAT, false, 0, 0);
+        gl.drawArrays(gl.POINTS, 0, nodes.length);
+
+        // pulses (traveling highlights along an edge — permission being granted)
+        if (pulses.length) {
+          const pPos = new Float32Array(pulses.length * 2);
+          const pAlpha = new Float32Array(pulses.length);
+          const pSize = new Float32Array(pulses.length);
+          pulses.forEach((p, i) => {
+            const t = (now - p.start) / p.dur;
+            const na = nodes[p.a], nb = nodes[p.b];
+            pPos[i * 2] = (na.x + (nb.x - na.x) * t) * dpr;
+            pPos[i * 2 + 1] = (na.y + (nb.y - na.y) * t) * dpr;
+            pAlpha[i] = Math.sin(Math.min(t, 1) * Math.PI) * 0.9;
+            pSize[i] = 5 * dpr;
+          });
+          gl.uniform3fv(P.uColor, PULSE_COLOR);
+          gl.bindBuffer(gl.ARRAY_BUFFER, posBuf);
+          gl.bufferData(gl.ARRAY_BUFFER, pPos, gl.DYNAMIC_DRAW);
+          gl.vertexAttribPointer(P.aPosition, 2, gl.FLOAT, false, 0, 0);
+          gl.bindBuffer(gl.ARRAY_BUFFER, alphaBuf);
+          gl.bufferData(gl.ARRAY_BUFFER, pAlpha, gl.DYNAMIC_DRAW);
+          gl.vertexAttribPointer(P.aAlpha, 1, gl.FLOAT, false, 0, 0);
+          gl.bindBuffer(gl.ARRAY_BUFFER, sizeBuf);
+          gl.bufferData(gl.ARRAY_BUFFER, pSize, gl.DYNAMIC_DRAW);
+          gl.vertexAttribPointer(P.aSize, 1, gl.FLOAT, false, 0, 0);
+          gl.drawArrays(gl.POINTS, 0, pulses.length);
+        }
+
+        rafId = requestAnimationFrame(frame);
+      }
+
+      let resizeTimer = null;
+      window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(resize, 150);
+      });
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+          if (rafId) cancelAnimationFrame(rafId);
+          rafId = null;
+        } else if (!rafId) {
+          lastT = performance.now();
+          rafId = requestAnimationFrame(frame);
+        }
+      });
+
+      gl.clearColor(0, 0, 0, 0);
+      resize();
+      document.body.classList.add('has-bg-canvas');
+      rafId = requestAnimationFrame(frame);
+    } catch (err) {
+      console.warn('bg-graph disabled:', err);
+    }
+  }
 
   // ── Mode toggle ──────────────────────────────────────────────────────
   function switchMode(mode) {
@@ -3026,6 +3297,7 @@ Content-Type: application/json
   }
 
   // ── Boot ─────────────────────────────────────────────────────────────
+  initBgGraph();
   (async () => {
     await Promise.all([loadStatus(), loadRoles(), loadGitHubStats(), loadWhatsNew()]);
     setInterval(loadStatus, 60000);
