@@ -1,8 +1,8 @@
 {
-  "generated_at": "2026-07-15T03:54:43.609157+00:00",
-  "role_count": 144,
+  "generated_at": "2026-07-16T03:57:23.393546+00:00",
+  "role_count": 145,
   "task_count": 237,
-  "shadow_role_count": 9,
+  "shadow_role_count": 10,
   "roles": [
     {
       "id": "62e90394-69f5-4237-9190-012177145e10",
@@ -197,6 +197,11 @@
         "microsoft.directory/servicePrincipals/synchronization/standard/read",
         "microsoft.directory/signInReports/allProperties/read",
         "microsoft.directory/subscribedSkus/allProperties/allTasks",
+        "microsoft.directory/tenantGovernance/policyTemplates/allProperties/update",
+        "microsoft.directory/tenantGovernance/policyTemplates/create",
+        "microsoft.directory/tenantGovernance/relationships/create",
+        "microsoft.directory/tenantGovernance/requests/allProperties/update",
+        "microsoft.directory/tenantGovernance/requests/create",
         "microsoft.directory/tenantManagement/tenants/create",
         "microsoft.directory/users/allProperties/allTasks",
         "microsoft.directory/users/authenticationMethods/basic/update",
@@ -3678,6 +3683,20 @@
       "isPrivileged": false,
       "permissions": [
         "microsoft.directory/lockbox/requests/update"
+      ],
+      "isShadowRole": true
+    },
+    {
+      "id": "58f930cc-fcf4-4152-852c-1d7dbf502139",
+      "displayName": "Entra SOC Identity Responder",
+      "description": "Perform identity containment actions for SOC incident response, including disabling users, revoking sessions, and resetting passwords.",
+      "isBuiltIn": true,
+      "isPrivileged": false,
+      "permissions": [
+        "microsoft.directory/users/disable",
+        "microsoft.directory/users/enable",
+        "microsoft.directory/users/invalidateAllRefreshTokens",
+        "microsoft.directory/users/password/update"
       ],
       "isShadowRole": true
     }
