@@ -53,7 +53,7 @@
       flex-direction: column;
     }
 
-    /* Dot-grid background */
+    /* Dot-grid background — fallback for no-WebGL / prefers-reduced-motion */
     body::before {
       content: '';
       position: fixed;
@@ -63,6 +63,17 @@
       opacity: 0.45;
       pointer-events: none;
       z-index: 0;
+    }
+    /* Node-graph canvas takes over from the dot-grid once it boots successfully */
+    body.has-bg-canvas::before { display: none; }
+    #bg-graph {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+      display: block;
     }
 
     /* ── Layout ─────────────────────────────────────────────────────── */
@@ -1449,6 +1460,8 @@
 </head>
 <body>
 
+<canvas id="bg-graph" aria-hidden="true"></canvas>
+
 <!-- ── Header ──────────────────────────────────────────────────────── -->
 <header>
   <div class="container">
@@ -1736,6 +1749,194 @@
   let allRoles = [];         // [{id, display_name, is_privileged}]
   let selectedRoleA = null;  // display_name string
   let selectedRoleB = null;
+
+  // ── Background magnifying-glass sweep (decorative WebGL) ───────────────
+  // A single glowing magnifying-glass silhouette drifts slowly across the
+  // page on a lazy Lissajous path; a faint procedural dot texture sits
+  // underneath and "magnifies" (denser/brighter) inside the lens — a nod to
+  // this app's core action (search icon in the header). One full-screen
+  // shader, one draw call per frame. Fails silently (leaves the CSS
+  // dot-grid in place) if WebGL is unavailable or the visitor prefers
+  // reduced motion.
+  function initBgGraph() {
+    try {
+      if (!window.matchMedia('(prefers-reduced-motion: no-preference)').matches) return;
+      const canvas = document.getElementById('bg-graph');
+      if (!canvas) return;
+      const glOpts = { alpha: true, antialias: true, premultipliedAlpha: true };
+      const gl = canvas.getContext('webgl', glOpts) || canvas.getContext('experimental-webgl', glOpts);
+      if (!gl) return;
+
+      function compileShader(type, src) {
+        const s = gl.createShader(type);
+        gl.shaderSource(s, src);
+        gl.compileShader(s);
+        if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) {
+          console.warn('bg-graph shader error:', gl.getShaderInfoLog(s));
+          gl.deleteShader(s);
+          return null;
+        }
+        return s;
+      }
+      function makeProgram(vsSrc, fsSrc) {
+        const vs = compileShader(gl.VERTEX_SHADER, vsSrc);
+        const fs = compileShader(gl.FRAGMENT_SHADER, fsSrc);
+        if (!vs || !fs) return null;
+        const p = gl.createProgram();
+        gl.attachShader(p, vs);
+        gl.attachShader(p, fs);
+        gl.linkProgram(p);
+        if (!gl.getProgramParameter(p, gl.LINK_STATUS)) {
+          console.warn('bg-graph link error:', gl.getProgramInfoLog(p));
+          return null;
+        }
+        return p;
+      }
+
+      const VS = `
+        attribute vec2 aPos;
+        varying vec2 vUv;
+        void main() {
+          vUv = aPos * 0.5 + 0.5;
+          gl_Position = vec4(aPos, 0.0, 1.0);
+        }
+      `;
+      const FS = `
+        precision mediump float;
+        varying vec2 vUv;
+        uniform vec2 uResolution;
+        uniform vec2 uLensCenter;
+        uniform float uLensRadius;
+        uniform vec2 uHandleP1;
+        uniform vec2 uHandleP2;
+        uniform float uBreath;
+        uniform vec3 uColor;
+
+        float sdSegment(vec2 p, vec2 a, vec2 b) {
+          vec2 pa = p - a, ba = b - a;
+          float h = clamp(dot(pa, ba) / dot(ba, ba), 0.0, 1.0);
+          return length(pa - ba * h);
+        }
+
+        float dotGrid(vec2 p, float spacing, float dotRadius) {
+          vec2 cell = mod(p, spacing) - spacing * 0.5;
+          float d = length(cell);
+          return 1.0 - smoothstep(dotRadius - 1.0, dotRadius + 1.0, d);
+        }
+
+        void main() {
+          vec2 fragPx = vec2(vUv.x, 1.0 - vUv.y) * uResolution;
+          float distToLens = length(fragPx - uLensCenter);
+
+          float zoom = distToLens < uLensRadius ? 1.6 : 1.0;
+          vec2 sampleP = uLensCenter + (fragPx - uLensCenter) / zoom;
+          float grid = dotGrid(sampleP, 30.0, 1.6);
+
+          float insideLens = 1.0 - smoothstep(uLensRadius - 12.0, uLensRadius, distToLens);
+          float gridAlpha = grid * 0.12 + grid * insideLens * 0.32;
+
+          float ringDist = abs(distToLens - uLensRadius);
+          float ring = smoothstep(2.5, 0.0, ringDist) * (0.75 + uBreath * 0.25);
+          float ringGlow = smoothstep(20.0, 0.0, ringDist) * 0.16;
+
+          float hd = sdSegment(fragPx, uHandleP1, uHandleP2);
+          float handle = smoothstep(3.0, 0.0, hd);
+          float handleGlow = smoothstep(14.0, 0.0, hd) * 0.14;
+
+          float lensFill = (1.0 - smoothstep(uLensRadius - 1.5, uLensRadius, distToLens)) * 0.04;
+
+          float alpha = clamp(gridAlpha + ring + ringGlow + handle + handleGlow + lensFill, 0.0, 1.0);
+          gl_FragColor = vec4(uColor * alpha, alpha);
+        }
+      `;
+
+      const prog = makeProgram(VS, FS);
+      if (!prog) return;
+
+      const aPos = gl.getAttribLocation(prog, 'aPos');
+      const uResolution = gl.getUniformLocation(prog, 'uResolution');
+      const uLensCenter = gl.getUniformLocation(prog, 'uLensCenter');
+      const uLensRadius = gl.getUniformLocation(prog, 'uLensRadius');
+      const uHandleP1 = gl.getUniformLocation(prog, 'uHandleP1');
+      const uHandleP2 = gl.getUniformLocation(prog, 'uHandleP2');
+      const uBreath = gl.getUniformLocation(prog, 'uBreath');
+      const uColor = gl.getUniformLocation(prog, 'uColor');
+
+      const quadBuf = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, quadBuf);
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const ACCENT = [47 / 255, 158 / 255, 245 / 255];
+      const HANDLE_ANGLE = Math.PI / 4; // matches the search-icon handle orientation
+
+      let width = 0, height = 0, lensRadius = 100, rafId = null;
+
+      function resize() {
+        width = window.innerWidth;
+        height = window.innerHeight;
+        canvas.width = Math.floor(width * dpr);
+        canvas.height = Math.floor(height * dpr);
+        gl.viewport(0, 0, canvas.width, canvas.height);
+        lensRadius = Math.max(70, Math.min(140, width * 0.09)) * dpr;
+      }
+
+      function frame(now) {
+        const t = now / 1000;
+        const marginX = lensRadius + lensRadius * 0.9;
+        const marginY = marginX;
+        const cx = canvas.width / 2 + Math.sin(t * 0.07) * Math.max(0, canvas.width / 2 - marginX);
+        const cy = canvas.height / 2 + Math.sin(t * 0.05 + 1.3) * Math.max(0, canvas.height / 2 - marginY);
+
+        const hx1 = cx + Math.cos(HANDLE_ANGLE) * lensRadius;
+        const hy1 = cy + Math.sin(HANDLE_ANGLE) * lensRadius;
+        const handleLen = lensRadius * 0.65;
+        const hx2 = hx1 + Math.cos(HANDLE_ANGLE) * handleLen;
+        const hy2 = hy1 + Math.sin(HANDLE_ANGLE) * handleLen;
+
+        gl.clear(gl.COLOR_BUFFER_BIT);
+        gl.disable(gl.BLEND);
+
+        gl.useProgram(prog);
+        gl.bindBuffer(gl.ARRAY_BUFFER, quadBuf);
+        gl.enableVertexAttribArray(aPos);
+        gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
+
+        gl.uniform2f(uResolution, canvas.width, canvas.height);
+        gl.uniform2f(uLensCenter, cx, cy);
+        gl.uniform1f(uLensRadius, lensRadius);
+        gl.uniform2f(uHandleP1, hx1, hy1);
+        gl.uniform2f(uHandleP2, hx2, hy2);
+        gl.uniform1f(uBreath, (Math.sin(t * 1.6) + 1.0) / 2.0);
+        gl.uniform3fv(uColor, ACCENT);
+
+        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+
+        rafId = requestAnimationFrame(frame);
+      }
+
+      let resizeTimer = null;
+      window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(resize, 150);
+      });
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+          if (rafId) cancelAnimationFrame(rafId);
+          rafId = null;
+        } else if (!rafId) {
+          rafId = requestAnimationFrame(frame);
+        }
+      });
+
+      gl.clearColor(0, 0, 0, 0);
+      resize();
+      document.body.classList.add('has-bg-canvas');
+      rafId = requestAnimationFrame(frame);
+    } catch (err) {
+      console.warn('bg-graph disabled:', err);
+    }
+  }
 
   // ── Mode toggle ──────────────────────────────────────────────────────
   function switchMode(mode) {
@@ -3026,6 +3227,7 @@ Content-Type: application/json
   }
 
   // ── Boot ─────────────────────────────────────────────────────────────
+  initBgGraph();
   (async () => {
     await Promise.all([loadStatus(), loadRoles(), loadGitHubStats(), loadWhatsNew()]);
     setInterval(loadStatus, 60000);
