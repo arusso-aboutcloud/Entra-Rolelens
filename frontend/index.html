@@ -1839,7 +1839,7 @@
       const sizeBuf = gl.createBuffer();
 
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      const MAX_DIST = 170;
+      const MAX_DIST = 230;
       const ACCENT = [47 / 255, 158 / 255, 245 / 255];
       const PULSE_COLOR = [0.75, 0.9, 1.0];
 
@@ -1852,7 +1852,7 @@
           y: Math.random() * height,
           vx: (Math.random() - 0.5) * 14,
           vy: (Math.random() - 0.5) * 14,
-          size: 2 + Math.random() * 2.5,
+          size: 3.5 + Math.random() * 3.5,
         }));
       }
 
@@ -1910,7 +1910,7 @@
         const lineAlpha = new Float32Array(edges.length * 2);
         edges.forEach((e, i) => {
           const na = nodes[e.a], nb = nodes[e.b];
-          const a = (1 - e.dist / MAX_DIST) * 0.22;
+          const a = (1 - e.dist / MAX_DIST) * 0.5;
           linePos[i * 4] = na.x * dpr; linePos[i * 4 + 1] = na.y * dpr;
           linePos[i * 4 + 2] = nb.x * dpr; linePos[i * 4 + 3] = nb.y * dpr;
           lineAlpha[i * 2] = a; lineAlpha[i * 2 + 1] = a;
@@ -1933,10 +1933,14 @@
         const nodePos = new Float32Array(nodes.length * 2);
         const nodeAlpha = new Float32Array(nodes.length);
         const nodeSize = new Float32Array(nodes.length);
+        const haloAlpha = new Float32Array(nodes.length);
+        const haloSize = new Float32Array(nodes.length);
         nodes.forEach((n, i) => {
           nodePos[i * 2] = n.x * dpr; nodePos[i * 2 + 1] = n.y * dpr;
-          nodeAlpha[i] = 0.55;
+          nodeAlpha[i] = 0.95;
           nodeSize[i] = n.size * dpr;
+          haloAlpha[i] = 0.28;
+          haloSize[i] = n.size * dpr * 4.5;
         });
         gl.useProgram(P.program);
         gl.uniform2f(P.uResolution, canvas.width, canvas.height);
@@ -1945,13 +1949,24 @@
         gl.bufferData(gl.ARRAY_BUFFER, nodePos, gl.DYNAMIC_DRAW);
         gl.enableVertexAttribArray(P.aPosition);
         gl.vertexAttribPointer(P.aPosition, 2, gl.FLOAT, false, 0, 0);
+
+        // soft halo pass (larger, dimmer) underneath the core dot for glow
         gl.bindBuffer(gl.ARRAY_BUFFER, alphaBuf);
-        gl.bufferData(gl.ARRAY_BUFFER, nodeAlpha, gl.DYNAMIC_DRAW);
+        gl.bufferData(gl.ARRAY_BUFFER, haloAlpha, gl.DYNAMIC_DRAW);
         gl.enableVertexAttribArray(P.aAlpha);
         gl.vertexAttribPointer(P.aAlpha, 1, gl.FLOAT, false, 0, 0);
         gl.bindBuffer(gl.ARRAY_BUFFER, sizeBuf);
-        gl.bufferData(gl.ARRAY_BUFFER, nodeSize, gl.DYNAMIC_DRAW);
+        gl.bufferData(gl.ARRAY_BUFFER, haloSize, gl.DYNAMIC_DRAW);
         gl.enableVertexAttribArray(P.aSize);
+        gl.vertexAttribPointer(P.aSize, 1, gl.FLOAT, false, 0, 0);
+        gl.drawArrays(gl.POINTS, 0, nodes.length);
+
+        // core dot pass
+        gl.bindBuffer(gl.ARRAY_BUFFER, alphaBuf);
+        gl.bufferData(gl.ARRAY_BUFFER, nodeAlpha, gl.DYNAMIC_DRAW);
+        gl.vertexAttribPointer(P.aAlpha, 1, gl.FLOAT, false, 0, 0);
+        gl.bindBuffer(gl.ARRAY_BUFFER, sizeBuf);
+        gl.bufferData(gl.ARRAY_BUFFER, nodeSize, gl.DYNAMIC_DRAW);
         gl.vertexAttribPointer(P.aSize, 1, gl.FLOAT, false, 0, 0);
         gl.drawArrays(gl.POINTS, 0, nodes.length);
 
@@ -1966,7 +1981,7 @@
             pPos[i * 2] = (na.x + (nb.x - na.x) * t) * dpr;
             pPos[i * 2 + 1] = (na.y + (nb.y - na.y) * t) * dpr;
             pAlpha[i] = Math.sin(Math.min(t, 1) * Math.PI) * 0.9;
-            pSize[i] = 5 * dpr;
+            pSize[i] = 8 * dpr;
           });
           gl.uniform3fv(P.uColor, PULSE_COLOR);
           gl.bindBuffer(gl.ARRAY_BUFFER, posBuf);
