@@ -1837,7 +1837,7 @@
           float ink = codeInk(sampleP);
 
           float insideLens = 1.0 - smoothstep(uLensRadius - 12.0, uLensRadius, distToLens);
-          float inkAlpha = ink * 0.09 + ink * insideLens * 0.65;
+          float inkAlpha = ink * 0.05 + ink * insideLens * 0.7;
 
           float ringDist = abs(distToLens - uLensRadius);
           float ring = smoothstep(2.5, 0.0, ringDist) * (0.75 + uBreath * 0.25);
@@ -1899,14 +1899,17 @@
         ctx.font = '13px "IBM Plex Mono", monospace';
         ctx.fillStyle = 'rgba(255,255,255,0.9)';
         ctx.textBaseline = 'top';
-        // Wide gaps between lines — this is a faint ambient texture, not a
-        // document; it should read as scattered fragments, not a text wall.
-        const lineHeight = 108;
-        let y = 4, i = 0;
-        while (y < CODE_TEX_SIZE) {
-          ctx.fillText(lines[i % lines.length], 6, y);
-          y += lineHeight;
-          i++;
+        // Two columns, moderate gaps — denser than a sparse scatter but each
+        // line still has clear air around it so it reads as texture, not a
+        // solid block, at the low ambient opacity used outside the lens.
+        const lineHeight = 46;
+        const cols = [6, 540];
+        let i = 0;
+        for (let y = 4; y < CODE_TEX_SIZE; y += lineHeight) {
+          for (const x of cols) {
+            ctx.fillText(lines[i % lines.length], x, y);
+            i++;
+          }
         }
         return c;
       }
