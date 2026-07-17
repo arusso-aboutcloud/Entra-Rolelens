@@ -1811,6 +1811,8 @@
         uniform vec2 uHandleP2;
         uniform float uBreath;
         uniform vec3 uColor;
+        uniform sampler2D uCodeTex;
+        uniform float uTexSize;
 
         float sdSegment(vec2 p, vec2 a, vec2 b) {
           vec2 pa = p - a, ba = b - a;
@@ -1818,22 +1820,24 @@
           return length(pa - ba * h);
         }
 
-        float dotGrid(vec2 p, float spacing, float dotRadius) {
-          vec2 cell = mod(p, spacing) - spacing * 0.5;
-          float d = length(cell);
-          return 1.0 - smoothstep(dotRadius - 1.0, dotRadius + 1.0, d);
+        // Tiled sample of the pre-rendered Graph API code texture; its alpha
+        // channel is the "ink" coverage (antialiased text), same role the
+        // procedural dot pattern used to play.
+        float codeInk(vec2 p) {
+          vec2 uv = mod(p, uTexSize) / uTexSize;
+          return texture2D(uCodeTex, uv).a;
         }
 
         void main() {
           vec2 fragPx = vec2(vUv.x, 1.0 - vUv.y) * uResolution;
           float distToLens = length(fragPx - uLensCenter);
 
-          float zoom = distToLens < uLensRadius ? 1.6 : 1.0;
+          float zoom = distToLens < uLensRadius ? 1.85 : 1.0;
           vec2 sampleP = uLensCenter + (fragPx - uLensCenter) / zoom;
-          float grid = dotGrid(sampleP, 30.0, 1.6);
+          float ink = codeInk(sampleP);
 
           float insideLens = 1.0 - smoothstep(uLensRadius - 12.0, uLensRadius, distToLens);
-          float gridAlpha = grid * 0.12 + grid * insideLens * 0.32;
+          float inkAlpha = ink * 0.05 + ink * insideLens * 0.7;
 
           float ringDist = abs(distToLens - uLensRadius);
           float ring = smoothstep(2.5, 0.0, ringDist) * (0.75 + uBreath * 0.25);
@@ -1845,7 +1849,7 @@
 
           float lensFill = (1.0 - smoothstep(uLensRadius - 1.5, uLensRadius, distToLens)) * 0.04;
 
-          float alpha = clamp(gridAlpha + ring + ringGlow + handle + handleGlow + lensFill, 0.0, 1.0);
+          float alpha = clamp(inkAlpha + ring + ringGlow + handle + handleGlow + lensFill, 0.0, 1.0);
           gl_FragColor = vec4(uColor * alpha, alpha);
         }
       `;
@@ -1861,10 +1865,62 @@
       const uHandleP2 = gl.getUniformLocation(prog, 'uHandleP2');
       const uBreath = gl.getUniformLocation(prog, 'uBreath');
       const uColor = gl.getUniformLocation(prog, 'uColor');
+      const uCodeTex = gl.getUniformLocation(prog, 'uCodeTex');
+      const uTexSize = gl.getUniformLocation(prog, 'uTexSize');
 
       const quadBuf = gl.createBuffer();
       gl.bindBuffer(gl.ARRAY_BUFFER, quadBuf);
       gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+
+      // Pre-render a tile of Graph API request text to a 2D canvas, then
+      // upload it as a texture — the shader samples its alpha (text ink)
+      // the way it used to sample a procedural dot pattern.
+      const CODE_TEX_SIZE = 1024;
+      function buildCodeTexture() {
+        const lines = [
+          'POST /v1.0/roleManagement/directory/roleAssignments',
+          'Content-Type: application/json',
+          'Authorization: Bearer <access_token>',
+          '"principalId": "<PRINCIPAL_OBJECT_ID>"',
+          '"roleDefinitionId": "966707d0-3269-4727-9be2"',
+          '"directoryScopeId": "/"',
+          'GET /v1.0/roleManagement/directory/roleDefinitions',
+          'GET /v1.0/directoryRoles?$filter=displayName',
+          'microsoft.directory/users/password/update',
+          'microsoft.office365.webPortal/allEntities/read',
+          '@odata.type: #microsoft.graph.unifiedRoleDefinition',
+          '{ "value": [ { "id": "...", "isBuiltIn": true } ] }',
+        ];
+        const c = document.createElement('canvas');
+        c.width = CODE_TEX_SIZE;
+        c.height = CODE_TEX_SIZE;
+        const ctx = c.getContext('2d');
+        ctx.clearRect(0, 0, CODE_TEX_SIZE, CODE_TEX_SIZE);
+        ctx.font = '13px "IBM Plex Mono", monospace';
+        ctx.fillStyle = 'rgba(255,255,255,0.9)';
+        ctx.textBaseline = 'top';
+        // Two columns, moderate gaps — denser than a sparse scatter but each
+        // line still has clear air around it so it reads as texture, not a
+        // solid block, at the low ambient opacity used outside the lens.
+        const lineHeight = 46;
+        const cols = [6, 540];
+        let i = 0;
+        for (let y = 4; y < CODE_TEX_SIZE; y += lineHeight) {
+          for (const x of cols) {
+            ctx.fillText(lines[i % lines.length], x, y);
+            i++;
+          }
+        }
+        return c;
+      }
+
+      const codeTex = gl.createTexture();
+      gl.bindTexture(gl.TEXTURE_2D, codeTex);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, buildCodeTexture());
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
 
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
       const ACCENT = [47 / 255, 158 / 255, 245 / 255];
@@ -1909,6 +1965,10 @@
         gl.uniform2f(uHandleP2, hx2, hy2);
         gl.uniform1f(uBreath, (Math.sin(t * 1.6) + 1.0) / 2.0);
         gl.uniform3fv(uColor, ACCENT);
+        gl.uniform1f(uTexSize, CODE_TEX_SIZE);
+        gl.activeTexture(gl.TEXTURE0);
+        gl.bindTexture(gl.TEXTURE_2D, codeTex);
+        gl.uniform1i(uCodeTex, 0);
 
         gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 
