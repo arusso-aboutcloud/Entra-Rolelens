@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-17T03:56:28.492965+00:00",
+  "generated_at": "2026-07-18T03:50:29.372264+00:00",
   "role_count": 145,
   "task_count": 237,
   "shadow_role_count": 10,
@@ -3590,7 +3590,7 @@
       "displayName": "Tenant Governance Administrator",
       "description": "Manage all capabilities in the Microsoft Entra Tenant Governance service.",
       "isBuiltIn": true,
-      "isPrivileged": false,
+      "isPrivileged": true,
       "permissions": [
         "microsoft.directory/crossTenantAccessPolicy/basic/update",
         "microsoft.directory/crossTenantAccessPolicy/default/standard/read",
@@ -6344,7 +6344,7 @@
       "source_url": "https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/permissions-reference",
       "synthetic": true,
       "role_id": "1981f584-96e9-4a6f-95b0-f522373f8fae",
-      "is_privileged": false,
+      "is_privileged": true,
       "out_of_scope": null
     },
     {
@@ -6366,7 +6366,7 @@
       "source_url": "https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/permissions-reference",
       "synthetic": true,
       "role_id": "1981f584-96e9-4a6f-95b0-f522373f8fae",
-      "is_privileged": false,
+      "is_privileged": true,
       "out_of_scope": null
     },
     {

@@ -412,5 +412,15 @@
     "detail": "description changed: \"Creates and manages security events.\" -> \"Creates and manages security events and performs identity containment actions during security incidents.\"",
     "old": "Creates and manages security events.",
     "new": "Creates and manages security events and performs identity containment actions during security incidents."
+  },
+  {
+    "date": "2026-07-18",
+    "change_type": "MODIFIED",
+    "role_id": "1981f584-96e9-4a6f-95b0-f522373f8fae",
+    "role_name": "Tenant Governance Administrator",
+    "field": "isPrivileged",
+    "detail": "isPrivileged changed: false -> true",
+    "old": false,
+    "new": true
   }
 ]

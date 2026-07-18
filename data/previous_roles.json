@@ -2867,7 +2867,7 @@
     "displayName": "Tenant Governance Administrator",
     "description": "Manage all capabilities in the Microsoft Entra Tenant Governance service.",
     "isBuiltIn": true,
-    "isPrivileged": false,
+    "isPrivileged": true,
     "permissions": [
       "microsoft.directory/crossTenantAccessPolicy/basic/update",
       "microsoft.directory/crossTenantAccessPolicy/default/standard/read",
