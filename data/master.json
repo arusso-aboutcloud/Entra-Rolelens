@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-22T04:13:26.136060+00:00",
+  "generated_at": "2026-07-23T04:11:09.162796+00:00",
   "role_count": 145,
   "task_count": 237,
   "shadow_role_count": 10,
@@ -2597,6 +2597,7 @@
         "microsoft.office365.messageCenter/messages/read",
         "microsoft.office365.network/performance/allProperties/read",
         "microsoft.office365.serviceHealth/allEntities/allTasks",
+        "microsoft.office365.usageReports/allEntities/allProperties/read",
         "microsoft.office365.webPortal/allEntities/standard/read"
       ],
       "isShadowRole": false
@@ -3598,6 +3599,7 @@
         "microsoft.directory/crossTenantAccessPolicy/partners/delete",
         "microsoft.directory/crossTenantAccessPolicy/partners/standard/read",
         "microsoft.directory/crossTenantAccessPolicy/standard/read",
+        "microsoft.directory/signInReports/allProperties/read",
         "microsoft.directory/tenantGovernance/invitations/create",
         "microsoft.directory/tenantGovernance/invitations/delete",
         "microsoft.directory/tenantGovernance/invitations/standard/read",
@@ -3626,6 +3628,7 @@
       "isBuiltIn": true,
       "isPrivileged": false,
       "permissions": [
+        "microsoft.directory/signInReports/allProperties/read",
         "microsoft.directory/tenantGovernance/invitations/standard/read",
         "microsoft.directory/tenantGovernance/policyTemplates/standard/read",
         "microsoft.directory/tenantGovernance/relatedTenants/standard/read",
@@ -3643,6 +3646,7 @@
       "isBuiltIn": true,
       "isPrivileged": false,
       "permissions": [
+        "microsoft.directory/signInReports/allProperties/read",
         "microsoft.directory/tenantGovernance/invitations/standard/read",
         "microsoft.directory/tenantGovernance/policyTemplates/allProperties/update",
         "microsoft.directory/tenantGovernance/policyTemplates/create",

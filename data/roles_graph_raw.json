@@ -3733,6 +3733,7 @@
           "microsoft.office365.messageCenter/messages/read",
           "microsoft.office365.network/performance/allProperties/read",
           "microsoft.office365.serviceHealth/allEntities/allTasks",
+          "microsoft.office365.usageReports/allEntities/allProperties/read",
           "microsoft.office365.webPortal/allEntities/standard/read"
         ],
         "condition": null
@@ -5616,6 +5617,7 @@
           "microsoft.directory/crossTenantAccessPolicy/partners/delete",
           "microsoft.directory/crossTenantAccessPolicy/partners/standard/read",
           "microsoft.directory/crossTenantAccessPolicy/standard/read",
+          "microsoft.directory/signInReports/allProperties/read",
           "microsoft.directory/tenantGovernance/policyTemplates/allProperties/update",
           "microsoft.directory/tenantGovernance/policyTemplates/create",
           "microsoft.directory/tenantGovernance/relationships/create",
@@ -5647,6 +5649,7 @@
     "rolePermissions": [
       {
         "allowedResourceActions": [
+          "microsoft.directory/signInReports/allProperties/read",
           "microsoft.office365.webPortal/allEntities/standard/read"
         ],
         "condition": null
@@ -5673,6 +5676,7 @@
     "rolePermissions": [
       {
         "allowedResourceActions": [
+          "microsoft.directory/signInReports/allProperties/read",
           "microsoft.directory/tenantGovernance/policyTemplates/allProperties/update",
           "microsoft.directory/tenantGovernance/policyTemplates/create",
           "microsoft.directory/tenantGovernance/relationships/create",
