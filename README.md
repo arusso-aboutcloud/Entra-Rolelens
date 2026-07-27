@@ -77,8 +77,6 @@ This keeps the one remaining manual step — seeding a task for a role Microsoft
 - 🔄 **Tenant Governance Reader** — modified (2026-07-02)
 - 🔄 **Tenant Governance Relationship Administrator** — modified (2026-07-02)
 - 🔄 **Tenant Governance Relationship Reader** — modified (2026-07-02)
-- 🔄 **AI Administrator** — modified (2026-06-26)
-- 🔄 **AI Reader** — modified (2026-06-26)
 <!-- WHATS_NEW_END -->
 
 ---
