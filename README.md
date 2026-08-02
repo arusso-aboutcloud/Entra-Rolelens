@@ -71,12 +71,6 @@ This keeps the one remaining manual step — seeding a task for a role Microsoft
 <!-- WHATS_NEW_START -->
 - 🔄 **Tenant Governance Administrator** — modified (2026-07-18)
 - 🔄 **Security Operator** — modified (2026-07-10)
-- 🔄 **Agent ID Administrator** — modified (2026-07-02)
-- 🔄 **Security Operator** — modified (2026-07-02)
-- 🔄 **Tenant Governance Administrator** — modified (2026-07-02)
-- 🔄 **Tenant Governance Reader** — modified (2026-07-02)
-- 🔄 **Tenant Governance Relationship Administrator** — modified (2026-07-02)
-- 🔄 **Tenant Governance Relationship Reader** — modified (2026-07-02)
 <!-- WHATS_NEW_END -->
 
 ---
