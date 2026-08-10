@@ -47,7 +47,7 @@ jobs:
           exit-code: 0 # Report but don't fail
 
       - name: Upload vuln SARIF (${{ matrix.path }})
-        uses: github/codeql-action/upload-sarif@e4fba868fa4b1b91e1fdab776edc8cfbe6e9fb81 # v4
+        uses: github/codeql-action/upload-sarif@5595ccaf912efad79be6eef63a5619ff05969be3 # v4
         with:
           sarif_file: trivy-vuln-${{ matrix.path }}.sarif
           category: trivy-vuln-${{ matrix.path }}
@@ -80,7 +80,7 @@ jobs:
           # wrangler.toml is also checked for misconfigurations
 
       - name: Upload config SARIF
-        uses: github/codeql-action/upload-sarif@e4fba868fa4b1b91e1fdab776edc8cfbe6e9fb81 # v4
+        uses: github/codeql-action/upload-sarif@5595ccaf912efad79be6eef63a5619ff05969be3 # v4
         with:
           sarif_file: trivy-config.sarif
           category: trivy-config
