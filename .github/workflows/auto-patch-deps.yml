@@ -1,0 +1,101 @@
+name: Auto-patch worker deps
+
+# Fixes security advisories on the worker's TRANSITIVE npm dependencies that
+# Dependabot cannot bump because a parent pins them (e.g. undici/sharp pinned by
+# wrangler). Adds a semver-safe npm `overrides` entry per vulnerable leaf, opens
+# a PR (via the PAT so CI runs), and enables auto-merge. Anything needing a MAJOR
+# bump is left for review as a tracking issue — never auto-applied.
+
+on:
+  schedule:
+    - cron: "0 6 * * 2" # Tuesdays 06:00 UTC (after Dependabot's Monday run)
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: auto-patch-deps
+  cancel-in-progress: false
+
+env:
+  ESCALATION_ISSUE_TITLE: "Dependencies needing a major bump for security"
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@b09bb98e06d4d774595224525879c09bc6e98c40 # v2.20.1
+        with:
+          egress-policy: audit
+
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # PAT so the PR this workflow opens actually triggers CI + can auto-merge
+          token: ${{ secrets.GH_PUSH_TOKEN }}
+
+      - name: Set up Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "20"
+
+      - name: Scan + patch transitive deps
+        working-directory: worker
+        run: node ../scripts/audit-fix-overrides.mjs
+
+      - name: Read result
+        id: result
+        run: |
+          set -euo pipefail
+          test -f audit-result.json || echo '{"changed":false,"applied":[],"escalate":[]}' > audit-result.json
+          echo "changed=$(jq -r '.changed' audit-result.json)" >> "$GITHUB_OUTPUT"
+          echo "n_escalate=$(jq -r '.escalate | length' audit-result.json)" >> "$GITHUB_OUTPUT"
+          {
+            echo 'summary<<EOF'
+            echo '### Applied (semver-safe, in-major)'; jq -r '.applied[]? // "  (none)" | "- \(.)"' audit-result.json
+            echo; echo '### Escalated (needs a major bump — not auto-applied)'; jq -r '.escalate[]? // "  (none)" | "- \(.)"' audit-result.json
+            echo EOF
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Open PR + enable auto-merge
+        if: steps.result.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GH_PUSH_TOKEN }}
+        run: |
+          set -euo pipefail
+          BRANCH="auto-patch/worker-deps-$(date -u +%Y%m%d)"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$BRANCH"
+          git add worker/package.json worker/package-lock.json
+          git commit -m "fix(worker): auto-patch vulnerable transitive deps via overrides"
+          git push -u origin "$BRANCH" --force-with-lease
+          gh pr create --base master --head "$BRANCH" \
+            --title "fix(worker): auto-patch vulnerable transitive deps" \
+            --label dependencies --label security \
+            --body "$(cat <<PRBODY
+          Automated fix for security advisories on the worker's **transitive** npm deps that Dependabot can't bump (a parent pins them). Each vulnerable leaf is overridden to the latest version **within its current major** (semver-safe), and the lockfile is regenerated.
+
+          ${{ steps.result.outputs.summary }}
+
+          CI (Quality Gate, Vuln Scan, Cloudflare Pages build) gates this before auto-merge. If the build breaks, the PR stays open for review.
+          PRBODY
+          )"
+          gh pr merge --auto --squash "$BRANCH" || echo "auto-merge not enabled yet; PR left open"
+
+      - name: Escalate un-fixable advisories (tracking issue)
+        if: steps.result.outputs.n_escalate != '0'
+        env:
+          GH_TOKEN: ${{ secrets.GH_PUSH_TOKEN }}
+        run: |
+          set -euo pipefail
+          BODY=$(jq -r '"These worker dependencies have security advisories with **no in-major fix** — they need a major bump (manual review), which this automation will not apply:\n\n" + (.escalate | map("- " + .) | join("\n")) + "\n\n_Maintained by the Auto-patch worker deps workflow._' audit-result.json)
+          EXISTING=$(gh issue list --state open --search "$ESCALATION_ISSUE_TITLE in:title" --json number --jq '.[0].number // empty')
+          if [ -n "$EXISTING" ]; then
+            gh issue edit "$EXISTING" --body "$BODY"
+            echo "updated issue #$EXISTING"
+          else
+            gh issue create --title "$ESCALATION_ISSUE_TITLE" --label security --body "$BODY"
+          fi
