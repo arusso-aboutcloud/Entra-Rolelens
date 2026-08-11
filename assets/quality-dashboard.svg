@@ -36,10 +36,10 @@
   <!-- Quality score (large) -->
   <text x="20" y="76" font-size="11" fill="#6B7280" letter-spacing="1.5">QUALITY SCORE</text>
   <text x="20" y="132" font-size="60" font-weight="600" fill="#00E5A3" filter="url(#glow)">
-    6868
+    6867
     <animate attributeName="opacity" values="0;1" dur="0.7s" fill="freeze"/>
   </text>
-  <text x="20" y="152" font-size="11" fill="#6B7280">&#9660; -7 from baseline</text>
+  <text x="20" y="152" font-size="11" fill="#6B7280">&#9660; -8 from baseline</text>
 
   <!-- Quality bar (0–10000 scale) -->
   <rect x="20" y="168" width="680" height="6" fill="#0E1018" rx="3"/>
@@ -89,5 +89,5 @@
 
   <!-- Verdict + timestamp -->
   <text x="20" y="322" font-size="11" fill="#00E5A3">&#9658; No degradation detected</text>
-  <text x="700" y="322" font-size="9" fill="#6B7280" text-anchor="end">verified 2026-08-10 21:14 UTC</text>
+  <text x="700" y="322" font-size="9" fill="#6B7280" text-anchor="end">verified 2026-08-11 03:01 UTC</text>
 </svg>
