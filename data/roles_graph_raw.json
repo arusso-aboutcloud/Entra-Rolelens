@@ -5305,7 +5305,7 @@
   },
   {
     "id": "0b00bede-4072-4d22-b441-e7df02a1ef63",
-    "description": "Trigger a password submit event for custom authentication.",
+    "description": "Trigger a password submit or password update event for custom authentication.",
     "displayName": "Authentication Extensibility Password Administrator",
     "isBuiltIn": true,
     "isEnabled": true,
@@ -5317,7 +5317,8 @@
     "rolePermissions": [
       {
         "allowedResourceActions": [
-          "microsoft.directory/onPasswordSubmitCustomAuthenticationExtension/allProperties/allTasks"
+          "microsoft.directory/onPasswordSubmitCustomAuthenticationExtension/allProperties/allTasks",
+          "microsoft.directory/onPasswordUpdateCustomAuthenticationExtension/allProperties/allTasks"
         ],
         "condition": null
       }
