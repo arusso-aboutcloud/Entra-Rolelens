@@ -271,6 +271,19 @@ Every merged contribution is picked up by the nightly pipeline and live within m
 
 ---
 
+## Related aboutcloud.io tools
+
+Other free, open-source Entra ID tools from the same team:
+
+| Tool | What it does |
+|---|---|
+| [Entra Tracker](https://entratracker.aboutcloud.io) ([source](https://github.com/arusso-aboutcloud/Entra-Tracker)) | Live tracker for Entra ID retirements, breaking changes, and previews |
+| [EntraPass](https://entrapass.aboutcloud.io) ([source](https://github.com/arusso-aboutcloud/EntraPass)) | Passkey (FIDO2) readiness scanner for Entra ID tenants |
+| [AADSTS Entra Errors](https://entraerrors.aboutcloud.io) ([source](https://github.com/arusso-aboutcloud/AADSTS-Entra-Errors)) | Searchable AADSTS error code reference |
+| [CROSSEC](https://crossec.aboutcloud.io) ([source](https://github.com/arusso-aboutcloud/crossed)) | Microsoft Cloud security crossword game |
+
+---
+
 ## License
 
 MIT — see [LICENSE](LICENSE)
