@@ -1,19 +1,14 @@
 {
-  "generated_at": "2026-09-03T07:07:56.988127+00:00",
+  "generated_at": "2026-09-04T05:20:58.741878+00:00",
   "builtin_role_count": 145,
-  "covered_role_count": 49,
-  "coverage_pct": 33.8,
-  "uncovered_role_count": 96,
-  "attention_count": 2,
+  "covered_role_count": 50,
+  "coverage_pct": 34.5,
+  "uncovered_role_count": 95,
+  "attention_count": 1,
   "attention": [
     {
       "id": "d35481f7-cda1-4fa2-8344-5a21f7f3724d",
       "displayName": "Entra Customer Lockbox Approver",
-      "isShadowRole": true
-    },
-    {
-      "id": "58f930cc-fcf4-4152-852c-1d7dbf502139",
-      "displayName": "Entra SOC Identity Responder",
       "isShadowRole": true
     }
   ],
@@ -171,11 +166,6 @@
     {
       "id": "d35481f7-cda1-4fa2-8344-5a21f7f3724d",
       "displayName": "Entra Customer Lockbox Approver",
-      "isShadowRole": true
-    },
-    {
-      "id": "58f930cc-fcf4-4152-852c-1d7dbf502139",
-      "displayName": "Entra SOC Identity Responder",
       "isShadowRole": true
     },
     {

@@ -1004,6 +1004,19 @@
     ]
   },
   {
+    "id": "58f930cc-fcf4-4152-852c-1d7dbf502139",
+    "displayName": "Entra SOC Identity Responder",
+    "description": "Perform identity containment actions for SOC incident response, including disabling users, revoking active sign-in sessions, and resetting passwords.",
+    "isBuiltIn": true,
+    "isPrivileged": true,
+    "permissions": [
+      "microsoft.directory/users/disable",
+      "microsoft.directory/users/enable",
+      "microsoft.directory/users/invalidateAllRefreshTokens",
+      "microsoft.directory/users/password/update"
+    ]
+  },
+  {
     "id": "29232cdf-9323-42fd-ade2-1d097af3e4de",
     "displayName": "Exchange Administrator",
     "description": "Can manage all aspects of the Exchange product.",

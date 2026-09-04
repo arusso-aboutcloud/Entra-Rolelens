@@ -1,8 +1,8 @@
 {
-  "generated_at": "2026-09-03T07:07:56.778657+00:00",
+  "generated_at": "2026-09-04T05:20:58.482649+00:00",
   "role_count": 145,
-  "task_count": 237,
-  "shadow_role_count": 10,
+  "task_count": 238,
+  "shadow_role_count": 9,
   "roles": [
     {
       "id": "62e90394-69f5-4237-9190-012177145e10",
@@ -3715,16 +3715,16 @@
     {
       "id": "58f930cc-fcf4-4152-852c-1d7dbf502139",
       "displayName": "Entra SOC Identity Responder",
-      "description": "Perform identity containment actions for SOC incident response, including disabling users, revoking sessions, and resetting passwords.",
+      "description": "Perform identity containment actions for SOC incident response, including disabling users, revoking active sign-in sessions, and resetting passwords.",
       "isBuiltIn": true,
-      "isPrivileged": false,
+      "isPrivileged": true,
       "permissions": [
         "microsoft.directory/users/disable",
         "microsoft.directory/users/enable",
         "microsoft.directory/users/invalidateAllRefreshTokens",
         "microsoft.directory/users/password/update"
       ],
-      "isShadowRole": true
+      "isShadowRole": false
     }
   ],
   "tasks": [
@@ -5745,6 +5745,16 @@
     },
     {
       "feature_area": "Security - Users flagged for risk",
+      "task": "Perform identity containment actions for SOC incident response",
+      "min_role": "Entra SOC Identity Responder",
+      "alt_roles": [],
+      "source_url": "https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/delegate-by-task",
+      "role_id": "58f930cc-fcf4-4152-852c-1d7dbf502139",
+      "is_privileged": true,
+      "out_of_scope": null
+    },
+    {
+      "feature_area": "Security - Users flagged for risk",
       "task": "Read all configuration",
       "min_role": "Security Reader",
       "alt_roles": [],
@@ -5924,7 +5934,8 @@
       "task": "Invalidate refresh tokens of non-admins",
       "min_role": "Helpdesk Administrator",
       "alt_roles": [
-        "User Administrator"
+        "User Administrator",
+        "Security Administrator"
       ],
       "source_url": "https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/delegate-by-task",
       "role_id": "729827e3-9c14-49f7-bb1b-9608f156bbb8",

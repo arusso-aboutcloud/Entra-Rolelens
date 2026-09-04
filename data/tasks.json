@@ -1462,6 +1462,13 @@
   },
   {
     "feature_area": "Security - Users flagged for risk",
+    "task": "Perform identity containment actions for SOC incident response",
+    "min_role": "Entra SOC Identity Responder",
+    "alt_roles": [],
+    "source_url": "https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/delegate-by-task"
+  },
+  {
+    "feature_area": "Security - Users flagged for risk",
     "task": "Read all configuration",
     "min_role": "Security Reader",
     "alt_roles": [],
@@ -1590,7 +1597,8 @@
     "task": "Invalidate refresh tokens of non-admins",
     "min_role": "Helpdesk Administrator",
     "alt_roles": [
-      "User Administrator"
+      "User Administrator",
+      "Security Administrator"
     ],
     "source_url": "https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/delegate-by-task"
   },

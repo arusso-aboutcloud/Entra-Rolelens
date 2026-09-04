@@ -422,5 +422,14 @@
     "detail": "isPrivileged changed: false -> true",
     "old": false,
     "new": true
+  },
+  {
+    "date": "2026-09-04",
+    "change_type": "ADDED",
+    "role_id": "58f930cc-fcf4-4152-852c-1d7dbf502139",
+    "role_name": "Entra SOC Identity Responder",
+    "field": null,
+    "detail": "New built-in role added: Entra SOC Identity Responder",
+    "permission_count": 4
   }
 ]
