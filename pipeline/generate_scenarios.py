@@ -25,7 +25,7 @@ CHANGELOG_PATH = DATA_DIR / "changelog.json"
 ROLES_PATH = DATA_DIR / "roles.json"
 
 CF_BASE = "https://api.cloudflare.com/client/v4"
-MODEL = "@cf/meta/llama-3.1-8b-instruct-fast"
+MODEL = "@cf/meta/llama-3.2-3b-instruct"
 
 
 def generate_scenario(role: dict, account_id: str, token: str) -> str | None:
