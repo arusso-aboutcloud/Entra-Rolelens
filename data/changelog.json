@@ -7,7 +7,14 @@
     "field": null,
     "detail": "New built-in role added: AI Reader",
     "permission_count": 42,
-    "scenario": "During an active compliance audit, a tenant administrator might assign this role to a member of the compliance team so they can review the organization's Microsoft 365 Copilot configuration, access relevant service health information, and read application and group settings to ensure adherence to regulatory requirements. This assignment would also grant the team member access to read user and group information, allowing them to verify that access to sensitive data and AI-related enterprise services is properly restricted and monitored."
+    "scenario": "During an active compliance audit, a tenant administrator might assign this role to a member of the compliance team so they can review the organization's Microsoft 365 Copilot configuration, access relevant service health information, and read application and group settings to ensure adherence to regulatory requirements. This assignment would also grant the team member access to read user and group information, allowing them to verify that access to sensitive data and AI-related enterprise services is properly restricted and monitored.",
+    "role_facts": {
+      "is_privileged": true,
+      "is_workload_role": false,
+      "pim_eligible": true,
+      "au_scopable": false,
+      "configured_via": "Microsoft Entra admin center (Roles & admins) or Microsoft Graph"
+    }
   },
   {
     "date": "2026-04-30",
@@ -17,7 +24,14 @@
     "field": null,
     "detail": "New built-in role added: Customer Delegated Admin Relationship Administrator",
     "permission_count": 2,
-    "scenario": "During an active compliance audit, a tenant administrator may assign this role to a team member to manage granular delegated admin privileges relationships, allowing them to review and update all properties and tasks associated with customer delegated admin privileges, as well as read standard information about all entities in the office 365 web portal. This assignment would enable the team member to ensure that delegated admin access is properly configured and aligned with compliance requirements, such as those related to data protection and access controls."
+    "scenario": "During an active compliance audit, a tenant administrator may assign this role to a team member to manage granular delegated admin privileges relationships, allowing them to review and update all properties and tasks associated with customer delegated admin privileges, as well as read standard information about all entities in the office 365 web portal. This assignment would enable the team member to ensure that delegated admin access is properly configured and aligned with compliance requirements, such as those related to data protection and access controls.",
+    "role_facts": {
+      "is_privileged": false,
+      "is_workload_role": false,
+      "pim_eligible": true,
+      "au_scopable": false,
+      "configured_via": "Microsoft Entra admin center (Roles & admins) or Microsoft Graph"
+    }
   },
   {
     "date": "2026-04-30",
@@ -253,7 +267,14 @@
     "field": null,
     "detail": "New built-in role added: Purview Workload Content Administrator",
     "permission_count": 0,
-    "scenario": "During an active compliance audit, a tenant administrator may assign this role to a member of the compliance team so they can manage or purge sensitive data from Microsoft 365 that is being accessed through the Microsoft Purview portal, ensuring that all relevant data is properly retained or deleted in accordance with regulatory requirements. This assignment would be triggered by the need to respond to auditor requests for specific data sets or to demonstrate data governance capabilities."
+    "scenario": "During an active compliance audit, a tenant administrator may assign this role to a member of the compliance team so they can manage or purge sensitive data from Microsoft 365 that is being accessed through the Microsoft Purview portal, ensuring that all relevant data is properly retained or deleted in accordance with regulatory requirements. This assignment would be triggered by the need to respond to auditor requests for specific data sets or to demonstrate data governance capabilities.",
+    "role_facts": {
+      "is_privileged": false,
+      "is_workload_role": true,
+      "pim_eligible": false,
+      "au_scopable": false,
+      "configured_via": "its own service portal (not the Entra admin center)"
+    }
   },
   {
     "date": "2026-06-20",
@@ -263,7 +284,14 @@
     "field": null,
     "detail": "New built-in role added: Purview Workload Content Reader",
     "permission_count": 0,
-    "scenario": "When a compliance audit requires reviewing sensitive data stored in Microsoft 365, a tenant administrator may assign this role to a member of the compliance team, allowing them to read data from Microsoft 365 when accessing from the Microsoft Purview portal. This assignment enables the team member to gather necessary information and evidence during the audit, ensuring the organization's compliance with regulatory requirements."
+    "scenario": "When a compliance audit requires reviewing sensitive data stored in Microsoft 365, a tenant administrator may assign this role to a member of the compliance team, allowing them to read data from Microsoft 365 when accessing from the Microsoft Purview portal. This assignment enables the team member to gather necessary information and evidence during the audit, ensuring the organization's compliance with regulatory requirements.",
+    "role_facts": {
+      "is_privileged": false,
+      "is_workload_role": true,
+      "pim_eligible": false,
+      "au_scopable": false,
+      "configured_via": "its own service portal (not the Entra admin center)"
+    }
   },
   {
     "date": "2026-06-20",
@@ -273,7 +301,14 @@
     "field": null,
     "detail": "New built-in role added: Purview Workload Content Writer",
     "permission_count": 0,
-    "scenario": "During an active compliance audit, a tenant administrator may assign this role to a member of the compliance team to grant them access to read and edit data from Microsoft 365 when accessing from the Microsoft Purview portal, allowing them to efficiently gather and review relevant data in response to audit requests. This assignment enables the team member to directly access and manage the necessary data within the Purview portal, streamlining the audit response process."
+    "scenario": "During an active compliance audit, a tenant administrator may assign this role to a member of the compliance team to grant them access to read and edit data from Microsoft 365 when accessing from the Microsoft Purview portal, allowing them to efficiently gather and review relevant data in response to audit requests. This assignment enables the team member to directly access and manage the necessary data within the Purview portal, streamlining the audit response process.",
+    "role_facts": {
+      "is_privileged": false,
+      "is_workload_role": true,
+      "pim_eligible": false,
+      "au_scopable": false,
+      "configured_via": "its own service portal (not the Entra admin center)"
+    }
   },
   {
     "date": "2026-06-26",
@@ -436,6 +471,13 @@
     "field": null,
     "detail": "New built-in role added: Entra SOC Identity Responder",
     "permission_count": 4,
-    "scenario": "During an active security incident where a compromised user account is suspected, a tenant administrator would assign this role to a member of the security team so they can immediately disable the potentially compromised user, revoke all active sign-in sessions, and reset the password to prevent further unauthorized access. This assignment would be triggered by alerts from Azure AD's anomaly detection or signals from a security information and event management system indicating suspicious activity associated with a specific user account."
+    "scenario": "During an active security incident where a compromised user account is suspected, a tenant administrator would assign this role to a member of the security team so they can immediately disable the potentially compromised user, revoke all active sign-in sessions, and reset the password to prevent further unauthorized access. This assignment would be triggered by alerts from Azure AD's anomaly detection or signals from a security information and event management system indicating suspicious activity associated with a specific user account.",
+    "role_facts": {
+      "is_privileged": true,
+      "is_workload_role": false,
+      "pim_eligible": true,
+      "au_scopable": false,
+      "configured_via": "Microsoft Entra admin center (Roles & admins) or Microsoft Graph"
+    }
   }
 ]
