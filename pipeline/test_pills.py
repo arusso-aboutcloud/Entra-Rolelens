@@ -35,6 +35,10 @@ EXPECTATIONS: list[tuple[str, str]] = [
     ("audit AI usage",              "AI Reader"),
     ("configure PIM",               "Privileged Role Administrator"),
     ("approve access review",       "Identity Governance Administrator"),
+    ("SOC incident response",       "Entra SOC Identity Responder"),
+    ("read risky sign-ins",         "Security Reader"),
+    ("fix vulnerability",            "Security Administrator"),
+    ("dismiss risk detections",     "Security Operator"),
 ]
 
 # Pills that are known to fail and are tracked as Week 2 work.
