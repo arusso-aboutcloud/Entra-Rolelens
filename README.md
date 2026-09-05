@@ -80,7 +80,13 @@ How the frontend, Worker API, and D1/KV actually connect — and where the night
 
 [![Application architecture](assets/app-architecture.svg)](assets/app-architecture.svg)
 
-For the hosting/cost picture (which free tier runs what) see [Technical stack](#technical-stack) below, or the [infrastructure diagram](assets/architecture.svg).
+### Infrastructure & cost
+
+Which free tier hosts what, and how the nightly pipeline authenticates to Microsoft without storing a credential:
+
+[![Infrastructure architecture](assets/architecture.svg)](assets/architecture.svg)
+
+See [Technical stack](#technical-stack) below for the full per-layer cost breakdown, and [Passwordless pipeline](#passwordless-pipeline--how-authentication-works) for the OIDC handshake in detail.
 
 ---
 
