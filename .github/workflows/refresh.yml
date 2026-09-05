@@ -91,36 +91,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPO: ${{ github.repository }}
 
-      - name: Sentrux structural quality gate
-        run: |
-          set -e
-
-          # Download the correct Linux binary (no -gnu suffix)
-          curl -L -o sentrux https://github.com/sentrux/sentrux/releases/download/v0.5.7/sentrux-linux-x86_64
-          chmod +x sentrux
-
-          # Sanity check: real binary is ~36MB; a 9-byte file means we got a 404 page
-          SIZE=$(stat -c%s sentrux)
-          if [ "$SIZE" -lt 1000000 ]; then
-            echo "ERROR: sentrux binary is $SIZE bytes (expected ~36MB) -- aborting Sentrux step"
-            exit 1
-          fi
-
-          mkdir -p .sentrux
-
-          # Capture stdout (where metrics live) and stderr separately
-          ./sentrux gate . > .sentrux/gate_stdout.txt 2> .sentrux/gate_stderr.txt || true
-
-          # Parse metrics into JSON and generate the dashboard SVG
-          python pipeline/sentrux_parser.py
-          python pipeline/sentrux_dashboard_svg.py
-
-          if [ -f .sentrux/quality.json ]; then
-            echo "Sentrux quality.json written:"
-            cat .sentrux/quality.json
-          fi
-        continue-on-error: true
-
       - name: Push to Cloudflare KV and D1
         run: python pipeline/push_to_cloudflare.py
         env:
@@ -159,7 +129,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/ assets/quality-dashboard.svg README.md .sentrux/baseline.json
+          git add data/ README.md
           if git diff --staged --quiet; then
             echo "No changes to commit."
             exit 0

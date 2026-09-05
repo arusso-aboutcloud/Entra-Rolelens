@@ -80,7 +80,7 @@ jobs:
 
           ${{ steps.result.outputs.summary }}
 
-          CI (Quality Gate, Vuln Scan, Cloudflare Pages build) gates this before auto-merge. If the build breaks, the PR stays open for review.
+          CI (Vuln Scan, Config Scan, Cloudflare Pages build) gates this before auto-merge. If the build breaks, the PR stays open for review.
           PRBODY
           )"
           gh pr merge --auto --squash "$BRANCH" || echo "auto-merge not enabled yet; PR left open"

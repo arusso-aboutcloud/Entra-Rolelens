@@ -111,7 +111,6 @@ Include as much as possible:
 - **Dependabot** is enabled for npm (worker) and Python (pipeline) dependencies
 - **Trivy** runs a filesystem vulnerability scan on every push and pull request
   (`trivy.yml`), with results uploaded to GitHub Security → Code scanning alerts
-- The Sentrux quality gate (`sentrux.yml`) runs on every pull request
 
 ---
 

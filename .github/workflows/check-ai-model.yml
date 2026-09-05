@@ -6,7 +6,7 @@ name: Check AI model
 # Workers AI's live catalog, and if it's deprecated or gone, live-smoke-tests
 # a small hand-maintained candidate list and switches to the first one that
 # actually works. Opens a PR (via the PAT so CI runs) and auto-merges it --
-# CI (Quality Gate, Vuln Scan) still gates the merge. Only if every candidate
+# CI (Vuln Scan, Config Scan) still gates the merge. Only if every candidate
 # fails does it fall back to a tracking issue for a human to add new options.
 
 on:
@@ -77,5 +77,5 @@ jobs:
             --label dependencies \
             --body "Automated: the Workers AI model configured in \`generate_scenarios.py\` was deprecated or removed from Cloudflare's catalog. Switched to \`$NEW_MODEL\`, the first candidate in \`check_ai_model.py\`'s \`CANDIDATES\` list that is active in the current catalog and passed a live smoke test.
 
-          CI (Quality Gate, Vuln Scan, Cloudflare Pages build) gates this before auto-merge. If the build breaks, the PR stays open for review."
+          CI (Vuln Scan, Config Scan, Cloudflare Pages build) gates this before auto-merge. If the build breaks, the PR stays open for review."
           gh pr merge --auto --squash "$BRANCH" || echo "auto-merge not enabled yet; PR left open"

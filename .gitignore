@@ -9,14 +9,6 @@ __pycache__/
 # Internal documentation - not for public repo
 _internal/
 
-# Sentrux - local convenience binary, not source code
-sentrux.exe
-.sentrux/quality.json
-.sentrux/gate_stderr.txt
-
-.sentrux/gate_stdout.txt
-sentrux-test
-
 # Trivy - ephemeral scan JSON (dashboard SVG is committed, raw JSON is not)
 .trivy/
 
