@@ -22,8 +22,10 @@ Actual D1 schema (queried from live DB):
 import json
 import math
 import os
+import random
 import re
 import sys
+import time
 from collections import Counter
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import date, datetime, timedelta, timezone
@@ -37,6 +39,139 @@ CHANGELOG_PATH = DATA_DIR / "changelog.json"
 
 CF_BASE = "https://api.cloudflare.com/client/v4"
 D1_WORKERS = 8
+
+GH_API = "https://api.github.com"
+FAILURE_ISSUE_TITLE = "Cloudflare push failures in nightly pipeline"
+FAILURE_ISSUE_LABEL = "pipeline-failure"
+
+RETRY_ATTEMPTS = 3
+RETRY_BASE_DELAY = 1.0  # seconds; doubles each attempt, plus jitter
+RETRYABLE_STATUS = {429, 500, 502, 503, 504}
+
+
+def with_retry(func, *args, **kwargs):
+    """Call func(*args, **kwargs), retrying on transient Cloudflare errors.
+
+    Retries on HTTP 429/5xx (raised as RuntimeError("HTTP <code>: ...") by
+    d1_exec/kv_put) and on requests.RequestException (connection blips).
+    Any other failure (e.g. a genuine 4xx from bad input) raises immediately.
+    """
+    last_exc: Exception | None = None
+    for attempt in range(1, RETRY_ATTEMPTS + 1):
+        try:
+            return func(*args, **kwargs)
+        except (RuntimeError, requests.RequestException) as exc:
+            msg = str(exc)
+            is_retryable = isinstance(exc, requests.RequestException) or any(
+                msg.startswith(f"HTTP {code}") for code in RETRYABLE_STATUS
+            )
+            if not is_retryable or attempt == RETRY_ATTEMPTS:
+                raise
+            last_exc = exc
+            delay = RETRY_BASE_DELAY * (2 ** (attempt - 1)) + random.uniform(0, 0.5)
+            print(f"    transient error ({msg[:120]}), retrying in {delay:.1f}s "
+                  f"(attempt {attempt}/{RETRY_ATTEMPTS})", file=sys.stderr)
+            time.sleep(delay)
+    raise last_exc  # pragma: no cover — loop always returns or raises above
+
+
+def upsert_failure_issue(failures: list[str]) -> None:
+    """Idempotent issue for Cloudflare push failures that survived retries.
+
+    Mirrors coverage_report.upsert_issue()'s find-by-title-and-label,
+    PATCH-or-POST pattern so a real (non-transient) failure is visible on
+    GitHub instead of only living in Actions logs. No-op without credentials.
+    """
+    token = os.environ.get("GITHUB_TOKEN")
+    repo = os.environ.get("GITHUB_REPO") or os.environ.get("GITHUB_REPOSITORY")
+    if not token or not repo:
+        print("  (GITHUB_TOKEN/GITHUB_REPO not set -- skipping failure issue upsert)")
+        return
+
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "Accept": "application/vnd.github+json",
+        "X-GitHub-Api-Version": "2022-11-28",
+    }
+
+    existing = None
+    q = requests.get(
+        f"{GH_API}/repos/{repo}/issues",
+        headers=headers,
+        params={"state": "open", "labels": FAILURE_ISSUE_LABEL, "per_page": 100},
+        timeout=15,
+    )
+    if q.ok:
+        for it in q.json():
+            if it.get("title") == FAILURE_ISSUE_TITLE and "pull_request" not in it:
+                existing = it
+                break
+
+    lines = [
+        f"The nightly pipeline's push to Cloudflare KV/D1 failed on {NOW} after "
+        f"{RETRY_ATTEMPTS} retries per statement.",
+        "",
+        "```",
+        *failures[:10],
+        "```",
+        "",
+        "_Maintained automatically by `push_to_cloudflare.py`. Closes itself on the "
+        "next successful push._",
+    ]
+    body = "\n".join(lines)
+
+    if existing:
+        requests.patch(
+            f"{GH_API}/repos/{repo}/issues/{existing['number']}",
+            headers=headers,
+            json={"body": body, "state": "open"},
+            timeout=15,
+        )
+        print(f"  Failure issue #{existing['number']} updated.")
+    else:
+        resp = requests.post(
+            f"{GH_API}/repos/{repo}/issues",
+            headers=headers,
+            json={"title": FAILURE_ISSUE_TITLE, "body": body, "labels": [FAILURE_ISSUE_LABEL]},
+            timeout=15,
+        )
+        if resp.ok:
+            print(f"  Failure issue opened: {resp.json().get('html_url', '')}")
+        else:
+            print(f"  Failed to open failure issue: HTTP {resp.status_code}", file=sys.stderr)
+
+
+def close_failure_issue() -> None:
+    """Close the failure issue (if open) after a clean push — self-healing."""
+    token = os.environ.get("GITHUB_TOKEN")
+    repo = os.environ.get("GITHUB_REPO") or os.environ.get("GITHUB_REPOSITORY")
+    if not token or not repo:
+        return
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "Accept": "application/vnd.github+json",
+        "X-GitHub-Api-Version": "2022-11-28",
+    }
+    q = requests.get(
+        f"{GH_API}/repos/{repo}/issues",
+        headers=headers,
+        params={"state": "open", "labels": FAILURE_ISSUE_LABEL, "per_page": 100},
+        timeout=15,
+    )
+    if not q.ok:
+        return
+    for it in q.json():
+        if it.get("title") == FAILURE_ISSUE_TITLE and "pull_request" not in it:
+            requests.patch(
+                f"{GH_API}/repos/{repo}/issues/{it['number']}",
+                headers=headers,
+                json={"state": "closed",
+                      "body": "Push succeeded on a later run. ✅\n\n"
+                              "_Closed automatically by `push_to_cloudflare.py`._"},
+                timeout=15,
+            )
+            print(f"  Failure issue #{it['number']} closed (push succeeded).")
+            break
 
 TODAY = date.today().isoformat()
 NOW = datetime.now(timezone.utc).isoformat()
@@ -138,8 +273,8 @@ def compute_bm25_stats(tasks: list[dict]) -> tuple[dict, dict, dict]:
 # KV
 # ---------------------------------------------------------------------------
 
-def kv_put(account_id: str, namespace_id: str, token: str,
-           key: str, value: str) -> None:
+def _kv_put_once(account_id: str, namespace_id: str, token: str,
+                  key: str, value: str) -> None:
     url = (f"{CF_BASE}/accounts/{account_id}/storage/kv"
            f"/namespaces/{namespace_id}/values/{key}")
     resp = requests.put(
@@ -148,10 +283,19 @@ def kv_put(account_id: str, namespace_id: str, token: str,
         data=value.encode("utf-8"),
         timeout=30,
     )
-    print(f"  KV PUT {key!r}: HTTP {resp.status_code}")
     if not resp.ok:
-        print(f"    {resp.text}", file=sys.stderr)
+        raise RuntimeError(f"HTTP {resp.status_code}: {resp.text}")
+
+
+def kv_put(account_id: str, namespace_id: str, token: str,
+           key: str, value: str) -> None:
+    try:
+        with_retry(_kv_put_once, account_id, namespace_id, token, key, value)
+    except (RuntimeError, requests.RequestException) as exc:
+        print(f"  KV PUT {key!r}: FAILED after retries -- {exc}", file=sys.stderr)
+        upsert_failure_issue([f"KV PUT {key!r}: {exc}"])
         sys.exit(1)
+    print(f"  KV PUT {key!r}: OK")
 
 
 # ---------------------------------------------------------------------------
@@ -200,21 +344,22 @@ def d1_run_many(account_id: str, database_id: str, token: str,
     errors: list[str] = []
 
     def run_one(stmt: dict) -> None:
-        d1_exec(account_id, database_id, token,
-                stmt["sql"], stmt.get("params"))
+        with_retry(d1_exec, account_id, database_id, token,
+                   stmt["sql"], stmt.get("params"))
 
     with ThreadPoolExecutor(max_workers=D1_WORKERS) as pool:
         futures = {pool.submit(run_one, s): i for i, s in enumerate(statements)}
         for future in as_completed(futures):
             try:
                 future.result()
-            except RuntimeError as exc:
+            except (RuntimeError, requests.RequestException) as exc:
                 errors.append(str(exc))
 
     print(f"  D1 {label}: {len(statements)} stmts, {len(errors)} errors")
     if errors:
         for e in errors[:5]:
             print(f"    {e}", file=sys.stderr)
+        upsert_failure_issue([f"{label}: {e}" for e in errors[:10]])
         sys.exit(1)
 
 
@@ -659,6 +804,7 @@ def main() -> None:
     update_readme_whats_new(CHANGELOG_PATH, readme_path)
     update_readme_data_quality(MASTER_PATH, readme_path)
     update_readme_sentrux(readme_path)
+    close_failure_issue()
 
     print("Push complete")
 
