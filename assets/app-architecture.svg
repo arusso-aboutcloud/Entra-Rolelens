@@ -68,21 +68,19 @@
 
 <!-- ═══════════════ WORKER ═══════════════ -->
 <rect x="40" y="278" width="920" height="120" rx="10" fill="none" stroke="#0F4030" stroke-width="0.8" stroke-dasharray="5 4"/>
-<text x="60" y="300" class="mono bold" fill="#1D9E75" style="font-size:12px;letter-spacing:.1em">CLOUDFLARE WORKER — worker/src/index.ts (single TS file, 6 routes)</text>
+<text x="60" y="300" class="mono bold" fill="#1D9E75" style="font-size:12px;letter-spacing:.1em">CLOUDFLARE WORKER — worker/src/index.ts (single TS file, 5 routes)</text>
 
 <rect x="60" y="312" width="880" height="70" rx="8" fill="#03150E" stroke="#1D9E75" stroke-width="0.8"/>
 <text x="80" y="337" class="mono" fill="#6FE3B4" style="font-size:11px">/api/search</text>
 <text x="80" y="354" class="sans" fill="#6FE3B4" style="font-size:9.5px;opacity:.75">BM25 + keyword rank</text>
-<text x="230" y="337" class="mono" fill="#6FE3B4" style="font-size:11px">/api/diff</text>
-<text x="230" y="354" class="sans" fill="#6FE3B4" style="font-size:9.5px;opacity:.75">exact-name role compare</text>
-<text x="380" y="337" class="mono" fill="#6FE3B4" style="font-size:11px">/api/role/:id</text>
-<text x="380" y="354" class="sans" fill="#6FE3B4" style="font-size:9.5px;opacity:.75">description + permissions</text>
-<text x="550" y="337" class="mono" fill="#6FE3B4" style="font-size:11px">/api/roles</text>
-<text x="550" y="354" class="sans" fill="#6FE3B4" style="font-size:9.5px;opacity:.75">autocomplete list</text>
-<text x="690" y="337" class="mono" fill="#6FE3B4" style="font-size:11px">/api/status</text>
-<text x="690" y="354" class="sans" fill="#6FE3B4" style="font-size:9.5px;opacity:.75">counts · pipeline health</text>
-<text x="820" y="337" class="mono" fill="#6FE3B4" style="font-size:11px">/api/quality</text>
-<text x="820" y="354" class="sans" fill="#6FE3B4" style="font-size:9.5px;opacity:.75">Sentrux metrics</text>
+<text x="255" y="337" class="mono" fill="#6FE3B4" style="font-size:11px">/api/diff</text>
+<text x="255" y="354" class="sans" fill="#6FE3B4" style="font-size:9.5px;opacity:.75">exact-name role compare</text>
+<text x="430" y="337" class="mono" fill="#6FE3B4" style="font-size:11px">/api/role/:id</text>
+<text x="430" y="354" class="sans" fill="#6FE3B4" style="font-size:9.5px;opacity:.75">description + permissions</text>
+<text x="630" y="337" class="mono" fill="#6FE3B4" style="font-size:11px">/api/roles</text>
+<text x="630" y="354" class="sans" fill="#6FE3B4" style="font-size:9.5px;opacity:.75">autocomplete list</text>
+<text x="800" y="337" class="mono" fill="#6FE3B4" style="font-size:11px">/api/status</text>
+<text x="800" y="354" class="sans" fill="#6FE3B4" style="font-size:9.5px;opacity:.75">counts · pipeline health</text>
 
 <!-- Worker -> D1/KV -->
 <path d="M300 382 L300 430" fill="none" stroke="#1D9E75" stroke-width="1.5" class="fl2" marker-end="url(#ag)"/>
@@ -99,8 +97,6 @@
 <text x="180" y="526" class="sans" fill="#6FE3B4" style="font-size:9.5px;opacity:.75">keyword, weight, tf, idf — BM25 index</text>
 <text x="80" y="546" class="mono" fill="#6FE3B4" style="font-size:10.5px">role_changes</text>
 <text x="190" y="546" class="sans" fill="#6FE3B4" style="font-size:9.5px;opacity:.75">change_date, change_type, field, old/new</text>
-<text x="80" y="566" class="mono" fill="#6FE3B4" style="font-size:10.5px">sentrux_metrics</text>
-<text x="200" y="566" class="sans" fill="#6FE3B4" style="font-size:9.5px;opacity:.75">code-quality gate results, key/value</text>
 
 <rect x="560" y="438" width="400" height="140" rx="8" fill="#03150E" stroke="#1D9E75" stroke-width="0.8"/>
 <text x="580" y="462" class="mono bold" fill="#6FE3B4" style="font-size:13px">KV — global cache</text>
