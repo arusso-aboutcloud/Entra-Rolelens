@@ -49,7 +49,23 @@ jobs:
 
       - name: Deploy
         working-directory: worker
-        run: npx wrangler deploy
+        # wrangler deploy uploads the script successfully, then makes an
+        # unrelated informational call (GET /accounts/.../workers/subdomain,
+        # to print the workers.dev URL) that 401s with this narrowly-scoped
+        # token and makes wrangler exit 1 even though the actual deploy
+        # already succeeded. Treat "Uploaded <name>" in the output as the
+        # real success signal instead of trusting wrangler's exit code --
+        # a genuine deploy failure (bad code, real auth failure before
+        # upload, network error) would never print that line.
+        run: |
+          set +e
+          OUTPUT=$(npx wrangler deploy 2>&1)
+          STATUS=$?
+          echo "$OUTPUT"
+          if echo "$OUTPUT" | grep -q "Uploaded rolelens-worker"; then
+            exit 0
+          fi
+          exit $STATUS
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
