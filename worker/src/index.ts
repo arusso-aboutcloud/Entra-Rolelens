@@ -144,7 +144,7 @@ async function getCorpusStats(env: Env): Promise<CorpusStats> {
 // Search helpers
 // ---------------------------------------------------------------------------
 
-type MatchType = "exact" | "full_keyword" | "partial" | "bm25";
+type MatchType = "exact" | "full_keyword" | "partial" | "bm25" | "role_name";
 type Entry = { row: Record<string, unknown>; matchType: MatchType };
 
 // Run all three keyword queries (phrase, full-AND, partial-OR) in parallel
@@ -224,6 +224,94 @@ async function runKeywordTier(
   add((fullRes.results    ?? []) as Record<string, unknown>[], "full_keyword");
   add((partialRes.results ?? []) as Record<string, unknown>[], "partial");
 
+  return merged;
+}
+
+// Microsoft's docs source generates each role's page anchor as a plain
+// kebab-case slug of its display name (verified against all 136 rows in
+// permissions-reference.md this session, zero exceptions), so this is safe
+// to compute directly rather than needing a stored URL per role.
+function roleDocsUrl(displayName: string): string {
+  const slug = displayName.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+  return `https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/permissions-reference#${slug}`;
+}
+
+// ── Role-name/description fallback ───────────────────────────────────────
+// A role only ever surfaces via the tiers above once a task points to it --
+// roles.json roughly ~65% of built-in roles currently have zero task
+// coverage, so typing the role's own name previously returned either
+// nothing, or worse, a confidently-wrong unrelated role from a weak
+// keyword coincidence in some task's description (e.g. "attack simulation
+// administrator" matched "Privileged Role Administrator" via "administrator").
+// This runs unconditionally alongside tier 1 and is merged into the same
+// map, so the existing scoring/affinity/threshold pipeline decides on
+// merit whether a role-name match beats a weak task match, rather than
+// this being a hand-coded override.
+async function runRoleNameTier(
+  env: Env,
+  q: string,
+  kws: string[],
+): Promise<Map<string, Entry>> {
+  if (kws.length === 0) return new Map();
+
+  const nameClause = kws.map((_, i) => `lower(display_name) LIKE '%' || lower(?${i + 1}) || '%'`).join(" AND ");
+  const descClause = kws.map((_, i) => `lower(description) LIKE '%' || lower(?${i + 1}) || '%'`).join(" AND ");
+
+  const [exactRes, nameRes, descRes] = await Promise.all([
+    // Exact display_name match (case-insensitive) — the strongest possible signal.
+    env.DB.prepare(
+      `SELECT id, display_name, description, is_privileged, permissions,
+              1000 AS base_score
+       FROM roles WHERE is_built_in = 1 AND lower(display_name) = lower(?1)
+       LIMIT 1`
+    ).bind(q).all(),
+
+    // Every query keyword appears somewhere in the role's own name.
+    env.DB.prepare(
+      `SELECT id, display_name, description, is_privileged, permissions,
+              250 AS base_score
+       FROM roles WHERE is_built_in = 1 AND ${nameClause}
+       LIMIT 5`
+    ).bind(...kws).all(),
+
+    // Every query keyword appears somewhere in the role's description --
+    // weaker signal, kept below any real task match on merit.
+    env.DB.prepare(
+      `SELECT id, display_name, description, is_privileged, permissions,
+              80 AS base_score
+       FROM roles WHERE is_built_in = 1 AND ${descClause}
+       LIMIT 5`
+    ).bind(...kws).all(),
+  ]);
+
+  const merged = new Map<string, Entry>();
+  const add = (rows: Record<string, unknown>[]) => {
+    for (const row of rows) {
+      const id    = row.id as string;
+      const score = (row.base_score as number) ?? 0;
+      const existing = merged.get(id);
+      if (existing && (existing.row.base_score as number) >= score) continue;
+      merged.set(id, {
+        matchType: "role_name",
+        row: {
+          id,
+          task_description:     `Role: ${row.display_name}`,
+          feature_area:         "Role name match",
+          alt_role_ids:         null,
+          source_url:           roleDocsUrl(row.display_name as string),
+          min_role_id:          id,
+          min_role_name:        row.display_name,
+          min_role_description: row.description,
+          is_privileged:        row.is_privileged,
+          permissions:          row.permissions,
+          base_score:           score,
+        },
+      });
+    }
+  };
+  add((exactRes.results ?? []) as Record<string, unknown>[]);
+  add((nameRes.results  ?? []) as Record<string, unknown>[]);
+  add((descRes.results  ?? []) as Record<string, unknown>[]);
   return merged;
 }
 
@@ -452,8 +540,20 @@ async function handleSearch(url: URL, env: Env): Promise<Response> {
   const { keywords, topicKeywords, sqKeywords } = extractKeywordsForSearch(q);
   if (keywords.length === 0) return json([]);
 
-  // Tier 1: topic keywords only (precise, avoids "configure" noise)
-  const tier1 = await runKeywordTier(env, q, sqKeywords);
+  // Tier 1: topic keywords only (precise, avoids "configure" noise), plus
+  // the role-name/description fallback merged in unconditionally so it can
+  // compete on score against a weak task match rather than being masked by
+  // tier ordering.
+  const [tier1, roleNameHits] = await Promise.all([
+    runKeywordTier(env, q, sqKeywords),
+    runRoleNameTier(env, q, sqKeywords),
+  ]);
+  for (const [id, entry] of roleNameHits) {
+    const existing = tier1.get(id);
+    if (!existing || (entry.row.base_score as number) > ((existing.row.base_score as number) ?? 0)) {
+      tier1.set(id, entry);
+    }
+  }
   if (tier1.size > 0) return finalizeResults(env, tier1, src);
 
   // Tier 2: all keywords including generic verbs (only if some were stripped)
@@ -633,6 +733,10 @@ function generateMatchReasoning(
   task: string,
   matchType: MatchType,
 ): string | null {
+  if (matchType === "role_name") {
+    return `matched the role's own name/description directly (no task mapping yet)`;
+  }
+
   const tokens = srcQuery
     .toLowerCase()
     .split(/[\s\p{P}]+/u)
