@@ -1181,11 +1181,26 @@
     }
 
     /* ── Example pills ──────────────────────────────────────────────── */
+    .pills-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-top: 20px;
+      margin-bottom: 10px;
+    }
+    .pills-label.hidden { display: none; }
+    .pills-label::before { content: '⚡'; font-size: 11px; }
+
     .example-pills {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 16px;
+      gap: 9px;
       margin-bottom: 8px;
     }
     .example-pills.hidden { display: none; }
@@ -1193,16 +1208,23 @@
     .pill-btn {
       font-family: var(--font-mono);
       font-size: 14px;
-      color: var(--muted);
-      background: var(--surface);
-      border: 1px solid var(--border);
+      color: var(--text);
+      background: rgba(47, 158, 245, 0.08);
+      border: 1px solid rgba(47, 158, 245, 0.28);
       border-radius: 20px;
       padding: 7px 18px;
       cursor: pointer;
-      transition: color 0.15s, border-color 0.15s;
+      transition: color 0.15s, border-color 0.15s, background-color 0.15s, transform 0.15s, box-shadow 0.15s;
       white-space: nowrap;
     }
-    .pill-btn:hover { color: var(--accent); border-color: var(--accent-dim); }
+    .pill-btn:hover {
+      color: var(--bg);
+      background: var(--accent);
+      border-color: var(--accent);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 16px rgba(47, 158, 245, 0.35);
+    }
+    .pill-btn:active { transform: translateY(0); }
 
     /* ── Status bar ─────────────────────────────────────────────────── */
     .status-bar {
@@ -1433,8 +1455,9 @@
     .how-to {
       margin-bottom: 32px;
       padding: 24px 28px;
-      background: var(--surface);
+      background: var(--surface2);
       border: 1px solid var(--border);
+      border-left: 3px solid var(--accent-dim);
       border-radius: var(--radius-lg);
     }
     .how-to.hidden { display: none; }
@@ -1442,12 +1465,16 @@
     .how-to h3 {
       font-family: var(--font-mono);
       font-size: 13px;
-      font-weight: 500;
-      letter-spacing: 0.08em;
+      font-weight: 700;
+      letter-spacing: 0.1em;
       text-transform: uppercase;
-      color: var(--muted);
+      color: var(--accent);
       margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
     }
+    .how-to h3::before { content: '◆'; font-size: 10px; }
 
     .how-to ol, .how-to ul {
       padding-left: 22px;
@@ -1607,7 +1634,8 @@
       </div>
       <div class="search-hint" id="search-hint"></div>
 
-      <!-- Example pills — 30 common Entra admin tasks -->
+      <!-- Example pills — pre-built, ready-to-use task queries -->
+      <div class="pills-label" id="pills-label">Try it — click any example</div>
       <div class="example-pills" id="example-pills">
         <button class="pill-btn" onclick="runPillSearch('reset user MFA')">reset user MFA</button>
         <button class="pill-btn" onclick="runPillSearch('reset user password')">reset user password</button>
@@ -1667,6 +1695,7 @@
       </div>
 
       <!-- Pre-built comparison examples -->
+      <div class="pills-label">Try it — click any comparison</div>
       <div class="diff-examples">
         <button class="pill-btn" onclick="runDiffPill('Global Administrator','User Administrator')">Global Admin vs User Admin</button>
         <button class="pill-btn" onclick="runDiffPill('Authentication Administrator','Helpdesk Administrator')">Authentication Admin vs Helpdesk Admin</button>
@@ -2465,6 +2494,7 @@
     document.getElementById('explainer-grid')?.classList.toggle('hidden', typing);
     document.getElementById('how-to-use')?.classList.toggle('hidden', typing);
     document.getElementById('example-pills')?.classList.toggle('hidden', typing);
+    document.getElementById('pills-label')?.classList.toggle('hidden', typing);
     const wnPanel = document.getElementById('whats-new-panel');
     if (wnPanel && !wnPanel.classList.contains('hidden')) {
       wnPanel.style.display = typing ? 'none' : '';
