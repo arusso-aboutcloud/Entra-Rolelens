@@ -25,7 +25,7 @@ CHANGELOG_PATH = DATA_DIR / "changelog.json"
 ROLES_PATH = DATA_DIR / "roles.json"
 
 CF_BASE = "https://api.cloudflare.com/client/v4"
-MODEL = "@cf/meta/llama-3.2-3b-instruct"
+MODEL = "@cf/meta/llama-3.3-70b-instruct-fp8-fast"
 
 
 def generate_scenario(role: dict, account_id: str, token: str) -> str | None:
@@ -33,11 +33,17 @@ def generate_scenario(role: dict, account_id: str, token: str) -> str | None:
     perms_text = ", ".join(perms) if perms else "(none -- this role is governed outside Entra)"
     prompt = (
         f"Role: {role['displayName']}\n"
-        f"Official description: {role.get('description', '')}\n"
-        f"Grants exactly these Microsoft Entra permissions: {perms_text}\n\n"
-        "In exactly one or two sentences, describe a realistic day-to-day scenario in "
-        "which a Microsoft Entra admin would assign this role to someone. Plain prose, "
-        "no markdown, no preamble, do not restate the role name verbatim."
+        f"Official Microsoft description: {role.get('description', '')}\n"
+        f"Exact Microsoft Entra permissions this role grants: {perms_text}\n\n"
+        "Write one or two sentences describing a concrete, technically specific scenario in which "
+        "a Microsoft Entra (Azure AD) tenant administrator would assign this role to someone on "
+        "their IT, security, or compliance team. Ground the scenario in what the permissions above "
+        "actually let the person do -- name a real operational trigger (e.g. an active security "
+        "incident, a compliance audit, an access review, an AI/agent deployment, a Purview "
+        "eDiscovery case), not a generic 'IT support' or vacation-coverage story. The role name is "
+        "Microsoft's internal label for a permission set, not a job title -- never invent an "
+        "unrelated real-world job from it (e.g. do not read \"Writer\" as a marketing content "
+        "writer). Plain prose, no markdown, no preamble, do not restate the role name verbatim."
     )
     url = f"{CF_BASE}/accounts/{account_id}/ai/run/{MODEL}"
     try:
