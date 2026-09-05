@@ -1,0 +1,157 @@
+<svg width="100%" viewBox="0 0 1200 900" xmlns="http://www.w3.org/2000/svg">
+<defs>
+  <style>
+    @keyframes flow1{to{stroke-dashoffset:-28}}
+    @keyframes flow2{to{stroke-dashoffset:-22}}
+    @keyframes flow3{to{stroke-dashoffset:-18}}
+    .fl1{stroke-dasharray:7 7;animation:flow1 1.2s linear infinite}
+    .fl2{stroke-dasharray:6 6;animation:flow2 1.8s linear infinite}
+    .fl3{stroke-dasharray:5 5;animation:flow3 2.4s linear infinite}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+    .sans{font-family:-apple-system,BlinkMacSystemFont,sans-serif}
+    .bold{font-weight:700}
+  </style>
+  <marker id="ag" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+    <path d="M2 1L8 5L2 9" fill="none" stroke="#1D9E75" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </marker>
+  <marker id="ab" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+    <path d="M2 1L8 5L2 9" fill="none" stroke="#378ADD" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </marker>
+  <marker id="ao" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+    <path d="M2 1L8 5L2 9" fill="none" stroke="#F59E0B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </marker>
+  <pattern id="dots" width="24" height="24" patternUnits="userSpaceOnUse">
+    <circle cx="12" cy="12" r="0.9" fill="#444441" opacity="0.4"/>
+  </pattern>
+</defs>
+
+<rect width="1200" height="900" fill="#0D1018"/>
+<rect width="1200" height="900" fill="url(#dots)"/>
+
+<text x="600" y="34" text-anchor="middle" class="mono bold" fill="#E8E6DF" style="font-size:17px">Application architecture</text>
+<text x="600" y="54" text-anchor="middle" class="sans" fill="#888780" style="font-size:12px">what each component does and how data actually moves — not which cloud hosts it</text>
+
+<!-- ═══════════════ FRONTEND ═══════════════ -->
+<rect x="40" y="84" width="1120" height="150" rx="10" fill="none" stroke="#2A2A3A" stroke-width="0.8" stroke-dasharray="5 4"/>
+<text x="60" y="106" class="mono bold" fill="#888780" style="font-size:12px;letter-spacing:.1em">FRONTEND — frontend/index.html (single file, no build step, no framework)</text>
+
+<rect x="60" y="118" width="330" height="98" rx="8" fill="#1A1230" stroke="#7F77DD" stroke-width="0.8"/>
+<text x="225" y="142" text-anchor="middle" class="mono bold" fill="#B7AEF0" style="font-size:13.5px">Task → Role search</text>
+<text x="225" y="160" text-anchor="middle" class="sans" fill="#B7AEF0" style="font-size:10.5px;opacity:.85">example pills + synonym-expanded query</text>
+<text x="225" y="176" text-anchor="middle" class="sans" fill="#B7AEF0" style="font-size:10.5px;opacity:.85">→ ranked min-role result cards</text>
+<rect x="75" y="188" width="300" height="18" rx="4" fill="rgba(127,119,221,0.12)" stroke="rgba(127,119,221,0.4)" stroke-width="0.8"/>
+<text x="225" y="201" text-anchor="middle" class="mono" fill="#B7AEF0" style="font-size:9.5px">GET /api/search?q=</text>
+
+<rect x="410" y="118" width="330" height="98" rx="8" fill="#1A1230" stroke="#7F77DD" stroke-width="0.8"/>
+<text x="575" y="142" text-anchor="middle" class="mono bold" fill="#B7AEF0" style="font-size:13.5px">Role Diff</text>
+<text x="575" y="160" text-anchor="middle" class="sans" fill="#B7AEF0" style="font-size:10.5px;opacity:.85">pre-built pairs + free-text autocomplete</text>
+<text x="575" y="176" text-anchor="middle" class="sans" fill="#B7AEF0" style="font-size:10.5px;opacity:.85">→ only-in-A / shared / only-in-B columns</text>
+<rect x="425" y="188" width="300" height="18" rx="4" fill="rgba(127,119,221,0.12)" stroke="rgba(127,119,221,0.4)" stroke-width="0.8"/>
+<text x="575" y="201" text-anchor="middle" class="mono" fill="#B7AEF0" style="font-size:9.5px">GET /api/diff?a=&amp;b=</text>
+
+<rect x="760" y="118" width="380" height="98" rx="8" fill="#1A1230" stroke="#7F77DD" stroke-width="0.8"/>
+<text x="950" y="142" text-anchor="middle" class="mono bold" fill="#B7AEF0" style="font-size:13.5px">What's New panel</text>
+<text x="950" y="160" text-anchor="middle" class="sans" fill="#B7AEF0" style="font-size:10.5px;opacity:.85">role changes, 30-day window · expand for detail</text>
+<text x="950" y="176" text-anchor="middle" class="sans" fill="#B7AEF0" style="font-size:10.5px;opacity:.85">new roles: desc + perms + docs link + AI scenario</text>
+<rect x="775" y="188" width="350" height="18" rx="4" fill="rgba(127,119,221,0.12)" stroke="rgba(127,119,221,0.4)" stroke-width="0.8"/>
+<text x="950" y="201" text-anchor="middle" class="mono" fill="#B7AEF0" style="font-size:9.5px">raw.githubusercontent.com/.../changelog.json + master.json</text>
+
+<!-- browser history note -->
+<text x="60" y="228" class="sans" fill="#5A5850" style="font-size:9.5px;font-style:italic">Back-button undo: a pushState per pre-built pill click, popstate resets to idle view</text>
+
+<!-- Frontend -> Worker -->
+<path d="M225 216 L225 260 Q225 270 235 270 L565 270" fill="none" stroke="#378ADD" stroke-width="1.5" class="fl1" marker-end="url(#ab)"/>
+<path d="M575 216 L575 270" fill="none" stroke="#378ADD" stroke-width="1.5" class="fl1" marker-end="url(#ab)"/>
+
+<!-- Frontend -> raw GitHub (bypasses Worker entirely) -->
+<path d="M950 216 L950 320 Q950 330 960 330 L1040 330" fill="none" stroke="#F59E0B" stroke-width="1.3" class="fl3" marker-end="url(#ao)"/>
+
+<!-- ═══════════════ WORKER ═══════════════ -->
+<rect x="40" y="278" width="920" height="120" rx="10" fill="none" stroke="#0F4030" stroke-width="0.8" stroke-dasharray="5 4"/>
+<text x="60" y="300" class="mono bold" fill="#1D9E75" style="font-size:12px;letter-spacing:.1em">CLOUDFLARE WORKER — worker/src/index.ts (single TS file, 6 routes)</text>
+
+<rect x="60" y="312" width="880" height="70" rx="8" fill="#03150E" stroke="#1D9E75" stroke-width="0.8"/>
+<text x="80" y="337" class="mono" fill="#6FE3B4" style="font-size:11px">/api/search</text>
+<text x="80" y="354" class="sans" fill="#6FE3B4" style="font-size:9.5px;opacity:.75">BM25 + keyword rank</text>
+<text x="230" y="337" class="mono" fill="#6FE3B4" style="font-size:11px">/api/diff</text>
+<text x="230" y="354" class="sans" fill="#6FE3B4" style="font-size:9.5px;opacity:.75">exact-name role compare</text>
+<text x="380" y="337" class="mono" fill="#6FE3B4" style="font-size:11px">/api/role/:id</text>
+<text x="380" y="354" class="sans" fill="#6FE3B4" style="font-size:9.5px;opacity:.75">description + permissions</text>
+<text x="550" y="337" class="mono" fill="#6FE3B4" style="font-size:11px">/api/roles</text>
+<text x="550" y="354" class="sans" fill="#6FE3B4" style="font-size:9.5px;opacity:.75">autocomplete list</text>
+<text x="690" y="337" class="mono" fill="#6FE3B4" style="font-size:11px">/api/status</text>
+<text x="690" y="354" class="sans" fill="#6FE3B4" style="font-size:9.5px;opacity:.75">counts · pipeline health</text>
+<text x="820" y="337" class="mono" fill="#6FE3B4" style="font-size:11px">/api/quality</text>
+<text x="820" y="354" class="sans" fill="#6FE3B4" style="font-size:9.5px;opacity:.75">Sentrux metrics</text>
+
+<!-- Worker -> D1/KV -->
+<path d="M300 382 L300 430" fill="none" stroke="#1D9E75" stroke-width="1.5" class="fl2" marker-end="url(#ag)"/>
+<path d="M700 382 L700 430" fill="none" stroke="#1D9E75" stroke-width="1.5" class="fl2" marker-end="url(#ag)"/>
+
+<!-- ═══════════════ D1 + KV ═══════════════ -->
+<rect x="60" y="438" width="480" height="140" rx="8" fill="#03150E" stroke="#1D9E75" stroke-width="0.8"/>
+<text x="80" y="462" class="mono bold" fill="#6FE3B4" style="font-size:13px">D1 (SQLite) — rolelens-db</text>
+<text x="80" y="486" class="mono" fill="#6FE3B4" style="font-size:10.5px">roles</text>
+<text x="150" y="486" class="sans" fill="#6FE3B4" style="font-size:9.5px;opacity:.75">id, display_name, permissions, is_privileged…</text>
+<text x="80" y="506" class="mono" fill="#6FE3B4" style="font-size:10.5px">tasks</text>
+<text x="150" y="506" class="sans" fill="#6FE3B4" style="font-size:9.5px;opacity:.75">feature_area, task_description, min_role_id</text>
+<text x="80" y="526" class="mono" fill="#6FE3B4" style="font-size:10.5px">task_search</text>
+<text x="180" y="526" class="sans" fill="#6FE3B4" style="font-size:9.5px;opacity:.75">keyword, weight, tf, idf — BM25 index</text>
+<text x="80" y="546" class="mono" fill="#6FE3B4" style="font-size:10.5px">role_changes</text>
+<text x="190" y="546" class="sans" fill="#6FE3B4" style="font-size:9.5px;opacity:.75">change_date, change_type, field, old/new</text>
+<text x="80" y="566" class="mono" fill="#6FE3B4" style="font-size:10.5px">sentrux_metrics</text>
+<text x="200" y="566" class="sans" fill="#6FE3B4" style="font-size:9.5px;opacity:.75">code-quality gate results, key/value</text>
+
+<rect x="560" y="438" width="400" height="140" rx="8" fill="#03150E" stroke="#1D9E75" stroke-width="0.8"/>
+<text x="580" y="462" class="mono bold" fill="#6FE3B4" style="font-size:13px">KV — global cache</text>
+<text x="580" y="490" class="mono" fill="#6FE3B4" style="font-size:10.5px">master</text>
+<text x="650" y="490" class="sans" fill="#6FE3B4" style="font-size:9.5px;opacity:.75">full role+task dataset, gzip-served</text>
+<text x="580" y="514" class="mono" fill="#6FE3B4" style="font-size:10.5px">pipeline_status</text>
+<text x="700" y="514" class="sans" fill="#6FE3B4" style="font-size:9.5px;opacity:.75">counts, last_updated, security posture</text>
+<text x="580" y="546" class="sans" fill="#5A5850" style="font-size:9.5px;font-style:italic">— powers /api/status, the live badges</text>
+<text x="580" y="562" class="sans" fill="#5A5850" style="font-size:9.5px;font-style:italic">at the top of this README, and the site's</text>
+<text x="580" y="578" class="sans" fill="#5A5850" style="font-size:9.5px;font-style:italic">status bar</text>
+
+<!-- Pipeline writes into D1/KV + commits data/ -->
+<path d="M600 700 L600 620 Q600 610 590 610 L300 610 Q290 610 290 600 L290 588" fill="none" stroke="#F59E0B" stroke-width="1.5" class="fl2" marker-end="url(#ao)"/>
+<path d="M600 700 L600 620 Q600 610 610 610 L700 610 Q710 610 710 600 L710 588" fill="none" stroke="#F59E0B" stroke-width="1.5" class="fl2" marker-end="url(#ao)"/>
+
+<!-- raw GitHub data box (fed by pipeline commit, read directly by frontend) -->
+<rect x="1040" y="300" width="120" height="60" rx="8" fill="#241A05" stroke="#F59E0B" stroke-width="0.8"/>
+<text x="1100" y="325" text-anchor="middle" class="mono bold" fill="#F5C065" style="font-size:10.5px">data/*.json</text>
+<text x="1100" y="340" text-anchor="middle" class="sans" fill="#F5C065" style="font-size:8.5px;opacity:.85">raw GitHub —</text>
+<text x="1100" y="351" text-anchor="middle" class="sans" fill="#F5C065" style="font-size:8.5px;opacity:.85">not the Pages deploy</text>
+<path d="M1040 700 L1100 700 Q1100 690 1100 680 L1100 366" fill="none" stroke="#F59E0B" stroke-width="1.3" class="fl3" marker-end="url(#ao)"/>
+
+<!-- ═══════════════ PIPELINE ═══════════════ -->
+<rect x="40" y="700" width="1120" height="180" rx="10" fill="none" stroke="#1C3A5A" stroke-width="0.8" stroke-dasharray="5 4"/>
+<text x="60" y="722" class="mono bold" fill="#378ADD" style="font-size:12px;letter-spacing:.1em">NIGHTLY PIPELINE — pipeline/*.py, run by GitHub Actions (01:00 UTC)</text>
+
+<g class="mono" style="font-size:10.5px" fill="#85B7EB">
+  <rect x="60"  y="734" width="140" height="46" rx="6" fill="#042C53" stroke="#185FA5" stroke-width="0.6"/><text x="130" y="761" text-anchor="middle">fetch_roles</text>
+  <rect x="212" y="734" width="140" height="46" rx="6" fill="#042C53" stroke="#185FA5" stroke-width="0.6"/><text x="282" y="761" text-anchor="middle">scrape_tasks</text>
+  <rect x="364" y="734" width="140" height="46" rx="6" fill="#042C53" stroke="#185FA5" stroke-width="0.6"/><text x="434" y="761" text-anchor="middle">diff_roles</text>
+  <rect x="516" y="734" width="160" height="46" rx="6" fill="#1A1230" stroke="#7F77DD" stroke-width="0.8"/><text x="596" y="754" text-anchor="middle" fill="#B7AEF0">generate_scenarios</text><text x="596" y="768" text-anchor="middle" fill="#B7AEF0" style="font-size:8.5px">(AI — see below)</text>
+  <rect x="688" y="734" width="140" height="46" rx="6" fill="#042C53" stroke="#185FA5" stroke-width="0.6"/><text x="758" y="761" text-anchor="middle">enrich</text>
+  <rect x="840" y="734" width="140" height="46" rx="6" fill="#042C53" stroke="#185FA5" stroke-width="0.6"/><text x="910" y="761" text-anchor="middle">validate</text>
+  <rect x="992" y="734" width="140" height="46" rx="6" fill="#042C53" stroke="#185FA5" stroke-width="0.6"/><text x="1062" y="754" text-anchor="middle">coverage_report</text>
+</g>
+
+<path d="M1132 780 L1132 796 L60 796 L60 812" fill="none" stroke="#378ADD" stroke-width="1" class="fl3" marker-end="url(#ab)"/>
+
+<rect x="60" y="820" width="220" height="46" rx="6" fill="#042C53" stroke="#185FA5" stroke-width="0.6"/>
+<text x="170" y="840" text-anchor="middle" class="mono" fill="#85B7EB" style="font-size:10.5px">push_to_cloudflare</text>
+<text x="170" y="856" text-anchor="middle" class="sans" fill="#85B7EB" style="font-size:8.5px;opacity:.8">retries on transient 5xx/429</text>
+
+<rect x="300" y="820" width="220" height="46" rx="6" fill="#242020" stroke="#666" stroke-width="0.6"/>
+<text x="410" y="840" text-anchor="middle" class="mono" fill="#B8B4A8" style="font-size:10.5px">test_pills + synonym check</text>
+<text x="410" y="856" text-anchor="middle" class="sans" fill="#B8B4A8" style="font-size:8.5px;opacity:.8">regression gate, non-blocking</text>
+
+<rect x="540" y="820" width="220" height="46" rx="6" fill="#242020" stroke="#666" stroke-width="0.6"/>
+<text x="650" y="840" text-anchor="middle" class="mono" fill="#B8B4A8" style="font-size:10.5px">commit data/*.json</text>
+<text x="650" y="856" text-anchor="middle" class="sans" fill="#B8B4A8" style="font-size:8.5px;opacity:.8">back to master</text>
+
+<text x="880" y="845" class="sans" fill="#5A5850" style="font-size:9.5px;font-style:italic">weekly, separately: check_ai_model.py — see the</text>
+<text x="880" y="860" class="sans" fill="#5A5850" style="font-size:9.5px;font-style:italic">AI automation engine diagram</text>
+
+</svg>

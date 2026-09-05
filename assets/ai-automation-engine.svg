@@ -1,0 +1,134 @@
+<svg width="100%" viewBox="0 0 1200 760" xmlns="http://www.w3.org/2000/svg">
+<defs>
+  <style>
+    @keyframes flow1{to{stroke-dashoffset:-28}}
+    @keyframes flow2{to{stroke-dashoffset:-22}}
+    @keyframes flow3{to{stroke-dashoffset:-18}}
+    .fl1{stroke-dasharray:7 7;animation:flow1 1.2s linear infinite}
+    .fl2{stroke-dasharray:6 6;animation:flow2 1.8s linear infinite}
+    .fl3{stroke-dasharray:5 5;animation:flow3 2.4s linear infinite}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+    .sans{font-family:-apple-system,BlinkMacSystemFont,sans-serif}
+    .bold{font-weight:700}
+  </style>
+  <marker id="ap" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+    <path d="M2 1L8 5L2 9" fill="none" stroke="#7F77DD" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </marker>
+  <marker id="ao" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+    <path d="M2 1L8 5L2 9" fill="none" stroke="#F59E0B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </marker>
+  <marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+    <path d="M2 1L8 5L2 9" fill="none" stroke="#E5484D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </marker>
+  <marker id="ag" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+    <path d="M2 1L8 5L2 9" fill="none" stroke="#1D9E75" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </marker>
+  <pattern id="dots" width="24" height="24" patternUnits="userSpaceOnUse">
+    <circle cx="12" cy="12" r="0.9" fill="#444441" opacity="0.4"/>
+  </pattern>
+</defs>
+
+<rect width="1200" height="760" fill="#0D1018"/>
+<rect width="1200" height="760" fill="url(#dots)"/>
+
+<text x="600" y="34" text-anchor="middle" class="mono bold" fill="#E8E6DF" style="font-size:17px">AI automation engine</text>
+<text x="600" y="54" text-anchor="middle" class="sans" fill="#888780" style="font-size:12px">two loops: generate content nightly, keep the model itself alive weekly</text>
+
+<!-- ═══════════════ NIGHTLY: SCENARIO GENERATION ═══════════════ -->
+<rect x="40" y="76" width="1120" height="230" rx="10" fill="none" stroke="#2A2A3A" stroke-width="0.8" stroke-dasharray="5 4"/>
+<text x="60" y="98" class="mono bold" fill="#B7AEF0" style="font-size:12px;letter-spacing:.1em">NIGHTLY — generate_scenarios.py (runs right after diff_roles.py)</text>
+
+<rect x="60" y="112" width="200" height="70" rx="8" fill="#042C53" stroke="#185FA5" stroke-width="0.8"/>
+<text x="160" y="140" text-anchor="middle" class="mono" fill="#85B7EB" style="font-size:12px">diff_roles.py</text>
+<text x="160" y="158" text-anchor="middle" class="sans" fill="#85B7EB" style="font-size:9.5px;opacity:.8">detects an ADDED role,</text>
+<text x="160" y="171" text-anchor="middle" class="sans" fill="#85B7EB" style="font-size:9.5px;opacity:.8">writes a changelog entry</text>
+
+<path d="M260 147 L300 147" fill="none" stroke="#7F77DD" stroke-width="1.5" class="fl1" marker-end="url(#ap)"/>
+
+<rect x="300" y="112" width="230" height="70" rx="8" fill="#1A1230" stroke="#7F77DD" stroke-width="0.8"/>
+<text x="415" y="134" text-anchor="middle" class="mono bold" fill="#B7AEF0" style="font-size:12px">entry missing "scenario"?</text>
+<text x="415" y="152" text-anchor="middle" class="sans" fill="#B7AEF0" style="font-size:9.5px;opacity:.85">idempotent -- only unfilled entries</text>
+<text x="415" y="166" text-anchor="middle" class="sans" fill="#B7AEF0" style="font-size:9.5px;opacity:.85">are ever (re)processed</text>
+
+<path d="M530 147 L570 147" fill="none" stroke="#7F77DD" stroke-width="1.5" class="fl1" marker-end="url(#ap)"/>
+
+<rect x="570" y="106" width="280" height="82" rx="8" fill="#1A1230" stroke="#7F77DD" stroke-width="1"/>
+<text x="710" y="128" text-anchor="middle" class="mono bold" fill="#B7AEF0" style="font-size:12.5px">Cloudflare Workers AI</text>
+<text x="710" y="146" text-anchor="middle" class="mono" fill="#B7AEF0" style="font-size:10px">POST /ai/run/{MODEL}</text>
+<text x="710" y="164" text-anchor="middle" class="sans" fill="#B7AEF0" style="font-size:9px;opacity:.85">prompt: role name + official description +</text>
+<text x="710" y="177" text-anchor="middle" class="sans" fill="#B7AEF0" style="font-size:9px;opacity:.85">exact permissions -&gt; 1-2 sentence scenario</text>
+
+<path d="M850 147 L890 147" fill="none" stroke="#7F77DD" stroke-width="1.5" class="fl1" marker-end="url(#ap)"/>
+
+<rect x="890" y="112" width="240" height="70" rx="8" fill="#042C53" stroke="#185FA5" stroke-width="0.8"/>
+<text x="1010" y="140" text-anchor="middle" class="mono" fill="#85B7EB" style="font-size:12px">changelog.json</text>
+<text x="1010" y="158" text-anchor="middle" class="sans" fill="#85B7EB" style="font-size:9.5px;opacity:.8">entry.scenario = response text</text>
+<text x="1010" y="171" text-anchor="middle" class="sans" fill="#85B7EB" style="font-size:9.5px;opacity:.8">committed with the rest of data/</text>
+
+<!-- prompt guardrails note -->
+<rect x="60" y="200" width="1070" height="50" rx="6" fill="rgba(245,158,11,0.08)" stroke="rgba(245,158,11,0.35)" stroke-width="0.8"/>
+<text x="80" y="220" class="mono" fill="#F5C065" style="font-size:10px">Prompt guardrails (learned from a bad first pass):</text>
+<text x="80" y="238" class="sans" fill="#F5C065" style="font-size:9.5px">name a real operational trigger (active incident, compliance audit, access review) grounded in the actual permissions — and never treat the role's Microsoft label as a literal job title (a "Writer" role once became a marketing content writer).</text>
+
+<!-- frontend disclosure -->
+<path d="M1010 182 L1010 300 Q1010 306 1004 306 L720 306" fill="none" stroke="#F59E0B" stroke-width="1.3" class="fl3" marker-end="url(#ao)"/>
+<rect x="440" y="258" width="280" height="48" rx="6" fill="#241A05" stroke="#F59E0B" stroke-width="0.8"/>
+<text x="580" y="278" text-anchor="middle" class="mono" fill="#F5C065" style="font-size:10.5px">What's New panel</text>
+<text x="580" y="294" text-anchor="middle" class="sans" fill="#F5C065" style="font-size:9px;opacity:.85">renders LAST, after desc/perms/doc link · labeled "AI-generated"</text>
+
+<!-- ═══════════════ WEEKLY: MODEL WATCHDOG ═══════════════ -->
+<rect x="40" y="330" width="1120" height="410" rx="10" fill="none" stroke="#0F4030" stroke-width="0.8" stroke-dasharray="5 4"/>
+<text x="60" y="352" class="mono bold" fill="#1D9E75" style="font-size:12px;letter-spacing:.1em">WEEKLY — check_ai_model.py (Wed 06:00 UTC · check-ai-model.yml)</text>
+
+<rect x="60" y="366" width="260" height="66" rx="8" fill="#03150E" stroke="#1D9E75" stroke-width="0.8"/>
+<text x="190" y="392" text-anchor="middle" class="mono" fill="#6FE3B4" style="font-size:11.5px">GET /ai/models/search</text>
+<text x="190" y="410" text-anchor="middle" class="sans" fill="#6FE3B4" style="font-size:9px;opacity:.8">?include_deprecated=true — live catalog</text>
+
+<path d="M320 399 L360 399" fill="none" stroke="#1D9E75" stroke-width="1.5" class="fl2" marker-end="url(#ag)"/>
+
+<rect x="360" y="360" width="270" height="78" rx="8" fill="#03150E" stroke="#1D9E75" stroke-width="1"/>
+<text x="495" y="384" text-anchor="middle" class="mono bold" fill="#6FE3B4" style="font-size:12px">is today's MODEL healthy?</text>
+<text x="495" y="402" text-anchor="middle" class="sans" fill="#6FE3B4" style="font-size:9.5px;opacity:.85">active in catalog AND not flagged</text>
+<text x="495" y="416" text-anchor="middle" class="sans" fill="#6FE3B4" style="font-size:9.5px;opacity:.85">deprecated</text>
+<text x="495" y="432" text-anchor="middle" class="sans" fill="#5A5850" style="font-size:8.5px;font-style:italic">Cloudflare retired 18 models in one wave, 2026-05-30</text>
+
+<path d="M495 438 L495 464" fill="none" stroke="#1D9E75" stroke-width="1.3" class="fl2" marker-end="url(#ag)"/>
+<text x="510" y="456" class="mono bold" fill="#6FE3B4" style="font-size:10px">YES</text>
+<rect x="365" y="464" width="260" height="40" rx="6" fill="#03150E" stroke="#1D9E75" stroke-width="0.6"/>
+<text x="495" y="489" text-anchor="middle" class="mono" fill="#6FE3B4" style="font-size:10.5px">no-op, nothing to do</text>
+
+<path d="M630 399 L670 399 Q680 399 680 409 L680 464" fill="none" stroke="#E5484D" stroke-width="1.3" class="fl2" marker-end="url(#ar)"/>
+<text x="650" y="392" class="mono bold" fill="#E5484D" style="font-size:10px">NO</text>
+
+<rect x="655" y="472" width="330" height="140" rx="8" fill="#2A0808" stroke="#E5484D" stroke-width="1"/>
+<text x="820" y="496" text-anchor="middle" class="mono bold" fill="#F5A3A6" style="font-size:12px">walk CANDIDATES, quality-first</text>
+<text x="675" y="518" class="mono" fill="#F5A3A6" style="font-size:9.5px">llama-3.3-70b-instruct-fp8-fast</text>
+<text x="675" y="534" class="mono" fill="#F5A3A6" style="font-size:9.5px">gemma-4-26b-a4b-it</text>
+<text x="675" y="550" class="mono" fill="#F5A3A6" style="font-size:9.5px">glm-4.7-flash · kimi-k2.6</text>
+<text x="675" y="566" class="mono" fill="#F5A3A6" style="font-size:9.5px">llama-3.1-8b-instruct-fast · llama-3.2-3b-instruct</text>
+<text x="675" y="590" class="sans" fill="#F5A3A6" style="font-size:9px;opacity:.85">first one that's active in the catalog AND</text>
+<text x="675" y="603" class="sans" fill="#F5A3A6" style="font-size:9px;opacity:.85">passes a live smoke-test call wins</text>
+
+<path d="M820 612 L820 650" fill="none" stroke="#E5484D" stroke-width="1.5" class="fl2" marker-end="url(#ar)"/>
+<text x="835" y="635" class="mono bold" fill="#F5A3A6" style="font-size:10px">found one</text>
+
+<rect x="655" y="650" width="330" height="66" rx="8" fill="#242020" stroke="#666" stroke-width="0.8"/>
+<text x="820" y="672" text-anchor="middle" class="mono" fill="#D8D4C8" style="font-size:11px">edit MODEL in generate_scenarios.py</text>
+<text x="820" y="690" text-anchor="middle" class="sans" fill="#D8D4C8" style="font-size:9px;opacity:.85">branch + PR (GH_PUSH_TOKEN so CI runs) +</text>
+<text x="820" y="703" text-anchor="middle" class="sans" fill="#D8D4C8" style="font-size:9px;opacity:.85">gh pr merge --auto — CI still gates the merge</text>
+
+<!-- all candidates fail branch -->
+<path d="M820 612 L1010 612 L1010 500" fill="none" stroke="#E5484D" stroke-width="1.3" class="fl3" marker-end="url(#ar)"/>
+<text x="1015" y="580" class="mono bold" fill="#F5A3A6" style="font-size:9.5px" transform="rotate(-90 1015 580)">all failed</text>
+
+<rect x="950" y="366" width="150" height="120" rx="8" fill="#2A0808" stroke="#E5484D" stroke-width="1"/>
+<text x="1025" y="390" text-anchor="middle" class="mono bold" fill="#F5A3A6" style="font-size:11px">tracking issue</text>
+<text x="970" y="410" class="sans" fill="#F5A3A6" style="font-size:9px;opacity:.85">idempotent, same</text>
+<text x="970" y="423" class="sans" fill="#F5A3A6" style="font-size:9px;opacity:.85">upsert pattern as</text>
+<text x="970" y="436" class="sans" fill="#F5A3A6" style="font-size:9px;opacity:.85">coverage_report.py</text>
+<text x="970" y="456" class="sans" fill="#F5A3A6" style="font-size:9px;opacity:.85">asks a human to</text>
+<text x="970" y="469" class="sans" fill="#F5A3A6" style="font-size:9px;opacity:.85">add fresh candidates</text>
+
+<text x="60" y="740" class="sans" fill="#5A5850" style="font-size:10px;font-style:italic">The one thing true automation can't do: know Cloudflare's "recommended replacement" without a human reading the changelog post -- so it tries a curated list live instead of guessing.</text>
+
+</svg>

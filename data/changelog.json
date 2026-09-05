@@ -6,8 +6,7 @@
     "role_name": "AI Reader",
     "field": null,
     "detail": "New built-in role added: AI Reader",
-    "permission_count": 42,
-    "scenario": "A Microsoft Entra admin might assign these permissions to a new IT support specialist to allow them to access and manage various aspects of the organization's directory, including user information, group settings, and service principal management, in order to efficiently resolve technical issues and provide support to users. This would enable the specialist to view and update administrative units, agent identities, applications, contacts, domains, and more, all within the context of the organization's Microsoft 365 services."
+    "permission_count": 42
   },
   {
     "date": "2026-04-30",
@@ -16,8 +15,7 @@
     "role_name": "Customer Delegated Admin Relationship Administrator",
     "field": null,
     "detail": "New built-in role added: Customer Delegated Admin Relationship Administrator",
-    "permission_count": 2,
-    "scenario": "A mid-level manager in a company might assign this role to an employee who will be handling customer relationships and needs to access granular delegated admin privileges to manage those relationships, such as granting or revoking permissions to customer-delegated admin accounts. This employee will need to be able to read and manage customer data in the Microsoft Entra web portal, making the standard read permission on all entities in the portal a necessary requirement."
+    "permission_count": 2
   },
   {
     "date": "2026-04-30",
@@ -252,8 +250,7 @@
     "role_name": "Purview Workload Content Administrator",
     "field": null,
     "detail": "New built-in role added: Purview Workload Content Administrator",
-    "permission_count": 0,
-    "scenario": "A Microsoft Entra admin may assign this role to someone responsible for managing data in Microsoft 365 as part of their daily tasks, where they need to access and manage data from the Microsoft Purview portal to ensure compliance and security. This role is likely assigned to someone who already has administrative access to Microsoft 365 and is familiar with data management and compliance requirements."
+    "permission_count": 0
   },
   {
     "date": "2026-06-20",
@@ -262,8 +259,7 @@
     "role_name": "Purview Workload Content Reader",
     "field": null,
     "detail": "New built-in role added: Purview Workload Content Reader",
-    "permission_count": 0,
-    "scenario": "A Microsoft Entra admin might assign this role to a user who needs to access data from the Microsoft Purview portal on a regular basis, such as a data analyst who requires read-only access to customer information to generate reports. This user would likely be a member of the IT department or a business unit that relies on data from Microsoft 365 for their operations."
+    "permission_count": 0
   },
   {
     "date": "2026-06-20",
@@ -272,8 +268,7 @@
     "role_name": "Purview Workload Content Writer",
     "field": null,
     "detail": "New built-in role added: Purview Workload Content Writer",
-    "permission_count": 0,
-    "scenario": "A Microsoft Entra admin may assign this role to a content writer responsible for updating the company's website or marketing materials, as they need access to read and edit data from Microsoft 365 through the Microsoft Purview portal. This is typically done to streamline the content creation process, allowing the content writer to focus on writing and editing while the admin handles the underlying permissions management."
+    "permission_count": 0
   },
   {
     "date": "2026-06-26",
@@ -435,7 +430,6 @@
     "role_name": "Entra SOC Identity Responder",
     "field": null,
     "detail": "New built-in role added: Entra SOC Identity Responder",
-    "permission_count": 4,
-    "scenario": "A security team lead is preparing to leave for a week-long vacation and needs to ensure that all active security incidents are being closely monitored, so they assign the identity containment role to a trusted team member who can perform critical actions such as disabling users, revoking sign-in sessions, and resetting passwords in case of an emergency. This allows the team lead to maintain oversight while also giving the team member the necessary authority to respond to any unexpected security incidents that may arise."
+    "permission_count": 4
   }
 ]
