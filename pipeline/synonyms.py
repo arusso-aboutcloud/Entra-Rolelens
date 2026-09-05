@@ -208,7 +208,7 @@ SYNONYMS: dict[str, str] = {
     'govern copilot':               'ai administrator',
 
     # Backup and recovery
-    'backup':                       'entra backup administrator',
+    'backup':                       'entra backup reader',
     'entra backup':                 'entra backup administrator',
     'tenant backup':                'entra backup administrator',
     'directory backup':             'entra backup administrator',
