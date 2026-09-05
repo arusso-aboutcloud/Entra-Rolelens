@@ -1,0 +1,81 @@
+name: Check AI model
+
+# Cloudflare deprecates Workers AI models over time (18 retired in one wave
+# on 2026-05-30), which would silently break generate_scenarios.py's What's
+# New scenario generation. Weekly: checks the configured model against
+# Workers AI's live catalog, and if it's deprecated or gone, live-smoke-tests
+# a small hand-maintained candidate list and switches to the first one that
+# actually works. Opens a PR (via the PAT so CI runs) and auto-merges it --
+# CI (Quality Gate, Vuln Scan) still gates the merge. Only if every candidate
+# fails does it fall back to a tracking issue for a human to add new options.
+
+on:
+  schedule:
+    - cron: "0 6 * * 3" # Wednesdays 06:00 UTC (after auto-patch-deps' Tuesday slot)
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: check-ai-model
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@05e31511f85b41b11d1cf0ef85d0992719546e2c # v2.21.0
+        with:
+          egress-policy: audit
+
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # PAT so the PR this workflow opens actually triggers CI + can auto-merge
+          token: ${{ secrets.GH_PUSH_TOKEN }}
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r pipeline/requirements.txt
+
+      - name: Check + patch model
+        id: check
+        run: |
+          set -euo pipefail
+          OUTPUT=$(python pipeline/check_ai_model.py)
+          echo "$OUTPUT"
+          CHANGED=$(echo "$OUTPUT" | grep -o 'MODEL_CHANGED=.*' | cut -d= -f2 || true)
+          echo "new_model=$CHANGED" >> "$GITHUB_OUTPUT"
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPO: ${{ github.repository }}
+
+      - name: Open PR + enable auto-merge
+        if: steps.check.outputs.new_model != ''
+        env:
+          GH_TOKEN: ${{ secrets.GH_PUSH_TOKEN }}
+        run: |
+          set -euo pipefail
+          NEW_MODEL="${{ steps.check.outputs.new_model }}"
+          BRANCH="auto-patch/ai-model-$(date -u +%Y%m%d)"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$BRANCH"
+          git add pipeline/generate_scenarios.py
+          git commit -m "fix(pipeline): switch Workers AI model to $NEW_MODEL (previous deprecated)"
+          git push -u origin "$BRANCH" --force-with-lease
+          gh pr create --base master --head "$BRANCH" \
+            --title "fix(pipeline): switch Workers AI model to $NEW_MODEL" \
+            --label dependencies \
+            --body "Automated: the Workers AI model configured in \`generate_scenarios.py\` was deprecated or removed from Cloudflare's catalog. Switched to \`$NEW_MODEL\`, the first candidate in \`check_ai_model.py\`'s \`CANDIDATES\` list that is active in the current catalog and passed a live smoke test.
+
+          CI (Quality Gate, Vuln Scan, Cloudflare Pages build) gates this before auto-merge. If the build breaks, the PR stays open for review."
+          gh pr merge --auto --squash "$BRANCH" || echo "auto-merge not enabled yet; PR left open"
