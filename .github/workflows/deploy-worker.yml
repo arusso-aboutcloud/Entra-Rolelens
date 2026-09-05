@@ -1,0 +1,55 @@
+name: Deploy Worker
+
+# The Cloudflare Worker had no deploy automation at all -- unlike the
+# frontend (Cloudflare Pages Git integration, configured on Cloudflare's
+# side) and the data pipeline (direct D1/KV API calls from refresh.yml),
+# worker/src/index.ts and wrangler.toml changes only ever reached
+# production via someone manually running `wrangler deploy`. This closes
+# that gap: deploy on every push to master that touches worker/, plus a
+# manual trigger for one-off redeploys.
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - "worker/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-worker
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@05e31511f85b41b11d1cf0ef85d0992719546e2c # v2.21.0
+        with:
+          egress-policy: audit
+
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        working-directory: worker
+        run: npm ci
+
+      - name: Type-check
+        working-directory: worker
+        run: npm run type-check
+
+      - name: Deploy
+        working-directory: worker
+        run: npx wrangler deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
