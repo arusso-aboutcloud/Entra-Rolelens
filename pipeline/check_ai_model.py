@@ -9,13 +9,13 @@ catalog changes far less often than role data.
 Cloudflare deprecates models via a changelog post naming a retirement date,
 not a structured "use X instead" API field, so there is no way to derive
 the *correct* replacement purely from data. Trade-off: this script walks a
-small hand-maintained CANDIDATES list (smallest/cheapest reasonable
-instruct models first) and switches to the first entry that is (a) still
-in Workers AI's live catalog, (b) not flagged deprecated, and (c) actually
-returns a completion in a live smoke test -- so a candidate that's merely
-listed but broken/renamed never gets written. Only if every candidate fails
-does it fall back to opening a GitHub issue asking a human to add fresh
-options -- the one case true automation can't solve without guessing.
+small hand-maintained CANDIDATES list and switches to the first entry that
+is (a) still in Workers AI's live catalog, (b) not flagged deprecated, and
+(c) actually returns a completion in a live smoke test -- so a candidate
+that's merely listed but broken/renamed never gets written. Only if every
+candidate fails does it fall back to opening a GitHub issue asking a human
+to add fresh options -- the one case true automation can't solve without
+guessing.
 """
 
 import os
@@ -31,15 +31,18 @@ GH_API = "https://api.github.com"
 ISSUE_TITLE = "Workers AI model candidates all deprecated -- generate_scenarios.py needs new options"
 ISSUE_LABEL = "pipeline-failure"
 
-# Ordered smallest/cheapest-first. This list is the one manual judgment call
-# the API can't make for us (no "recommended replacement" field exists) --
-# refresh it occasionally as Cloudflare's catalog evolves.
+# Ordered by output quality first (call volume is 0-3/month, so cost is a
+# non-factor at any of these sizes) -- smaller/cheaper models are kept as
+# fallbacks for resilience, not preferred. This list is the one manual
+# judgment call the API can't make for us (no "recommended replacement"
+# field exists) -- refresh it occasionally as Cloudflare's catalog evolves.
 CANDIDATES = [
-    "@cf/meta/llama-3.1-8b-instruct-fast",
-    "@cf/meta/llama-3.2-3b-instruct",
+    "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
     "@cf/google/gemma-4-26b-a4b-it",
     "@cf/zai-org/glm-4.7-flash",
     "@cf/moonshotai/kimi-k2.6",
+    "@cf/meta/llama-3.1-8b-instruct-fast",
+    "@cf/meta/llama-3.2-3b-instruct",
 ]
 
 MODEL_RE = re.compile(r'^MODEL = "([^"]+)"$', re.MULTILINE)
