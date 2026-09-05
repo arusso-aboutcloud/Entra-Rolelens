@@ -63,6 +63,13 @@ jobs:
       - name: Diff roles
         run: python pipeline/diff_roles.py
 
+      - name: Generate role scenarios (AI, best-effort)
+        continue-on-error: true
+        run: python pipeline/generate_scenarios.py
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+
       - name: Enrich
         run: python pipeline/enrich.py
 
