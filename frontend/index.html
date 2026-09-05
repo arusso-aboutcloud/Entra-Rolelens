@@ -157,19 +157,78 @@
     .gh-link:hover { color: var(--text); }
     .gh-link svg { width: 20px; height: 20px; }
 
+    /* ── AboutCloud brand mark (source of truth: aboutcloud.io) ────────── */
     .ac-brand {
       display: flex;
       align-items: center;
       gap: 10px;
       text-decoration: none;
-      color: var(--muted);
-      font-family: var(--font-mono);
-      font-size: 13px;
-      letter-spacing: 0.04em;
-      transition: color 0.15s;
+      transition: opacity 0.15s;
     }
-    .ac-brand:hover { color: var(--text); }
-    .ac-brand img { height: 38px; width: 38px; opacity: 0.85; }
+    .ac-brand:hover { opacity: 0.85; }
+
+    .ac-chip {
+      position: relative;
+      width: 56px;
+      height: 56px;
+      border-radius: 14px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 212, 255, 0.08);
+      box-shadow: 0 0 24px rgba(0, 212, 255, 0.3), inset 0 0 14px rgba(0, 212, 255, 0.15);
+    }
+    .ac-chip img {
+      position: relative;
+      z-index: 1;
+      width: 34px;
+      height: auto;
+    }
+
+    /* Ring shape via mask: a colored box masked down to just its padding
+       band (content-box cut out of the full box), so only a thin annulus
+       around the chip is visible -- not the CSS "ring-icon" glyph, an
+       actual conic-gradient annulus. */
+    .ac-ring {
+      position: absolute;
+      inset: -3px;
+      border-radius: 17px;
+      padding: 3px;
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+    }
+    .ac-ring-cw {
+      background: conic-gradient(from 0deg, #00d4ff, transparent 70%, #00d4ff);
+      animation: ac-spin-cw 3.8s linear infinite;
+    }
+    .ac-ring-ccw {
+      background: conic-gradient(from 0deg, #7fe3ff, transparent 70%, #7fe3ff);
+      opacity: 0.8;
+      animation: ac-spin-ccw 5.2s linear infinite;
+    }
+    @keyframes ac-spin-cw  { to { transform: rotate(360deg); } }
+    @keyframes ac-spin-ccw { to { transform: rotate(-360deg); } }
+    @media (prefers-reduced-motion: reduce) {
+      .ac-ring-cw  { animation: none; transform: rotate(20deg); }
+      .ac-ring-ccw { animation: none; transform: rotate(-20deg); }
+    }
+
+    .ac-wordmark {
+      font-family: 'Chakra Petch', var(--font-head);
+      font-weight: 700;
+      font-size: 22px;
+      color: #fdfdfd;
+      letter-spacing: 0.01em;
+    }
+    @media (max-width: 640px) {
+      .ac-chip { width: 44px; height: 44px; border-radius: 12px; }
+      .ac-chip img { width: 27px; }
+      .ac-ring { border-radius: 15px; }
+      .ac-wordmark { font-size: 20px; }
+    }
 
     .tagline {
       font-family: var(--font-mono);
@@ -1486,8 +1545,12 @@
       </div>
       <div class="header-right">
         <a href="https://www.aboutcloud.io" target="_blank" rel="noopener" class="ac-brand">
-          <img src="assets/logo_200x200_white.png" alt="aboutcloud.io" />
-          aboutcloud.io
+          <span class="ac-chip">
+            <span class="ac-ring ac-ring-cw" aria-hidden="true"></span>
+            <span class="ac-ring ac-ring-ccw" aria-hidden="true"></span>
+            <img src="assets/logo-icon-dark-theme.png" alt="" />
+          </span>
+          <span class="ac-wordmark">aboutcloud.io</span>
         </a>
         <span class="last-updated" id="last-updated-badge">Loading…</span>
         <a href="https://github.com/arusso-aboutcloud/entra-rolelens" target="_blank" rel="noopener" class="gh-link" aria-label="GitHub">
