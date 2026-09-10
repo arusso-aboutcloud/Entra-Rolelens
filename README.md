@@ -109,10 +109,14 @@ See [Technical stack](#technical-stack) below for the full per-layer cost breakd
 
 ## AI automation engine
 
-Two AI-adjacent loops, both best-effort and fully automatic:
+**Why it exists.** Microsoft's built-in role descriptions are short and abstract. When a brand-new role first appears in the What's New panel, an admin has no fast way to tell *when they would actually assign it*. One nightly loop asks a model for a short, concrete "here is a situation where you would use this role" narrative to sit alongside the official text. A second weekly loop exists only to keep the first one working: Cloudflare retires Workers AI models on its own schedule (18 in a single wave on 2026-05-30), and a pinned model id silently stops generating scenarios when that happens.
 
-- **Nightly** (`generate_scenarios.py`, right after `diff_roles.py`): for each newly-added role, calls Cloudflare Workers AI to generate a short, technically-grounded real-world scenario — rendered in the What's New panel, clearly labeled **AI-generated**, after the role's own official description/permissions/docs link.
-- **Weekly** (`check_ai_model.py`, Wednesdays 06:00 UTC): Cloudflare periodically deprecates Workers AI models (18 were retired in one wave on 2026-05-30). This checks the configured model against the live catalog, and if it's gone, live-smoke-tests a small quality-ordered candidate list and switches to the first one that works — via an auto-merged PR, so CI still gates the swap. If every candidate fails, it opens a tracking issue instead of guessing.
+**What AI does and does not touch.** The generated narrative is display-only prose in one UI panel. It never feeds search ranking, role or permission data, the role diff, or the coverage report — those are all deterministic, and the search path contains no LLM at all. Every narrative is labeled **AI-generated** and rendered *after* the authoritative content: the role's official description, its full permission list, the deterministic role-fact badges (privileged / PIM-eligible / admin-unit-scopable / where it is configured — computed locally, never by the model), and the Microsoft docs link. Generation is best-effort: a failed or empty call just leaves the field blank and the panel falls back to facts plus description. Only newly-added roles are processed (typically 0–3 a month), only in the nightly pipeline. **Both "minimum role for a task" and "role diff" work with the AI engine switched off entirely.**
+
+Two loops, both fully automatic:
+
+- **Nightly** (`generate_scenarios.py`, right after `diff_roles.py`): for each newly-added role, computes the deterministic role facts, then — only if the changelog entry has no scenario yet — calls Cloudflare Workers AI for the narrative. Idempotent: a failed call is simply retried next run, no duplicate work.
+- **Weekly** (`check_ai_model.py`, Wednesdays 06:00 UTC): checks the configured model against Workers AI's live catalog. If it is gone or deprecated, it walks a small hand-maintained candidate list and switches to the first entry that is still listed, not deprecated, *and* returns a completion in a live smoke test — shipped as an auto-merged PR so CI still gates the swap. If every candidate fails, it opens a tracking issue instead of guessing.
 
 [![AI automation engine](assets/ai-automation-engine.svg)](assets/ai-automation-engine.svg)
 
