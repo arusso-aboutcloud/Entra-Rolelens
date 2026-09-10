@@ -93,7 +93,7 @@ This keeps the one remaining manual step — seeding a task for a role Microsoft
 
 ## Architecture
 
-How the frontend, Worker API, and D1/KV actually connect — and where the nightly pipeline feeds in:
+How every request enters through Cloudflare's WAF + DDoS edge, how the frontend, Worker API, and D1/KV actually connect — and where the nightly pipeline feeds in:
 
 [![Application architecture](assets/app-architecture.svg)](assets/app-architecture.svg)
 
