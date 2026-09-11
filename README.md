@@ -69,6 +69,8 @@ This keeps the one remaining manual step — seeding a task for a role Microsoft
 > Auto-generated from the nightly pipeline · Last updated by GitHub Actions
 
 <!-- WHATS_NEW_START -->
+- ![Description updated](https://img.shields.io/badge/-Description%20updated-9A6700?style=for-the-badge) **AI Administrator** (2026-09-11)
+- ![Description updated](https://img.shields.io/badge/-Description%20updated-9A6700?style=for-the-badge) **AI Reader** (2026-09-11)
 - ![Permission added](https://img.shields.io/badge/-Permission%20added-007A53?style=for-the-badge) **Global Administrator** (2026-09-07)
 - ![Permission added](https://img.shields.io/badge/-Permission%20added-007A53?style=for-the-badge) **Application Administrator** (2026-09-07)
 - ![Permission added](https://img.shields.io/badge/-Permission%20added-007A53?style=for-the-badge) **Application Developer** (2026-09-07)

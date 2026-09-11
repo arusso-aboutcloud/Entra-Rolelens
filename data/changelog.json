@@ -698,5 +698,25 @@
     "added_permissions": [
       "microsoft.directory/signInReports/allProperties/read"
     ]
+  },
+  {
+    "date": "2026-09-11",
+    "change_type": "MODIFIED",
+    "role_id": "d2562ede-74db-457e-a7b6-544e236ebb61",
+    "role_name": "AI Administrator",
+    "field": "description",
+    "detail": "description changed: \"Manage all aspects of Microsoft 365 Copilot and AI-related enterprise services in Microsoft 365.\" -> \"Manage all aspects of Microsoft Copilot and AI-related enterprise services in Microsoft 365.\"",
+    "old": "Manage all aspects of Microsoft 365 Copilot and AI-related enterprise services in Microsoft 365.",
+    "new": "Manage all aspects of Microsoft Copilot and AI-related enterprise services in Microsoft 365."
+  },
+  {
+    "date": "2026-09-11",
+    "change_type": "MODIFIED",
+    "role_id": "1fe13547-53f6-408d-ac04-7f8eed167b38",
+    "role_name": "AI Reader",
+    "field": "description",
+    "detail": "description changed: \"Read all aspects of Microsoft 365 Copilot and AI-related enterprise services in Microsoft 365.\" -> \"Read all aspects of Microsoft Copilot and AI-related enterprise services in Microsoft 365.\"",
+    "old": "Read all aspects of Microsoft 365 Copilot and AI-related enterprise services in Microsoft 365.",
+    "new": "Read all aspects of Microsoft Copilot and AI-related enterprise services in Microsoft 365."
   }
 ]

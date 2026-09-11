@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-10T05:29:29.673123+00:00",
+  "generated_at": "2026-09-11T05:32:03.675999+00:00",
   "role_count": 145,
   "task_count": 238,
   "shadow_role_count": 9,
@@ -4106,7 +4106,7 @@
     {
       "id": "d2562ede-74db-457e-a7b6-544e236ebb61",
       "displayName": "AI Administrator",
-      "description": "Manage all aspects of Microsoft 365 Copilot and AI-related enterprise services in Microsoft 365.",
+      "description": "Manage all aspects of Microsoft Copilot and AI-related enterprise services in Microsoft 365.",
       "isBuiltIn": true,
       "isPrivileged": true,
       "permissions": [
@@ -4259,7 +4259,7 @@
     {
       "id": "1fe13547-53f6-408d-ac04-7f8eed167b38",
       "displayName": "AI Reader",
-      "description": "Read all aspects of Microsoft 365 Copilot and AI-related enterprise services in Microsoft 365.",
+      "description": "Read all aspects of Microsoft Copilot and AI-related enterprise services in Microsoft 365.",
       "isBuiltIn": true,
       "isPrivileged": true,
       "permissions": [
