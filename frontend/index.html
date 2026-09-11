@@ -3234,8 +3234,30 @@ Content-Type: application/json
     return `<span class="wn-glyph ${_WN_GLYPH_CLASS.MODIFIED}">${_WN_GLYPHS.MODIFIED}</span>`;
   }
 
+  // Glyph-slot badge for a non-permission modification. Named specifically
+  // per field ("Description Updated" vs "Renamed" vs a privilege flip) --
+  // a generic "Role Updated" doesn't tell a description edit apart from any
+  // other kind of change at a glance, which is the whole point of this slot.
+  // "Role Updated" is kept only as a fallback for a field this switch
+  // doesn't otherwise recognize.
+  function _wnModGlowBadge(c) {
+    switch (c.field) {
+      case 'description': return `<span class="wn-glow-badge upd">Description Updated</span>`;
+      case 'displayName':  return `<span class="wn-glow-badge upd">Renamed</span>`;
+      case 'isPrivileged': {
+        const nowPriv = c.new === true || /->\s*true/.test(c.detail || '');
+        return `<span class="wn-glow-badge upd">${nowPriv ? 'Now Privileged' : 'No Longer Privileged'}</span>`;
+      }
+      default: return `<span class="wn-glow-badge upd">Role Updated</span>`;
+    }
+  }
+
   // Summary-row label. Permission changes carry +N/−N badges; a privileged
-  // flip is a single badge, not "false → true".
+  // flip is a single badge, not "false → true". Description/rename/privilege
+  // rows say nothing here — the glyph badge (_wnModGlowBadge) already names
+  // exactly what changed, and the expandable detail below has the specifics
+  // (word diff, or Was/Now for a privilege flip); repeating the same word in
+  // both the glyph and this label read as duplicated.
   function _wnActionHtml(c) {
     const type = c.change_type?.toUpperCase() ?? 'MODIFIED';
     if (type === 'ADDED') {
@@ -3255,14 +3277,10 @@ Content-Type: application/json
         const b = badges.length ? `<span class="wn-badges">${badges.join('')}</span>` : '';
         return `<span class="wn-label-soft">permissions</span> ${b}`;
       }
-      case 'description':  return `<span class="wn-label-soft">description updated</span>`;
-      case 'displayName':  return `<span class="wn-label-soft">renamed</span>`;
-      case 'isPrivileged': {
-        const nowPriv = c.new === true || /->\s*true/.test(c.detail || '');
-        return nowPriv
-          ? `<span class="wn-badge priv">now privileged</span>`
-          : `<span class="wn-badge unpriv">no longer privileged</span>`;
-      }
+      case 'description':
+      case 'displayName':
+      case 'isPrivileged':
+        return '';
       default: return `<span class="wn-label-soft">updated</span>`;
     }
   }
@@ -3430,7 +3448,7 @@ Content-Type: application/json
         : (type === 'MODIFIED' && c.field === 'permissions')
           ? _wnPermGlowBadge(c)
           : type === 'MODIFIED'
-            ? `<span class="wn-glow-badge upd">Role Updated</span>`
+            ? _wnModGlowBadge(c)
             : `<span class="wn-glyph ${gcls}">${glyph}</span>`;
       return `<div class="wn-item${exp ? ' wn-expandable' : ''}">` +
         `<div class="whats-new-entry type-${gcls}${fresh}" data-idx="${startIdx + i}"${handlers}${titleAttr}>` +
