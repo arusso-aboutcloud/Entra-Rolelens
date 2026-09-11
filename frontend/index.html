@@ -1210,9 +1210,13 @@
     .wn-glyph.modified { color: var(--warn); }
 
     /* Glowing text badges that stand in for the glyph on the rows that most
-       need a glance-level signal: a brand-new role ("New") and a permission
+       need a glance-level signal: a brand-new role ("New"), a permission
        grant/revoke on an existing one ("Permission added"/"Permission
-       removed"). Same treatment, different color per direction. */
+       removed"), and any other change to an existing role -- description,
+       rename, privilege flip -- ("Role Updated"). Same treatment, different
+       color per direction; the specific detail still lives in the action
+       text to the right (e.g. the "now privileged" badge, the diffed
+       description). */
     @keyframes wn-glow-green {
       0%, 100% { text-shadow: 0 0 3px rgba(0,229,163,0.95), 0 0 9px rgba(0,229,163,0.65), 0 0 20px rgba(0,229,163,0.3); }
       50%       { text-shadow: 0 0 2px rgba(0,229,163,0.45), 0 0 5px rgba(0,229,163,0.2),  0 0 10px rgba(0,229,163,0.08); }
@@ -1220,6 +1224,10 @@
     @keyframes wn-glow-red {
       0%, 100% { text-shadow: 0 0 3px rgba(248,113,113,0.95), 0 0 9px rgba(248,113,113,0.65), 0 0 20px rgba(248,113,113,0.3); }
       50%       { text-shadow: 0 0 2px rgba(248,113,113,0.45), 0 0 5px rgba(248,113,113,0.2),  0 0 10px rgba(248,113,113,0.08); }
+    }
+    @keyframes wn-glow-yellow {
+      0%, 100% { text-shadow: 0 0 3px rgba(251,191,36,0.95), 0 0 9px rgba(251,191,36,0.65), 0 0 20px rgba(251,191,36,0.3); }
+      50%       { text-shadow: 0 0 2px rgba(251,191,36,0.45), 0 0 5px rgba(251,191,36,0.2),  0 0 10px rgba(251,191,36,0.08); }
     }
     .wn-glow-badge {
       font-family: 'Chakra Petch', var(--font-head);
@@ -1230,11 +1238,13 @@
       flex-shrink: 0;
       white-space: nowrap;
     }
-    .wn-glow-badge.add { color: var(--added);  animation: wn-glow-green 3s ease-in-out infinite; }
-    .wn-glow-badge.rem { color: var(--danger); animation: wn-glow-red   3s ease-in-out infinite; }
+    .wn-glow-badge.add { color: var(--added);  animation: wn-glow-green  3s ease-in-out infinite; }
+    .wn-glow-badge.rem { color: var(--danger); animation: wn-glow-red    3s ease-in-out infinite; }
+    .wn-glow-badge.upd { color: var(--warn);   animation: wn-glow-yellow 3s ease-in-out infinite; }
     @media (pointer: coarse) {
       .wn-glow-badge.add { animation: none; text-shadow: 0 0 3px rgba(0,229,163,0.95), 0 0 9px rgba(0,229,163,0.65), 0 0 20px rgba(0,229,163,0.3); }
       .wn-glow-badge.rem { animation: none; text-shadow: 0 0 3px rgba(248,113,113,0.95), 0 0 9px rgba(248,113,113,0.65), 0 0 20px rgba(248,113,113,0.3); }
+      .wn-glow-badge.upd { animation: none; text-shadow: 0 0 3px rgba(251,191,36,0.95), 0 0 9px rgba(251,191,36,0.65), 0 0 20px rgba(251,191,36,0.3); }
     }
     /* Narrow rows: .whats-new-entry never wrapped (default flex nowrap), so a
        long role name + a multi-word badge/action/date group had nowhere to
@@ -3419,7 +3429,9 @@ Content-Type: application/json
         ? `<span class="wn-glow-badge add">New</span>`
         : (type === 'MODIFIED' && c.field === 'permissions')
           ? _wnPermGlowBadge(c)
-          : `<span class="wn-glyph ${gcls}">${glyph}</span>`;
+          : type === 'MODIFIED'
+            ? `<span class="wn-glow-badge upd">Role Updated</span>`
+            : `<span class="wn-glyph ${gcls}">${glyph}</span>`;
       return `<div class="wn-item${exp ? ' wn-expandable' : ''}">` +
         `<div class="whats-new-entry type-${gcls}${fresh}" data-idx="${startIdx + i}"${handlers}${titleAttr}>` +
           `<span class="wn-fresh-dot"${isFresh ? ' title="changed in the last 24h"' : ''}></span>` +
