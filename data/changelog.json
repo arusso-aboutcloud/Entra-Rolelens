@@ -43,7 +43,8 @@
     "added_permissions": [
       "microsoft.directory/agentUsers/photo/update",
       "microsoft.directory/agentUsers/reprocessLicenseAssignment"
-    ]
+    ],
+    "scenario": "When a user's license assignment is updated due to a change in their job function, someone assigned this role can now reprocess the license assignment for the corresponding agent user and also update the agent user's photo to reflect their new role, allowing for more streamlined management of agent identities."
   },
   {
     "date": "2026-04-30",
@@ -94,7 +95,8 @@
     "detail": "1 permission added",
     "added_permissions": [
       "microsoft.commerce.tenantRelationships/customerDelegatedAdminPrivileges/allProperties/allTasks"
-    ]
+    ],
+    "scenario": "When a customer delegates administrative privileges to their tenant, an administrator with this role can now view and manage all properties and tasks associated with that delegated relationship, for example, when a customer initiates a delegated admin privilege request through the Azure portal, allowing the administrator to access and configure the delegated settings."
   },
   {
     "date": "2026-04-30",
@@ -105,7 +107,8 @@
     "detail": "1 permission added",
     "added_permissions": [
       "microsoft.directory/applications/disablement/update"
-    ]
+    ],
+    "scenario": "When an application is compromised and needs to be immediately disabled to prevent further unauthorized access, an administrator assigned this role can now directly update the application's disablement status in response to a security incident alert from the Microsoft Entra monitoring system."
   },
   {
     "date": "2026-04-30",
@@ -175,7 +178,8 @@
     "removed_permissions": [
       "microsoft.directory/agentIdentityBlueprints/verification/update",
       "microsoft.directory/groups.unified/createAsOwner"
-    ]
+    ],
+    "scenario": "When an agent identity is inadvertently deleted during a bulk cleanup operation, someone assigned this role can now restore the deleted agent identity and also reauthenticate the corresponding agent identity blueprint principal, ensuring that the agent can continue to operate without interruption and minimizing downtime."
   },
   {
     "date": "2026-06-13",
@@ -186,7 +190,8 @@
     "detail": "1 permission added",
     "added_permissions": [
       "microsoft.directory/agentIdentityBlueprints/createAsOwner"
-    ]
+    ],
+    "scenario": "When a new application requires automated access to Azure Active Directory resources, the holder of this role can now create an agent identity blueprint and its associated principal, and automatically become an owner of both, upon receiving a request from a developer to provision a new service principal for their application, which was not possible before the addition of the createAsOwner permission."
   },
   {
     "date": "2026-06-13",
@@ -219,7 +224,8 @@
       "microsoft.directory/agentUsers/sponsors/update",
       "microsoft.directory/agentUsers/usageLocation/update",
       "microsoft.directory/agentUsers/userPrincipalName/update"
-    ]
+    ],
+    "scenario": "When an organization onboards a new custom application that utilizes agent identities for automated tasks, an administrator with this role can now update the authentication settings for those agent identities, for instance, when the application's development team requests a change to the authentication protocol used by the agent identities to align with updated security policies."
   },
   {
     "date": "2026-06-17",
@@ -230,7 +236,8 @@
     "detail": "1 permission removed",
     "removed_permissions": [
       "microsoft.office365.usageReports/allEntities/allProperties/read"
-    ]
+    ],
+    "scenario": "Tenant administrators should be aware that individuals assigned to this role can no longer access detailed usage reports for all entities and properties within the organization, which may impact existing automations or workflows that relied on this capability and could now require a different role to be assigned."
   },
   {
     "date": "2026-06-18",
@@ -257,7 +264,8 @@
       "microsoft.directory/agentUsers/sponsors/update",
       "microsoft.directory/agentUsers/usageLocation/update",
       "microsoft.directory/agentUsers/userPrincipalName/update"
-    ]
+    ],
+    "scenario": "When a user's employment status changes and they need to be removed from the system, the administrator can now directly delete the user account as part of the offboarding process, triggered by an HR update in the system, which was not possible before the update to this role's permissions."
   },
   {
     "date": "2026-06-20",
@@ -358,7 +366,8 @@
       "microsoft.directory/deletedItems.agentIdentityBlueprintPrincipals/restore",
       "microsoft.directory/deletedItems.agentIdentityBlueprints/delete",
       "microsoft.directory/deletedItems.agentIdentityBlueprints/restore"
-    ]
+    ],
+    "scenario": "When an organization onboards a new AI-powered application that requires a custom agent identity blueprint with specific app roles and credentials, the administrator assigned to this role can now create and configure the blueprint with the necessary permissions and credentials, triggered by the receipt of a new service request from the development team, which was not possible before the update to this role's permissions."
   },
   {
     "date": "2026-06-26",
@@ -372,7 +381,8 @@
       "microsoft.directory/agentIdentities/allProperties/read",
       "microsoft.directory/agentIdentityBlueprintPrincipals/allProperties/read",
       "microsoft.directory/agentIdentityBlueprints/allProperties/read"
-    ]
+    ],
+    "scenario": "When a new custom agent identity blueprint is created in the Microsoft Entra admin center, individuals assigned to this role can now read all properties of the associated agent identities, agent identity blueprints, and blueprint principals, allowing them to review and audit the configuration of these entities in response to an admin consent request policy update."
   },
   {
     "date": "2026-07-02",
@@ -383,7 +393,8 @@
     "detail": "1 permission added",
     "added_permissions": [
       "microsoft.directory/groups.unified/createAsOwner"
-    ]
+    ],
+    "scenario": "When a new department is spun up within the organization and a corresponding unified group needs to be created to manage access for the agents that will be servicing it, someone assigned this role can now create the group as the owner, allowing them to immediately configure the necessary agent identity blueprints and principals without requiring additional administrative assistance."
   },
   {
     "date": "2026-07-02",
@@ -397,7 +408,8 @@
       "microsoft.directory/users/enable",
       "microsoft.directory/users/invalidateAllRefreshTokens",
       "microsoft.directory/users/password/update"
-    ]
+    ],
+    "scenario": "When a user reports a compromised account due to a phishing attack, the security operator can now immediately disable the user's account, invalidate all existing refresh tokens, and then update the password to prevent further unauthorized access, which was not possible before the addition of these new permissions."
   },
   {
     "date": "2026-07-02",
@@ -408,7 +420,8 @@
     "detail": "1 permission added",
     "added_permissions": [
       "microsoft.office365.webPortal/allEntities/standard/read"
-    ]
+    ],
+    "scenario": "When a user with this role attempts to access the Office 365 web portal to review usage reports for all entities, the newly added permission allows them to successfully retrieve the required data for standard read operations, which was previously restricted."
   },
   {
     "date": "2026-07-02",
@@ -419,7 +432,8 @@
     "detail": "1 permission added",
     "added_permissions": [
       "microsoft.office365.webPortal/allEntities/standard/read"
-    ]
+    ],
+    "scenario": "When a user assigned this role navigates to the Office 365 web portal, they can now view all standard entities, such as service health and message center updates, as a result of the updated permissions, allowing them to access this information without requiring additional roles or elevated privileges."
   },
   {
     "date": "2026-07-02",
@@ -430,7 +444,8 @@
     "detail": "1 permission added",
     "added_permissions": [
       "microsoft.office365.webPortal/allEntities/standard/read"
-    ]
+    ],
+    "scenario": "When a user with this role needs to review the configuration of all Office 365 web portal settings for auditing purposes, they can now use the Azure AD portal to read the standard settings of all entities, such as user and group configurations, without requiring additional permissions or role assignments."
   },
   {
     "date": "2026-07-02",
@@ -441,7 +456,8 @@
     "detail": "1 permission added",
     "added_permissions": [
       "microsoft.office365.webPortal/allEntities/standard/read"
-    ]
+    ],
+    "scenario": "When a user assigned this role attempts to access the Office 365 web portal to review tenant-wide settings and configurations during a quarterly audit, they can now successfully retrieve a list of all entities and their associated details without encountering an access denied error."
   },
   {
     "date": "2026-07-10",
@@ -499,7 +515,8 @@
       "microsoft.directory/tenantGovernance/relationships/create",
       "microsoft.directory/tenantGovernance/requests/allProperties/update",
       "microsoft.directory/tenantGovernance/requests/create"
-    ]
+    ],
+    "scenario": "When a bulk job is initiated to synchronize a large number of service principals across the organization, an administrator with this role can now monitor the job's status and retrieve its standard output, allowing them to quickly identify and troubleshoot any issues that arise during the synchronization process."
   },
   {
     "date": "2026-09-07",
@@ -510,7 +527,8 @@
     "detail": "1 permission added",
     "added_permissions": [
       "microsoft.directory/servicePrincipals/managePermissionGrantsForAll.microsoft-application-admin"
-    ]
+    ],
+    "scenario": "When a new multi-tenant application is registered, someone with this role can now manage permission grants for all service principals associated with that application, allowing them to centrally control and audit access to Microsoft applications across the organization, which was not possible before the update."
   },
   {
     "date": "2026-09-07",
@@ -535,7 +553,8 @@
       "microsoft.directory/applications/tag/update",
       "microsoft.directory/applications/verification/update",
       "microsoft.directory/deletedItems.applications/delete"
-    ]
+    ],
+    "scenario": "When a user attempts to update the authentication settings of an existing application registration in the Azure AD tenant, the newly added permissions allow the assigned individual to successfully modify the application's authentication configuration, such as changing the redirect URI or adding a new client secret, which was not possible for them to do before without additional elevated privileges."
   },
   {
     "date": "2026-09-07",
@@ -546,7 +565,8 @@
     "detail": "1 permission added",
     "added_permissions": [
       "microsoft.directory/bulkJobs/standard/read"
-    ]
+    ],
+    "scenario": "When a bulk job is initiated to synchronize a large set of user accounts, someone assigned this role can now retrieve the status and details of that job, allowing them to monitor its progress and troubleshoot any issues that arise during the synchronization process."
   },
   {
     "date": "2026-09-07",
@@ -561,7 +581,8 @@
       "microsoft.directory/users/enable",
       "microsoft.directory/users/invalidateAllRefreshTokens",
       "microsoft.directory/users/password/update"
-    ]
+    ],
+    "scenario": "When a user's account is compromised, the Security Administrator can now immediately invalidate all refresh tokens for that user, preventing further unauthorized access, and then update the user's password to a new, secure one, as well as enable or disable the user's account as needed to mitigate the security incident."
   },
   {
     "date": "2026-09-07",
@@ -572,7 +593,8 @@
     "detail": "1 permission added",
     "added_permissions": [
       "microsoft.directory/servicePrincipals/managePermissionGrantsForAll.microsoft-company-admin"
-    ]
+    ],
+    "scenario": "When a new Azure Active Directory application is registered, someone with this role can now manage permission grants for all service principals associated with that application, allowing them to centrally control and audit the permissions assigned to these service principals during the quarterly access review process."
   },
   {
     "date": "2026-09-07",
@@ -583,7 +605,8 @@
     "detail": "1 permission added",
     "added_permissions": [
       "microsoft.directory/servicePrincipals/managePermissionGrantsForAll.microsoft-application-admin"
-    ]
+    ],
+    "scenario": "When a new SaaS application is deployed to the organization and requires specific permissions to be granted to its service principal, an administrator with this role can now manage permission grants for all Microsoft applications, allowing them to complete the application's configuration and enable seamless integration with existing services during the initial setup triggered by the application's deployment to Azure Active Directory."
   },
   {
     "date": "2026-09-07",
@@ -594,7 +617,8 @@
     "detail": "1 permission added",
     "added_permissions": [
       "microsoft.directory/bulkJobs/standard/read"
-    ]
+    ],
+    "scenario": "When a large-scale security incident requires the analysis of multiple user accounts and their associated directory data, the individual assigned to this role can now utilize bulk job operations to efficiently retrieve and review the necessary information, streamlining the investigation process and enabling more effective incident response."
   },
   {
     "date": "2026-09-07",
@@ -608,7 +632,8 @@
       "microsoft.directory/agentIdentityBlueprintPrincipals/allProperties/read",
       "microsoft.directory/agentIdentityBlueprints/allProperties/read",
       "microsoft.directory/bulkJobs/standard/read"
-    ]
+    ],
+    "scenario": "When a bulk job is triggered by a nightly synchronization process with an external identity provider, someone assigned this role can now retrieve detailed information about the job's status and properties, allowing them to more effectively monitor and troubleshoot the synchronization process."
   },
   {
     "date": "2026-09-07",
@@ -619,7 +644,8 @@
     "detail": "1 permission added",
     "added_permissions": [
       "microsoft.office365.usageReports/allEntities/allProperties/read"
-    ]
+    ],
+    "scenario": "When the weekly usage report for the entire organization is generated, someone with this role can now access detailed information about how different groups are utilizing various Office 365 services, allowing them to better understand adoption trends and identify areas where additional training or support may be needed."
   },
   {
     "date": "2026-09-07",
@@ -630,7 +656,8 @@
     "detail": "1 permission added",
     "added_permissions": [
       "microsoft.office365.usageReports/allEntities/allProperties/read"
-    ]
+    ],
+    "scenario": "When the organization's audit team requests a detailed breakdown of employee activity in various Office 365 services for the upcoming quarterly review, someone assigned this role can now retrieve the required usage data for all entities and properties, allowing them to generate comprehensive reports that meet the audit team's requirements."
   },
   {
     "date": "2026-09-07",
@@ -641,7 +668,8 @@
     "detail": "1 permission added",
     "added_permissions": [
       "microsoft.office365.usageReports/allEntities/allProperties/read"
-    ]
+    ],
+    "scenario": "When the daily office 365 usage report generation process is triggered, individuals assigned to this role can now access detailed usage data for all entities and properties, enabling them to analyze and report on organization-wide usage trends in response to a quarterly business review."
   },
   {
     "date": "2026-09-07",
@@ -652,7 +680,8 @@
     "detail": "1 permission added",
     "added_permissions": [
       "microsoft.directory/onPasswordUpdateCustomAuthenticationExtension/allProperties/allTasks"
-    ]
+    ],
+    "scenario": "When a user attempts to sign in with a custom authentication extension, the permission to update password properties for custom authentication extensions allows the assigned administrator to trigger a password submit event in response to the user's authentication attempt, enabling them to handle password updates in this specific scenario."
   },
   {
     "date": "2026-09-07",
@@ -664,7 +693,8 @@
     "added_permissions": [
       "microsoft.directory/agentIdentities/allProperties/read",
       "microsoft.directory/agentIdentityBlueprintPrincipals/allProperties/read"
-    ]
+    ],
+    "scenario": "When an audit of all agent identities and their corresponding blueprints is triggered by a quarterly compliance review, someone assigned this role can now read all properties of agent identities and agent identity blueprint principals, enabling them to generate a comprehensive report that includes detailed information about each agent's configuration and access rights."
   },
   {
     "date": "2026-09-07",
@@ -675,7 +705,8 @@
     "detail": "1 permission added",
     "added_permissions": [
       "microsoft.directory/signInReports/allProperties/read"
-    ]
+    ],
+    "scenario": "When a user with this role initiates a daily automated script to fetch and analyze sign-in reports for security auditing purposes, the new permission enables them to retrieve all properties of these reports, including detailed authentication method data, which was not accessible prior to the update."
   },
   {
     "date": "2026-09-07",
@@ -686,7 +717,8 @@
     "detail": "1 permission added",
     "added_permissions": [
       "microsoft.directory/signInReports/allProperties/read"
-    ]
+    ],
+    "scenario": "When the weekly automated report of sign-in attempts is generated, someone assigned this role can now access detailed information about each sign-in, including specific properties that provide insight into potential security issues, such as the IP address and location of the sign-in attempt, allowing for more informed analysis and follow-up actions."
   },
   {
     "date": "2026-09-07",
@@ -697,7 +729,8 @@
     "detail": "1 permission added",
     "added_permissions": [
       "microsoft.directory/signInReports/allProperties/read"
-    ]
+    ],
+    "scenario": "When a daily automated script triggers to generate a comprehensive report of all user sign-in activities for the past week, someone assigned this role can now retrieve detailed sign-in reports, including all properties, to accurately populate the report with relevant data, such as IP addresses, device information, and authentication methods used."
   },
   {
     "date": "2026-09-11",
