@@ -36,7 +36,7 @@ You describe a task — *"reset a user's MFA"*, *"read audit logs"*, *"manage Co
 |------|-------------|
 | **Task → Role** | Describe what you need to do in plain language. Get back the minimum built-in role, a direct link to Microsoft's source, and a privilege warning if the role is elevated. |
 | **Role Diff** | Select any two built-in roles. See every permission one has that the other lacks in a clean three-column view — unique to A, shared, unique to B. |
-| **What's New timeline** | A live feed of what Microsoft changed in the role catalog — which permissions were added/removed, privilege reclassifications, and brand-new roles. New roles expand to the official description, permissions, a link to Microsoft's docs, and an **AI-generated** real-world scenario. |
+| **What's New timeline** | A live feed of what Microsoft changed in the role catalog — which permissions were added/removed, privilege reclassifications, and brand-new roles. New roles and permission changes both expand to the official description, the permissions involved, a link to Microsoft's docs, and an **AI-generated** real-world scenario. |
 | **Shadow Detection** | Roles present in the Graph API but absent from public documentation are flagged as `isShadowRole: true` — catching unreleased Microsoft roles before announcement. |
 | **Always current** | The full role catalog and task mappings refresh nightly via a secure, passwordless OIDC pipeline. Every change Microsoft makes is detected, logged, and live by morning. |
 
@@ -111,13 +111,22 @@ See [Technical stack](#technical-stack) below for the full per-layer cost breakd
 
 ## AI automation engine
 
-**Why it exists.** Microsoft's built-in role descriptions are short and abstract. When a brand-new role first appears in the What's New panel, an admin has no fast way to tell *when they would actually assign it*. One nightly loop asks a model for a short, concrete "here is a situation where you would use this role" narrative to sit alongside the official text. A second weekly loop exists only to keep the first one working: Cloudflare retires Workers AI models on its own schedule (18 in a single wave on 2026-05-30), and a pinned model id silently stops generating scenarios when that happens.
+**Why it exists.** Microsoft's built-in role descriptions are short and abstract. When a brand-new role appears, or an existing role gains or loses a permission, an admin has no fast way to tell *what that actually means for someone assigned it*. One nightly loop asks a model for a short, concrete "here is a situation where this matters" narrative to sit alongside the official text. A second weekly loop exists only to keep the first one working: Cloudflare retires Workers AI models on its own schedule (18 in a single wave on 2026-05-30), and a pinned model id silently stops generating scenarios when that happens.
 
-**What AI does and does not touch.** The generated narrative is display-only prose in one UI panel. It never feeds search ranking, role or permission data, the role diff, or the coverage report — those are all deterministic, and the search path contains no LLM at all. Every narrative is labeled **AI-generated** and rendered *after* the authoritative content: the role's official description, its full permission list, the deterministic role-fact badges (privileged / PIM-eligible / admin-unit-scopable / where it is configured — computed locally, never by the model), and the Microsoft docs link. Generation is best-effort: a failed or empty call just leaves the field blank and the panel falls back to facts plus description. Only newly-added roles are processed (typically 0–3 a month), only in the nightly pipeline. **Both "minimum role for a task" and "role diff" work with the AI engine switched off entirely.**
+**What AI does and does not touch.** The generated narrative is display-only prose in one UI panel. It never feeds search ranking, role or permission data, the role diff, or the coverage report — those are all deterministic, and the search path contains no LLM at all. Every narrative is labeled **AI-generated** and rendered *after* the authoritative content: the role's official description, its full or changed permissions, the deterministic role-fact badges on a new role (privileged / PIM-eligible / admin-unit-scopable / where it is configured — computed locally, never by the model), and the Microsoft docs link. Generation is best-effort: a failed or empty call just leaves the field blank and the panel falls back to the verified content alone. **Both "minimum role for a task" and "role diff" work with the AI engine switched off entirely.**
+
+Scope is deliberately narrow — only two kinds of changelog entry get a scenario:
+
+- **A new role**, and **a permission added to or removed from an existing role.** Both represent an actual capability change: something someone assigned the role can now do, or can no longer do.
+- **Description updates, renames, and privilege flips do not get one.** A description update already shows an exact word-diff of what Microsoft reworded — a paraphrase adds little. A privilege flip already carries a deterministic, hardcoded "why" explanation in the UI, which is more reliable than an LLM guess. A rename is cosmetic. None of these represent a capability change, so a manufactured scenario would be padding, not signal.
+
+Combined, this runs to roughly a dozen calls a month against the full changelog history to date — nowhere near Workers AI's 10,000 free neurons/day.
+
+**Light continuity.** When a role already has a prior scenario on record (say, its own "new role" narrative from months earlier), a later permission-change call includes that prior text as tone-consistency context, so the two don't contradict or restate each other. This is read straight out of the changelog history already committed to the repo — no vector store, no separate memory service, nothing beyond what free tier already gives for free.
 
 Two loops, both fully automatic:
 
-- **Nightly** (`generate_scenarios.py`, right after `diff_roles.py`): for each newly-added role, computes the deterministic role facts, then — only if the changelog entry has no scenario yet — calls Cloudflare Workers AI for the narrative. Idempotent: a failed call is simply retried next run, no duplicate work.
+- **Nightly** (`generate_scenarios.py`, right after `diff_roles.py`): for each eligible entry (new role, or a permission change), computes the deterministic role facts, then — only if the changelog entry has no scenario yet — calls Cloudflare Workers AI for the narrative, including any prior scenario for the same role as context. Idempotent: a failed call is simply retried next run, no duplicate work.
 - **Weekly** (`check_ai_model.py`, Wednesdays 06:00 UTC): checks the configured model against Workers AI's live catalog. If it is gone or deprecated, it walks a small hand-maintained candidate list and switches to the first entry that is still listed, not deprecated, *and* returns a completion in a live smoke test — shipped as an auto-merged PR so CI still gates the swap. If every candidate fails, it opens a tracking issue instead of guessing.
 
 [![AI automation engine](assets/ai-automation-engine.svg)](assets/ai-automation-engine.svg)
@@ -254,7 +263,7 @@ entra-rolelens/
 │   ├── fetch_roles.py             # Graph API (OIDC) + docs scrape — dual source
 │   ├── scrape_tasks.py            # Scrapes task → role mappings
 │   ├── diff_roles.py              # Detects role changes
-│   ├── generate_scenarios.py      # AI real-world scenario per new role (Workers AI)
+│   ├── generate_scenarios.py      # AI scenario per new role / permission change (Workers AI)
 │   ├── enrich.py                  # Union permissions + shadow detection → master.json
 │   ├── validate.py                # Quality gate
 │   ├── coverage_report.py         # Flags new roles lacking task coverage

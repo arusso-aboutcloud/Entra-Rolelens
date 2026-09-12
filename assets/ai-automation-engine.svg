@@ -40,8 +40,8 @@
 
 <rect x="60" y="112" width="200" height="70" rx="8" fill="#042C53" stroke="#185FA5" stroke-width="0.8"/>
 <text x="160" y="140" text-anchor="middle" class="mono" fill="#85B7EB" style="font-size:12px">diff_roles.py</text>
-<text x="160" y="158" text-anchor="middle" class="sans" fill="#85B7EB" style="font-size:9.5px;opacity:.8">detects an ADDED role,</text>
-<text x="160" y="171" text-anchor="middle" class="sans" fill="#85B7EB" style="font-size:9.5px;opacity:.8">writes a changelog entry</text>
+<text x="160" y="158" text-anchor="middle" class="sans" fill="#85B7EB" style="font-size:9.5px;opacity:.8">detects a new role or a</text>
+<text x="160" y="171" text-anchor="middle" class="sans" fill="#85B7EB" style="font-size:9.5px;opacity:.8">permission change</text>
 
 <path d="M260 147 L300 147" fill="none" stroke="#7F77DD" stroke-width="1.5" class="fl1" marker-end="url(#ap)"/>
 
@@ -55,8 +55,8 @@
 <rect x="570" y="106" width="280" height="82" rx="8" fill="#1A1230" stroke="#7F77DD" stroke-width="1"/>
 <text x="710" y="128" text-anchor="middle" class="mono bold" fill="#B7AEF0" style="font-size:12.5px">Cloudflare Workers AI</text>
 <text x="710" y="146" text-anchor="middle" class="mono" fill="#B7AEF0" style="font-size:10px">POST /ai/run/{MODEL}</text>
-<text x="710" y="164" text-anchor="middle" class="sans" fill="#B7AEF0" style="font-size:9px;opacity:.85">prompt: role name + official description +</text>
-<text x="710" y="177" text-anchor="middle" class="sans" fill="#B7AEF0" style="font-size:9px;opacity:.85">exact permissions -&gt; 1-2 sentence scenario</text>
+<text x="710" y="164" text-anchor="middle" class="sans" fill="#B7AEF0" style="font-size:9px;opacity:.85">prompt: role info + what changed -&gt;</text>
+<text x="710" y="177" text-anchor="middle" class="sans" fill="#B7AEF0" style="font-size:9px;opacity:.85">a short, grounded scenario</text>
 
 <path d="M850 147 L890 147" fill="none" stroke="#7F77DD" stroke-width="1.5" class="fl1" marker-end="url(#ap)"/>
 
