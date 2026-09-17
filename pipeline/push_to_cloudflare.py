@@ -618,7 +618,7 @@ def _wn_readme_badge(change: dict) -> str:
     only show static color, not the glow/pulse the live panel animates."""
     ctype = change.get("change_type", "").upper()
     if ctype == "ADDED":
-        return _wn_badge("New", _WN_COLOR_ADDED)
+        return _wn_badge("New role", _WN_COLOR_ADDED)
     if ctype == "REMOVED":
         return _wn_badge("Role removed", _WN_COLOR_DANGER)
 
