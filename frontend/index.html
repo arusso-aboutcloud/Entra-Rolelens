@@ -3261,11 +3261,14 @@ Content-Type: application/json
   function _wnActionHtml(c) {
     const type = c.change_type?.toUpperCase() ?? 'MODIFIED';
     if (type === 'ADDED') {
+      // No "new role" label here -- the glyph badge already says "New role"
+      // (see _wnBuildEntries), so repeating it here would just be the same
+      // words twice on one row. The permission count is the only thing
+      // left worth showing.
       const n = c.permission_count;
-      const badge = typeof n === 'number'
-        ? ` <span class="wn-badge ${n > 0 ? 'count' : 'zero'}">${n} ${n === 1 ? 'perm' : 'perms'}</span>`
+      return typeof n === 'number'
+        ? `<span class="wn-badge ${n > 0 ? 'count' : 'zero'}">${n} ${n === 1 ? 'perm' : 'perms'}</span>`
         : '';
-      return `<span class="wn-label-soft">new role</span>${badge}`;
     }
     if (type === 'REMOVED') return `<span class="wn-label-soft">role removed</span>`;
     switch (c.field) {
@@ -3454,7 +3457,7 @@ Content-Type: application/json
       const titleAttr = tparts.length ? ` title="${tparts.join(' · ')}"` : '';
       const handlers  = exp ? ' role="button" tabindex="0" aria-expanded="false" onclick="_wnToggle(this)" onkeydown="_wnKey(event,this)"' : '';
       const glyphHtml = type === 'ADDED'
-        ? `<span class="wn-glow-badge add">New</span>`
+        ? `<span class="wn-glow-badge add">New role</span>`
         : (type === 'MODIFIED' && c.field === 'permissions')
           ? _wnPermGlowBadge(c)
           : type === 'MODIFIED'
