@@ -751,5 +751,20 @@
     "detail": "description changed: \"Read all aspects of Microsoft 365 Copilot and AI-related enterprise services in Microsoft 365.\" -> \"Read all aspects of Microsoft Copilot and AI-related enterprise services in Microsoft 365.\"",
     "old": "Read all aspects of Microsoft 365 Copilot and AI-related enterprise services in Microsoft 365.",
     "new": "Read all aspects of Microsoft Copilot and AI-related enterprise services in Microsoft 365."
+  },
+  {
+    "date": "2026-09-17",
+    "change_type": "MODIFIED",
+    "role_id": "d2562ede-74db-457e-a7b6-544e236ebb61",
+    "role_name": "AI Administrator",
+    "field": "permissions",
+    "detail": "1 permission added",
+    "added_permissions": [
+      "microsoft.directory/oAuth2PermissionGrants/allProperties/allTasks"
+    ],
+    "undocumented_permissions": [
+      "microsoft.directory/oAuth2PermissionGrants/allProperties/allTasks"
+    ],
+    "scenario": "When a new OAuth 2.0 permission grant is created with a unique set of properties and tasks, the administrator assigned to this role can now view and manage all properties and tasks associated with that grant, triggered by the automatic notification sent by the system when a new permission grant is added, allowing for more comprehensive oversight and auditing of OAuth 2.0 permission grants across the organization."
   }
 ]

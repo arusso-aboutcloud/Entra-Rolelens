@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-16T05:34:01.470353+00:00",
+  "generated_at": "2026-09-17T05:39:29.355110+00:00",
   "role_count": 145,
   "task_count": 238,
   "shadow_role_count": 9,
@@ -4170,6 +4170,7 @@
         "microsoft.directory/deletedItems.agentIdentityBlueprints/delete",
         "microsoft.directory/deletedItems.agentIdentityBlueprints/restore",
         "microsoft.directory/entitlementManagement/allProperties/read",
+        "microsoft.directory/oAuth2PermissionGrants/allProperties/allTasks",
         "microsoft.directory/subscribedSkus/standard/read",
         "microsoft.directory/users/allProperties/read",
         "microsoft.office365.copilot/allEntities/allProperties/allTasks",

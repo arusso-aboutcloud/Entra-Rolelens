@@ -3679,6 +3679,7 @@
           "microsoft.directory/deletedItems.agentIdentityBlueprints/delete",
           "microsoft.directory/deletedItems.agentIdentityBlueprints/restore",
           "microsoft.directory/entitlementManagement/allProperties/read",
+          "microsoft.directory/oAuth2PermissionGrants/allProperties/allTasks",
           "microsoft.directory/subscribedSkus/standard/read",
           "microsoft.directory/users/allProperties/read",
           "microsoft.office365.copilot/allEntities/allProperties/allTasks",
@@ -5625,7 +5626,7 @@
   },
   {
     "id": "1981f584-96e9-4a6f-95b0-f522373f8fae",
-    "description": "Manage all capabilities in the Microsoft Entra Tenant Governance service.",
+    "description": "Manage Tenant Governance, service principals, application role assignments, and permission grants through the approved Tenant Governance application.",
     "displayName": "Tenant Governance Administrator",
     "isBuiltIn": true,
     "isEnabled": true,
