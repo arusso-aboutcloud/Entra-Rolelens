@@ -3460,10 +3460,10 @@ Content-Type: application/json
           : type === 'MODIFIED'
             ? _wnModGlowBadge(c)
             : `<span class="wn-glyph ${gcls}">${glyph}</span>`;
-      // "New" tag, on top of the existing badge -- flags a permission or
+      // "New" tag, ahead of the existing badge -- flags a permission or
       // description change detected in the last 24h, same freshness window
       // wn-fresh-dot already uses. Same .wn-glow-badge treatment as every
-      // other badge here, colored to match the badge it sits next to
+      // other badge here, colored to match the badge that follows it
       // (green for an added permission, red for a removed-only one, amber
       // for a description update) rather than a fixed color, so the two
       // read as one family, not two different indicators bolted together.
@@ -3476,12 +3476,12 @@ Content-Type: application/json
           const { added, removed } = _wnCounts(c);
           newTagCls = added ? 'add' : (removed ? 'rem' : 'upd');
         }
-        newTagHtml = ` <span class="wn-glow-badge ${newTagCls}">New</span>`;
+        newTagHtml = `<span class="wn-glow-badge ${newTagCls}">New</span> `;
       }
       return `<div class="wn-item${exp ? ' wn-expandable' : ''}">` +
         `<div class="whats-new-entry type-${gcls}${fresh}" data-idx="${startIdx + i}"${handlers}${titleAttr}>` +
           `<span class="wn-fresh-dot"${isFresh ? ' title="changed in the last 24h"' : ''}></span>` +
-          glyphHtml + newTagHtml +
+          newTagHtml + glyphHtml +
           `<span class="wn-name">${esc(c.role_name ?? '')}</span>` +
           `<span class="wn-action">${_wnActionHtml(c)}</span>` +
           `<span class="wn-date">${esc(c.date ?? '')}</span>` +
