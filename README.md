@@ -89,7 +89,7 @@ This keeps the one remaining manual step — seeding a task for a role Microsoft
 - ![Permission added](https://img.shields.io/badge/-Permission%20added-007A53?style=for-the-badge) **Tenant Governance Administrator** (2026-09-07)
 - ![Permission added](https://img.shields.io/badge/-Permission%20added-007A53?style=for-the-badge) **Tenant Governance Reader** (2026-09-07)
 - ![Permission added](https://img.shields.io/badge/-Permission%20added-007A53?style=for-the-badge) **Tenant Governance Relationship Administrator** (2026-09-07)
-- ![New](https://img.shields.io/badge/-New-007A53?style=for-the-badge) **Entra SOC Identity Responder** (2026-09-04)
+- ![New role](https://img.shields.io/badge/-New%20role-007A53?style=for-the-badge) **Entra SOC Identity Responder** (2026-09-04)
 <!-- WHATS_NEW_END -->
 
 ---
