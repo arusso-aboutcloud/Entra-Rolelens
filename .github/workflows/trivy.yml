@@ -131,6 +131,14 @@ jobs:
           severity: HIGH,CRITICAL
           exit-code: 0
 
+      - name: Capture actual Trivy CLI version
+        # trivy-action installs the trivy binary onto PATH for the rest of
+        # the job -- read its real version here instead of hardcoding one in
+        # trivy_dashboard_svg.py, which is exactly how the dashboard drifted
+        # to a stale "v0.28.0" label while the scanner itself had long since
+        # moved on.
+        run: trivy --version > .trivy/version.txt
+
       - name: Generate and commit security dashboard SVG
         run: |
           git config user.name "github-actions[bot]"
