@@ -1,5 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 280" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, monospace">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 300">
   <defs>
+    <style>
+      .mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+      .sans{font-family:-apple-system,BlinkMacSystemFont,sans-serif}
+      .bold{font-weight:700}
+    </style>
+    <pattern id="dots" width="24" height="24" patternUnits="userSpaceOnUse">
+      <circle cx="12" cy="12" r="0.9" fill="#444441" opacity="0.4"/>
+    </pattern>
     <!-- Standard glow: used on large score -->
     <filter id="glow">
       <feGaussianBlur stdDeviation="2.5" result="blur"/>
@@ -17,81 +25,82 @@
     </filter>
     <!-- Security scan beam: sweeps across tile row left→right -->
     <linearGradient id="scan-beam" x1="0" x2="1" y1="0" y2="0">
-      <stop offset="0%"   stop-color="#00E5A3" stop-opacity="0"/>
-      <stop offset="40%"  stop-color="#00E5A3" stop-opacity="0.08"/>
-      <stop offset="50%"  stop-color="#ffffff"          stop-opacity="0.18"/>
-      <stop offset="60%"  stop-color="#00E5A3" stop-opacity="0.08"/>
-      <stop offset="100%" stop-color="#00E5A3" stop-opacity="0"/>
+      <stop offset="0%"   stop-color="#1D9E75" stop-opacity="0"/>
+      <stop offset="40%"  stop-color="#1D9E75" stop-opacity="0.1"/>
+      <stop offset="50%"  stop-color="#ffffff"          stop-opacity="0.2"/>
+      <stop offset="60%"  stop-color="#1D9E75" stop-opacity="0.1"/>
+      <stop offset="100%" stop-color="#1D9E75" stop-opacity="0"/>
     </linearGradient>
     <!-- Clip scan beam strictly to tile row -->
     <clipPath id="tiles-clip">
-      <rect x="20" y="166" width="680" height="80"/>
+      <rect x="20" y="182" width="680" height="80"/>
     </clipPath>
   </defs>
 
-  <!-- Background + border -->
-  <rect width="720" height="280" fill="#07080D" rx="12"/>
-  <rect x="0.5" y="0.5" width="719" height="279" fill="none" stroke="#1A1D2A" stroke-width="1" rx="12"/>
+  <!-- Background + dot-grid texture + border, same canvas as the other diagrams -->
+  <rect width="720" height="300" fill="#0D1018" rx="12"/>
+  <rect width="720" height="300" fill="url(#dots)" rx="12"/>
+  <rect x="0.5" y="0.5" width="719" height="299" fill="none" stroke="#2A2A3A" stroke-width="1" rx="12"/>
 
   <!-- Header -->
-  <text x="20" y="28" font-size="11" fill="#6B7280" letter-spacing="1.5">SECURITY SCAN&#160;&#183;&#160;ENTRA ROLELENS&#160;&#183;&#160;TRIVY v0.28.0</text>
-  <circle cx="700" cy="24" r="4" fill="#00E5A3">
+  <text x="20" y="30" class="mono bold" font-size="11" fill="#888780" letter-spacing="1.5">SECURITY SCAN&#160;&#183;&#160;ENTRA ROLELENS&#160;&#183;&#160;TRIVY v0.70.0</text>
+  <circle cx="700" cy="26" r="4" fill="#1D9E75">
     <animate attributeName="opacity" values="1;0.35;1" dur="2.4s" repeatCount="indefinite"/>
   </circle>
 
   <!-- Total findings (large) -->
-  <text x="20" y="76" font-size="11" fill="#6B7280" letter-spacing="1.5">DEPENDENCY VULNERABILITIES (HIGH + CRITICAL)</text>
-  <text x="20" y="132" font-size="60" font-weight="600" fill="#00E5A3" filter="url(#glow)">
+  <text x="20" y="80" class="mono" font-size="11" fill="#888780" letter-spacing="1.5">DEPENDENCY VULNERABILITIES (HIGH + CRITICAL)</text>
+  <text x="20" y="138" class="mono bold" font-size="60" fill="#6FE3B4" filter="url(#glow)">
     0
     <animate attributeName="opacity" values="0;1" dur="0.7s" fill="freeze"/>
   </text>
-  <text x="20" y="152" font-size="11" fill="#6B7280">across worker (npm) and pipeline (Python)</text>
+  <text x="20" y="160" class="sans" font-size="11" fill="#888780">across worker (npm) and pipeline (Python)</text>
 
   <!-- Security scan beam sweeping across tile row -->
-  <rect x="-120" y="166" width="120" height="80" fill="url(#scan-beam)" clip-path="url(#tiles-clip)">
+  <rect x="-120" y="182" width="120" height="80" fill="url(#scan-beam)" clip-path="url(#tiles-clip)">
     <animate attributeName="x" values="-120;720;-120" dur="3.6s" repeatCount="indefinite" calcMode="linear"/>
   </rect>
 
   <!-- Tile 1: Worker -->
-  <g transform="translate(20,166)">
-    <rect width="220" height="80" fill="#0E1018" stroke="#1A1D2A" rx="6"/>
-    <text x="12" y="22" font-size="10" fill="#6B7280" letter-spacing="1">WORKER &#183; NPM</text>
-    <text x="12" y="46" font-size="10" fill="#6B7280">HIGH</text>
-    <text x="12" y="65" font-size="26" fill="#00E5A3" font-weight="500" filter="url(#glow-soft)">0</text>
-    <text x="110" y="46" font-size="10" fill="#6B7280">CRITICAL</text>
-    <text x="110" y="65" font-size="26" fill="#00E5A3" font-weight="500" filter="url(#glow-soft)">0</text>
-    <circle cx="204" cy="20" r="3" fill="#00E5A3">
+  <g transform="translate(20,182)">
+    <rect width="220" height="80" fill="#03150E" stroke="#1D9E75" stroke-width="0.8" rx="8"/>
+    <text x="12" y="22" class="mono bold" font-size="10" fill="#888780" letter-spacing="1">WORKER &#183; NPM</text>
+    <text x="12" y="46" class="mono" font-size="10" fill="#888780">HIGH</text>
+    <text x="12" y="66" class="mono bold" font-size="26" fill="#6FE3B4" filter="url(#glow-soft)">0</text>
+    <text x="110" y="46" class="mono" font-size="10" fill="#888780">CRITICAL</text>
+    <text x="110" y="66" class="mono bold" font-size="26" fill="#6FE3B4" filter="url(#glow-soft)">0</text>
+    <circle cx="204" cy="20" r="3" fill="#1D9E75">
       <animate attributeName="opacity" values="1;0.3;1" dur="2.4s" repeatCount="indefinite"/>
     </circle>
   </g>
 
   <!-- Tile 2: Pipeline -->
-  <g transform="translate(252,166)">
-    <rect width="220" height="80" fill="#0E1018" stroke="#1A1D2A" rx="6"/>
-    <text x="12" y="22" font-size="10" fill="#6B7280" letter-spacing="1">PIPELINE &#183; PYTHON</text>
-    <text x="12" y="46" font-size="10" fill="#6B7280">HIGH</text>
-    <text x="12" y="65" font-size="26" fill="#00E5A3" font-weight="500" filter="url(#glow-soft)">0</text>
-    <text x="110" y="46" font-size="10" fill="#6B7280">CRITICAL</text>
-    <text x="110" y="65" font-size="26" fill="#00E5A3" font-weight="500" filter="url(#glow-soft)">0</text>
-    <circle cx="204" cy="20" r="3" fill="#00E5A3">
+  <g transform="translate(252,182)">
+    <rect width="220" height="80" fill="#03150E" stroke="#1D9E75" stroke-width="0.8" rx="8"/>
+    <text x="12" y="22" class="mono bold" font-size="10" fill="#888780" letter-spacing="1">PIPELINE &#183; PYTHON</text>
+    <text x="12" y="46" class="mono" font-size="10" fill="#888780">HIGH</text>
+    <text x="12" y="66" class="mono bold" font-size="26" fill="#6FE3B4" filter="url(#glow-soft)">0</text>
+    <text x="110" y="46" class="mono" font-size="10" fill="#888780">CRITICAL</text>
+    <text x="110" y="66" class="mono bold" font-size="26" fill="#6FE3B4" filter="url(#glow-soft)">0</text>
+    <circle cx="204" cy="20" r="3" fill="#1D9E75">
       <animate attributeName="opacity" values="1;0.3;1" dur="2.4s" begin="0.8s" repeatCount="indefinite"/>
     </circle>
   </g>
 
   <!-- Tile 3: Totals -->
-  <g transform="translate(484,166)">
-    <rect width="216" height="80" fill="#0E1018" stroke="#1A1D2A" rx="6"/>
-    <text x="12" y="22" font-size="10" fill="#6B7280" letter-spacing="1">ALL COMPONENTS</text>
-    <text x="12" y="46" font-size="10" fill="#6B7280">CRITICAL</text>
-    <text x="12" y="65" font-size="26" fill="#00E5A3" font-weight="500" filter="url(#glow-soft)">0</text>
-    <text x="110" y="46" font-size="10" fill="#6B7280">HIGH</text>
-    <text x="110" y="65" font-size="26" fill="#00E5A3" font-weight="500" filter="url(#glow-soft)">0</text>
-    <circle cx="200" cy="20" r="3" fill="#00E5A3">
+  <g transform="translate(484,182)">
+    <rect width="216" height="80" fill="#03150E" stroke="#1D9E75" stroke-width="0.8" rx="8"/>
+    <text x="12" y="22" class="mono bold" font-size="10" fill="#888780" letter-spacing="1">ALL COMPONENTS</text>
+    <text x="12" y="46" class="mono" font-size="10" fill="#888780">CRITICAL</text>
+    <text x="12" y="66" class="mono bold" font-size="26" fill="#6FE3B4" filter="url(#glow-soft)">0</text>
+    <text x="110" y="46" class="mono" font-size="10" fill="#888780">HIGH</text>
+    <text x="110" y="66" class="mono bold" font-size="26" fill="#6FE3B4" filter="url(#glow-soft)">0</text>
+    <circle cx="200" cy="20" r="3" fill="#1D9E75">
       <animate attributeName="opacity" values="1;0.3;1" dur="2.4s" begin="1.6s" repeatCount="indefinite"/>
     </circle>
   </g>
 
   <!-- Verdict + timestamp -->
-  <text x="20" y="260" font-size="11" fill="#00E5A3" filter="url(#glow-verdict)">&#9658; No HIGH or CRITICAL findings</text>
-  <text x="700" y="260" font-size="9" fill="#6B7280" text-anchor="end">scanned 2026-09-17 18:42 UTC</text>
+  <text x="20" y="280" class="mono bold" font-size="11" fill="#6FE3B4" filter="url(#glow-verdict)">&#9658; No HIGH or CRITICAL findings</text>
+  <text x="700" y="280" class="sans" font-size="9" fill="#5A5850" text-anchor="end">scanned 2026-09-18 16:09 UTC</text>
 </svg>
