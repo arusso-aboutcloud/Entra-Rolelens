@@ -155,6 +155,40 @@ def compute_changes(old_roles: dict, new_roles: dict) -> list[dict]:
     return changes
 
 
+def recheck_undocumented_permissions(changelog: list[dict], roles_by_id_today: dict) -> int:
+    """Re-verifies every changelog entry still claiming an added permission
+    is undocumented, against today's freshly-scraped docs.
+
+    compute_changes() above only checks docs status once, the night a
+    permission change is first detected. Nothing else ever revisits that
+    entry -- so if Microsoft's docs catch up on some later night, the
+    frontend's "Not yet reflected in Microsoft's public docs" note would
+    otherwise stay there forever, long after it stopped being true. This
+    closes that gap: runs every night, over the full changelog (not just a
+    recent window), using data already fetched for tonight's own diff pass
+    (no extra network cost). Returns how many entries changed status.
+    """
+    resolved = 0
+    for entry in changelog:
+        still_missing = entry.get("undocumented_permissions")
+        if not still_missing:
+            continue
+        role = roles_by_id_today.get(entry.get("role_id"))
+        if not role:
+            continue
+        docs_perms = set(role.get("permissionsInDocs", []))
+        now_undocumented = sorted(set(still_missing) - docs_perms)
+        if now_undocumented == still_missing:
+            continue  # no change -- still exactly as undocumented as before
+        if now_undocumented:
+            entry["undocumented_permissions"] = now_undocumented
+        else:
+            del entry["undocumented_permissions"]
+        entry["docs_reviewed_date"] = role.get("docsReviewedDate")
+        resolved += 1
+    return resolved
+
+
 def load_existing_changelog() -> list[dict]:
     if CHANGELOG_PATH.exists():
         return load_json(CHANGELOG_PATH)
@@ -191,6 +225,8 @@ def main() -> None:
     existing = load_existing_changelog()
     combined = existing + new_changes
 
+    resolved = recheck_undocumented_permissions(combined, new_by_id)
+
     with CHANGELOG_PATH.open("w", encoding="utf-8") as fh:
         json.dump(combined, fh, indent=2, ensure_ascii=False)
 
@@ -200,6 +236,9 @@ def main() -> None:
     removed = sum(1 for c in new_changes if c["change_type"] == "REMOVED")
     modified = sum(1 for c in new_changes if c["change_type"] == "MODIFIED")
     print(f"Diff complete -- {added} added, {removed} removed, {modified} modified")
+    if resolved:
+        print(f"Docs status rechecked -- {resolved} older entr{'y' if resolved == 1 else 'ies'} "
+              f"now confirmed in (or still absent from) Microsoft's docs")
 
 
 if __name__ == "__main__":
