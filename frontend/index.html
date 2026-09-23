@@ -697,6 +697,9 @@
       white-space: nowrap;
     }
     .card-expand-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
       font-family: var(--font-mono);
       font-size: 11px;
       letter-spacing: 0.05em;
@@ -704,13 +707,23 @@
       color: var(--accent);
       background: transparent;
       border: 1px solid rgba(47, 158, 245,0.30);
-      padding: 4px 10px;
+      padding: 5px 10px;
       border-radius: 4px;
       cursor: pointer;
       white-space: nowrap;
-      transition: background 0.15s;
+      transition: background 0.15s, border-color 0.15s;
     }
-    .card-expand-btn:hover { background: rgba(47, 158, 245,0.08); }
+    .card-expand-btn:hover { background: rgba(47, 158, 245,0.08); border-color: rgba(47, 158, 245,0.5); }
+    .card-expand-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    /* Same affordance as .wn-chev: a single glyph that rotates on state
+       change, not a text swap between "Show details"/"Hide details" --
+       less to read, no label jump, consistent with the What's New panel's
+       own expand/collapse pattern instead of a second, different one. */
+    .card-expand-chev {
+      flex-shrink: 0;
+      transition: transform 0.2s ease;
+    }
+    .card-expand-btn[aria-expanded="true"] .card-expand-chev { transform: rotate(180deg); }
 
     .card-details[hidden] { display: none; }
     .card-details { margin-top: 12px; }
@@ -2821,7 +2834,7 @@ Content-Type: application/json
     const expanded = !details.hidden;
     const apply = () => {
       details.hidden = expanded;
-      btn.textContent = expanded ? 'Show details ▾' : 'Hide details ▴';
+      btn.setAttribute('aria-expanded', String(!expanded));
     };
     if (document.startViewTransition) { document.startViewTransition(apply); } else { apply(); }
   }
@@ -2882,8 +2895,14 @@ Content-Type: application/json
           </div>
         </div>`;
     } else {
-      const scoreText  = r.score != null ? `Score: ${r.score}` : '';
-      const reasonMeta = r.match_reasoning ? ` · ${r.match_reasoning}` : '';
+      // The raw ranking score (base tier x privilege/affinity factors --
+      // an internal implementation detail with no externally meaningful
+      // scale) used to render here as "Score: 700". Dropped: a number a
+      // user can't interpret isn't information. match_reasoning is kept --
+      // it's actually readable ("matched the role's own name/description
+      // directly (no task mapping yet)", "matched: audit, logs") and the
+      // ordering/Best-match badge already carry the ranking signal.
+      const metaText = r.match_reasoning || '';
       return `
         <div class="${cardClass}">
           <div class="card-top">
@@ -2894,8 +2913,11 @@ Content-Type: application/json
           <div class="card-role-name">${esc(r.min_role)}</div>
           ${descHtml}
           <div class="card-expand-row">
-            <span class="card-meta">${esc(scoreText + reasonMeta)}</span>
-            <button class="card-expand-btn" id="card-expand-${idx}" onclick="toggleCardDetails(${idx})">Show details ▾</button>
+            <span class="card-meta">${esc(metaText)}</span>
+            <button class="card-expand-btn" id="card-expand-${idx}" onclick="toggleCardDetails(${idx})" aria-expanded="false" aria-controls="card-details-${idx}">
+              Details
+              <svg class="card-expand-chev" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
           </div>
           <div class="card-details" id="card-details-${idx}" hidden>
             ${reasoningHtml}
