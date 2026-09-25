@@ -2730,7 +2730,7 @@
   },
   {
     "id": "5f2222b1-57c3-48ba-8ad5-d4759f1fde6f",
-    "description": "Creates and manages security events.",
+    "description": "Create and manage security events and perform identity containment actions during security incidents.",
     "displayName": "Security Operator",
     "isBuiltIn": true,
     "isEnabled": true,
