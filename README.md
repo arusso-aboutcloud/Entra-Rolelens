@@ -72,23 +72,6 @@ This keeps the one remaining manual step — seeding a task for a role Microsoft
 - ![Permission added](https://img.shields.io/badge/-Permission%20added-007A53?style=for-the-badge) **AI Administrator** (2026-09-17)
 - ![Description updated](https://img.shields.io/badge/-Description%20updated-9A6700?style=for-the-badge) **AI Administrator** (2026-09-11)
 - ![Description updated](https://img.shields.io/badge/-Description%20updated-9A6700?style=for-the-badge) **AI Reader** (2026-09-11)
-- ![Permission added](https://img.shields.io/badge/-Permission%20added-007A53?style=for-the-badge) **Global Administrator** (2026-09-07)
-- ![Permission added](https://img.shields.io/badge/-Permission%20added-007A53?style=for-the-badge) **Application Administrator** (2026-09-07)
-- ![Permission added](https://img.shields.io/badge/-Permission%20added-007A53?style=for-the-badge) **Application Developer** (2026-09-07)
-- ![Permission added](https://img.shields.io/badge/-Permission%20added-007A53?style=for-the-badge) **Security Reader** (2026-09-07)
-- ![Permission added](https://img.shields.io/badge/-Permission%20added-007A53?style=for-the-badge) **Security Administrator** (2026-09-07)
-- ![Permission added](https://img.shields.io/badge/-Permission%20added-007A53?style=for-the-badge) **Privileged Role Administrator** (2026-09-07)
-- ![Permission added](https://img.shields.io/badge/-Permission%20added-007A53?style=for-the-badge) **Cloud Application Administrator** (2026-09-07)
-- ![Permission added](https://img.shields.io/badge/-Permission%20added-007A53?style=for-the-badge) **Security Operator** (2026-09-07)
-- ![Permission added](https://img.shields.io/badge/-Permission%20added-007A53?style=for-the-badge) **Global Reader** (2026-09-07)
-- ![Permission added](https://img.shields.io/badge/-Permission%20added-007A53?style=for-the-badge) **Search Administrator** (2026-09-07)
-- ![Permission added](https://img.shields.io/badge/-Permission%20added-007A53?style=for-the-badge) **Search Editor** (2026-09-07)
-- ![Permission added](https://img.shields.io/badge/-Permission%20added-007A53?style=for-the-badge) **AI Reader** (2026-09-07)
-- ![Permission added](https://img.shields.io/badge/-Permission%20added-007A53?style=for-the-badge) **Authentication Extensibility Password Administrator** (2026-09-07)
-- ![Permission added](https://img.shields.io/badge/-Permission%20added-007A53?style=for-the-badge) **Agent ID Administrator** (2026-09-07)
-- ![Permission added](https://img.shields.io/badge/-Permission%20added-007A53?style=for-the-badge) **Tenant Governance Administrator** (2026-09-07)
-- ![Permission added](https://img.shields.io/badge/-Permission%20added-007A53?style=for-the-badge) **Tenant Governance Reader** (2026-09-07)
-- ![Permission added](https://img.shields.io/badge/-Permission%20added-007A53?style=for-the-badge) **Tenant Governance Relationship Administrator** (2026-09-07)
 <!-- WHATS_NEW_END -->
 
 ---
