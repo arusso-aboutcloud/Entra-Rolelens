@@ -766,5 +766,15 @@
       "microsoft.directory/oAuth2PermissionGrants/allProperties/allTasks"
     ],
     "scenario": "When a new OAuth 2.0 permission grant is created with a unique set of properties and tasks, the administrator assigned to this role can now view and manage all properties and tasks associated with that grant, triggered by the automatic notification sent by the system when a new permission grant is added, allowing for more comprehensive oversight and auditing of OAuth 2.0 permission grants across the organization."
+  },
+  {
+    "date": "2026-10-14",
+    "change_type": "MODIFIED",
+    "role_id": "cf1c38e5-3621-4004-a7cb-879624dced7c",
+    "role_name": "Application Developer",
+    "field": "description",
+    "detail": "description changed: \"Can create application registrations independent of the 'Users can register applications' setting.\" -> \"Can create application registrations independent of the 'Users can register applications' setting and update applications they own.\"",
+    "old": "Can create application registrations independent of the 'Users can register applications' setting.",
+    "new": "Can create application registrations independent of the 'Users can register applications' setting and update applications they own."
   }
 ]
