@@ -83,7 +83,7 @@ How every request enters through Cloudflare's WAF + DDoS edge, how the frontend,
 
 ### Infrastructure & cost
 
-Which free tier hosts what, and how the nightly pipeline authenticates to Microsoft without storing a credential:
+Which free tier hosts what, how Cloudflare's WAF and DDoS protection sit in front of the public app, and how the nightly pipeline authenticates to Microsoft without storing a credential:
 
 [![Infrastructure architecture](assets/architecture.svg)](assets/architecture.svg)
 
