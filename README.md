@@ -70,7 +70,6 @@ This keeps the one remaining manual step — seeding a task for a role Microsoft
 
 <!-- WHATS_NEW_START -->
 - ![Description updated](https://img.shields.io/badge/-Description%20updated-9A6700?style=for-the-badge) **Application Developer** (2026-10-14)
-- ![Permission added](https://img.shields.io/badge/-Permission%20added-007A53?style=for-the-badge) **AI Administrator** (2026-09-17)
 <!-- WHATS_NEW_END -->
 
 ---
