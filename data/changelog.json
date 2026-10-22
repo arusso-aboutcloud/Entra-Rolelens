@@ -776,5 +776,62 @@
     "detail": "description changed: \"Can create application registrations independent of the 'Users can register applications' setting.\" -> \"Can create application registrations independent of the 'Users can register applications' setting and update applications they own.\"",
     "old": "Can create application registrations independent of the 'Users can register applications' setting.",
     "new": "Can create application registrations independent of the 'Users can register applications' setting and update applications they own."
+  },
+  {
+    "date": "2026-10-22",
+    "change_type": "MODIFIED",
+    "role_id": "62e90394-69f5-4237-9190-012177145e10",
+    "role_name": "Global Administrator",
+    "field": "permissions",
+    "detail": "3 permissions added",
+    "added_permissions": [
+      "microsoft.directory/conditionalAccessPolicyPlans/basic/update",
+      "microsoft.directory/conditionalAccessPolicyPlans/create",
+      "microsoft.directory/conditionalAccessPolicyPlans/delete"
+    ],
+    "undocumented_permissions": [
+      "microsoft.directory/conditionalAccessPolicyPlans/basic/update",
+      "microsoft.directory/conditionalAccessPolicyPlans/create",
+      "microsoft.directory/conditionalAccessPolicyPlans/delete"
+    ],
+    "scenario": "When a new security requirement is introduced to enforce multi-factor authentication for all users accessing a specific cloud application, an administrator with this role can now create, update, and delete conditional access policy plans to implement this requirement, allowing them to define and manage the rules and conditions under which access to the application is granted or blocked."
+  },
+  {
+    "date": "2026-10-22",
+    "change_type": "MODIFIED",
+    "role_id": "194ae4cb-b126-40b2-bd5b-6091b380977d",
+    "role_name": "Security Administrator",
+    "field": "permissions",
+    "detail": "3 permissions added",
+    "added_permissions": [
+      "microsoft.directory/conditionalAccessPolicyPlans/basic/update",
+      "microsoft.directory/conditionalAccessPolicyPlans/create",
+      "microsoft.directory/conditionalAccessPolicyPlans/delete"
+    ],
+    "undocumented_permissions": [
+      "microsoft.directory/conditionalAccessPolicyPlans/basic/update",
+      "microsoft.directory/conditionalAccessPolicyPlans/create",
+      "microsoft.directory/conditionalAccessPolicyPlans/delete"
+    ],
+    "scenario": "When a new high-risk application is introduced to the organization, the Security Administrator can now create, update, or delete conditional access policy plans to enforce specific security controls and restrictions on access to sensitive resources, such as requiring multi-factor authentication or blocking access from untrusted locations, in response to the emerging threat."
+  },
+  {
+    "date": "2026-10-22",
+    "change_type": "MODIFIED",
+    "role_id": "b1be1c3e-b65d-4f19-8427-f6fa0d97feb9",
+    "role_name": "Conditional Access Administrator",
+    "field": "permissions",
+    "detail": "3 permissions added",
+    "added_permissions": [
+      "microsoft.directory/conditionalAccessPolicyPlans/basic/update",
+      "microsoft.directory/conditionalAccessPolicyPlans/create",
+      "microsoft.directory/conditionalAccessPolicyPlans/delete"
+    ],
+    "undocumented_permissions": [
+      "microsoft.directory/conditionalAccessPolicyPlans/basic/update",
+      "microsoft.directory/conditionalAccessPolicyPlans/create",
+      "microsoft.directory/conditionalAccessPolicyPlans/delete"
+    ],
+    "scenario": "When a new security requirement is introduced due to a change in regulatory compliance, someone assigned this role can now create, update, and delete conditional access policy plans in response to the requirement, allowing them to immediately enforce new rules for accessing company resources without needing additional permissions."
   }
 ]
