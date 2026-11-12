@@ -675,6 +675,7 @@
           "microsoft.directory/agentIdentities/standard/read",
           "microsoft.directory/agentIdentityBlueprintPrincipals/createAsOwner",
           "microsoft.directory/agentIdentityBlueprintPrincipals/standard/read",
+          "microsoft.directory/agentIdentityBlueprints/createAsOwner",
           "microsoft.directory/agentIdentityBlueprints/standard/read",
           "microsoft.directory/applicationPolicies/createAsOwner",
           "microsoft.directory/applicationPolicies/standard/read",
@@ -5682,6 +5683,102 @@
       }
     ],
     "inheritsPermissionsFrom@odata.context": "https://graph.microsoft.com/v1.0/$metadata#roleManagement/directory/roleDefinitions('3f04f91a-4ad7-4bd3-bcfa-49882ea1a88a')/inheritsPermissionsFrom",
+    "inheritsPermissionsFrom": [
+      {
+        "id": "88d8e3e3-8f55-4a1e-953a-9b9898b8876b"
+      }
+    ]
+  },
+  {
+    "id": "c0c46a03-c257-4f91-ab71-3c7e59c89d97",
+    "deletedDateTime": null,
+    "description": "Users in this role have full permissions to create, read, update, delete, and evaluate resource policies, their assignments, and the tenant-wide resource policy configuration in Microsoft Graph. This role is intended for senior and compliance administrators who are responsible for the entire lifecycle of resource access policies. Assigning this role grants comprehensive control over how resource policies are defined and enforced across the organization.",
+    "displayName": "Resource Policy Administrator",
+    "isBuiltIn": true,
+    "isEnabled": true,
+    "resourceScopes": [
+      "/"
+    ],
+    "templateId": "c0c46a03-c257-4f91-ab71-3c7e59c89d97",
+    "version": "1",
+    "rolePermissions": [
+      {
+        "allowedResourceActions": [
+          "microsoft.directory/resourcePolicy/assignments/basic/update",
+          "microsoft.directory/resourcePolicy/assignments/create",
+          "microsoft.directory/resourcePolicy/assignments/delete",
+          "microsoft.directory/resourcePolicy/assignments/standard/read",
+          "microsoft.directory/resourcePolicy/configuration/basic/update",
+          "microsoft.directory/resourcePolicy/configuration/standard/read",
+          "microsoft.directory/resourcePolicy/definitions/basic/update",
+          "microsoft.directory/resourcePolicy/definitions/create",
+          "microsoft.directory/resourcePolicy/definitions/delete",
+          "microsoft.directory/resourcePolicy/definitions/standard/read",
+          "microsoft.directory/resourcePolicy/evaluateAssignedPolicies",
+          "microsoft.directory/resourcePolicy/evaluatePolicy"
+        ],
+        "condition": null
+      }
+    ],
+    "inheritsPermissionsFrom@odata.context": "https://graph.microsoft.com/v1.0/$metadata#roleManagement/directory/roleDefinitions('c0c46a03-c257-4f91-ab71-3c7e59c89d97')/inheritsPermissionsFrom",
+    "inheritsPermissionsFrom": [
+      {
+        "id": "88d8e3e3-8f55-4a1e-953a-9b9898b8876b"
+      }
+    ]
+  },
+  {
+    "id": "311877b7-9a2e-4337-81c2-068a250eaa22",
+    "deletedDateTime": null,
+    "description": "Users in this role have read-only access to resource policy definitions, assignments, and the tenant-wide resource policy configuration in Microsoft Graph. They can also evaluate policies to understand their impact, making this role ideal for audit, compliance, and support personnel who need to validate and troubleshoot policies without the ability to modify them.",
+    "displayName": "Resource Policy Reader",
+    "isBuiltIn": true,
+    "isEnabled": true,
+    "resourceScopes": [
+      "/"
+    ],
+    "templateId": "311877b7-9a2e-4337-81c2-068a250eaa22",
+    "version": "1",
+    "rolePermissions": [
+      {
+        "allowedResourceActions": [
+          "microsoft.directory/resourcePolicy/assignments/standard/read",
+          "microsoft.directory/resourcePolicy/configuration/standard/read",
+          "microsoft.directory/resourcePolicy/definitions/standard/read",
+          "microsoft.directory/resourcePolicy/evaluateAssignedPolicies",
+          "microsoft.directory/resourcePolicy/evaluatePolicy"
+        ],
+        "condition": null
+      }
+    ],
+    "inheritsPermissionsFrom@odata.context": "https://graph.microsoft.com/v1.0/$metadata#roleManagement/directory/roleDefinitions('311877b7-9a2e-4337-81c2-068a250eaa22')/inheritsPermissionsFrom",
+    "inheritsPermissionsFrom": [
+      {
+        "id": "88d8e3e3-8f55-4a1e-953a-9b9898b8876b"
+      }
+    ]
+  },
+  {
+    "id": "1dae4b79-8aea-40ab-9ad0-30d3ab1fa9c1",
+    "deletedDateTime": null,
+    "description": "Users in this role can evaluate resource policies to understand their impact and outcome. This role does not grant any read or write access to the policy definitions or assignments themselves, making it ideal for developers, testers, and automated tools that need to perform policy validation as part of a development or CI/CD pipeline.",
+    "displayName": "Resource Policy Evaluator",
+    "isBuiltIn": true,
+    "isEnabled": true,
+    "resourceScopes": [
+      "/"
+    ],
+    "templateId": "1dae4b79-8aea-40ab-9ad0-30d3ab1fa9c1",
+    "version": "1",
+    "rolePermissions": [
+      {
+        "allowedResourceActions": [
+          "microsoft.directory/resourcePolicy/evaluatePolicy"
+        ],
+        "condition": null
+      }
+    ],
+    "inheritsPermissionsFrom@odata.context": "https://graph.microsoft.com/v1.0/$metadata#roleManagement/directory/roleDefinitions('1dae4b79-8aea-40ab-9ad0-30d3ab1fa9c1')/inheritsPermissionsFrom",
     "inheritsPermissionsFrom": [
       {
         "id": "88d8e3e3-8f55-4a1e-953a-9b9898b8876b"

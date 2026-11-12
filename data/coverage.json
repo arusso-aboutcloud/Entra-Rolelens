@@ -1,14 +1,29 @@
 {
-  "generated_at": "2026-11-11T07:26:54.010351+00:00",
-  "builtin_role_count": 145,
+  "generated_at": "2026-11-12T07:54:30.478491+00:00",
+  "builtin_role_count": 148,
   "covered_role_count": 50,
-  "coverage_pct": 34.5,
-  "uncovered_role_count": 95,
-  "attention_count": 1,
+  "coverage_pct": 33.8,
+  "uncovered_role_count": 98,
+  "attention_count": 4,
   "attention": [
     {
       "id": "d35481f7-cda1-4fa2-8344-5a21f7f3724d",
       "displayName": "Entra Customer Lockbox Approver",
+      "isShadowRole": true
+    },
+    {
+      "id": "c0c46a03-c257-4f91-ab71-3c7e59c89d97",
+      "displayName": "Resource Policy Administrator",
+      "isShadowRole": true
+    },
+    {
+      "id": "1dae4b79-8aea-40ab-9ad0-30d3ab1fa9c1",
+      "displayName": "Resource Policy Evaluator",
+      "isShadowRole": true
+    },
+    {
+      "id": "311877b7-9a2e-4337-81c2-068a250eaa22",
+      "displayName": "Resource Policy Reader",
       "isShadowRole": true
     }
   ],
@@ -357,6 +372,21 @@
       "id": "02d5655b-c1cf-4e5f-98da-5fb919085bf6",
       "displayName": "Purview Workload Content Writer",
       "isShadowRole": false
+    },
+    {
+      "id": "c0c46a03-c257-4f91-ab71-3c7e59c89d97",
+      "displayName": "Resource Policy Administrator",
+      "isShadowRole": true
+    },
+    {
+      "id": "1dae4b79-8aea-40ab-9ad0-30d3ab1fa9c1",
+      "displayName": "Resource Policy Evaluator",
+      "isShadowRole": true
+    },
+    {
+      "id": "311877b7-9a2e-4337-81c2-068a250eaa22",
+      "displayName": "Resource Policy Reader",
+      "isShadowRole": true
     },
     {
       "id": "2af84b1e-32c8-42b7-82bc-daa82404023b",

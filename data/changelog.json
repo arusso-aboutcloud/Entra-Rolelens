@@ -833,5 +833,71 @@
       "microsoft.directory/conditionalAccessPolicyPlans/delete"
     ],
     "scenario": "When a new security requirement is introduced due to a change in regulatory compliance, someone assigned this role can now create, update, and delete conditional access policy plans in response to the requirement, allowing them to immediately enforce new rules for accessing company resources without needing additional permissions."
+  },
+  {
+    "date": "2026-11-12",
+    "change_type": "ADDED",
+    "role_id": "c0c46a03-c257-4f91-ab71-3c7e59c89d97",
+    "role_name": "Resource Policy Administrator",
+    "field": null,
+    "detail": "New built-in role added: Resource Policy Administrator",
+    "permission_count": 12,
+    "role_facts": {
+      "is_privileged": false,
+      "is_workload_role": false,
+      "pim_eligible": true,
+      "au_scopable": false,
+      "configured_via": "Microsoft Entra admin center (Roles & admins) or Microsoft Graph"
+    },
+    "scenario": "During an ongoing compliance audit, a tenant administrator assigns this role to a senior compliance administrator to grant them comprehensive control over resource policies, enabling them to evaluate and update policy assignments and definitions to ensure adherence to regulatory requirements. This assignment allows the administrator to assess and refine the organization's resource access policies, making adjustments as needed to satisfy audit demands and maintain compliance posture."
+  },
+  {
+    "date": "2026-11-12",
+    "change_type": "ADDED",
+    "role_id": "311877b7-9a2e-4337-81c2-068a250eaa22",
+    "role_name": "Resource Policy Reader",
+    "field": null,
+    "detail": "New built-in role added: Resource Policy Reader",
+    "permission_count": 5,
+    "role_facts": {
+      "is_privileged": false,
+      "is_workload_role": false,
+      "pim_eligible": true,
+      "au_scopable": false,
+      "configured_via": "Microsoft Entra admin center (Roles & admins) or Microsoft Graph"
+    },
+    "scenario": "During an ongoing compliance audit, a Microsoft Entra tenant administrator assigns the Resource Policy Reader role to a member of the compliance team, allowing them to read and evaluate the current resource policy definitions, assignments, and configuration to understand their impact and validate adherence to regulatory requirements. This assignment enables the team member to assess the policies without making any modifications, thereby supporting the audit process and ensuring the integrity of the existing policy setup."
+  },
+  {
+    "date": "2026-11-12",
+    "change_type": "ADDED",
+    "role_id": "1dae4b79-8aea-40ab-9ad0-30d3ab1fa9c1",
+    "role_name": "Resource Policy Evaluator",
+    "field": null,
+    "detail": "New built-in role added: Resource Policy Evaluator",
+    "permission_count": 1,
+    "role_facts": {
+      "is_privileged": false,
+      "is_workload_role": false,
+      "pim_eligible": true,
+      "au_scopable": false,
+      "configured_via": "Microsoft Entra admin center (Roles & admins) or Microsoft Graph"
+    },
+    "scenario": "During a compliance audit, a Microsoft Entra tenant administrator may assign the Resource Policy Evaluator role to a security team member to evaluate the impact of existing resource policies, allowing them to understand the outcome of these policies without granting unnecessary access to policy definitions or assignments. This assignment enables the team member to perform policy validation as part of the audit process, ensuring that resource policies are effective and compliant with regulatory requirements, and can be done on a time-bound basis due to the role's eligibility for temporary activation."
+  },
+  {
+    "date": "2026-11-12",
+    "change_type": "MODIFIED",
+    "role_id": "a0b1b346-4d3e-4e8b-98f8-753987be4970",
+    "role_name": "User",
+    "field": "permissions",
+    "detail": "1 permission added",
+    "added_permissions": [
+      "microsoft.directory/agentIdentityBlueprints/createAsOwner"
+    ],
+    "undocumented_permissions": [
+      "microsoft.directory/agentIdentityBlueprints/createAsOwner"
+    ],
+    "scenario": "When a new custom identity blueprint is required to automate a specific provisioning workflow, a user assigned this role can now create it as the owner, allowing them to manage the blueprint's lifecycle and assignment to relevant resources, which was previously not possible for them to do directly."
   }
 ]
