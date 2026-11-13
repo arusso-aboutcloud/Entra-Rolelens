@@ -102,5 +102,5 @@
 
   <!-- Verdict + timestamp -->
   <text x="20" y="280" class="mono bold" font-size="11" fill="#F5C065" filter="url(#glow-verdict)">&#9658; 1 HIGH</text>
-  <text x="700" y="280" class="sans" font-size="9" fill="#5A5850" text-anchor="end">scanned 2026-11-13 13:38 UTC</text>
+  <text x="700" y="280" class="sans" font-size="9" fill="#5A5850" text-anchor="end">scanned 2026-11-13 13:39 UTC</text>
 </svg>
