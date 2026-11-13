@@ -69,6 +69,9 @@ This keeps the one remaining manual step — seeding a task for a role Microsoft
 > Auto-generated from the nightly pipeline · Last updated by GitHub Actions
 
 <!-- WHATS_NEW_START -->
+- ![Description updated](https://img.shields.io/badge/-Description%20updated-9A6700?style=for-the-badge) **Resource Policy Administrator** (2026-11-13)
+- ![Description updated](https://img.shields.io/badge/-Description%20updated-9A6700?style=for-the-badge) **Resource Policy Reader** (2026-11-13)
+- ![Description updated](https://img.shields.io/badge/-Description%20updated-9A6700?style=for-the-badge) **Resource Policy Evaluator** (2026-11-13)
 - ![New role](https://img.shields.io/badge/-New%20role-007A53?style=for-the-badge) **Resource Policy Administrator** (2026-11-12)
 - ![New role](https://img.shields.io/badge/-New%20role-007A53?style=for-the-badge) **Resource Policy Reader** (2026-11-12)
 - ![New role](https://img.shields.io/badge/-New%20role-007A53?style=for-the-badge) **Resource Policy Evaluator** (2026-11-12)
@@ -294,7 +297,7 @@ entra-rolelens/
 ## Data quality
 - **148+ built-in roles** - covers all named Entra ID built-in roles including preview roles
 - **238 task mappings** - sourced from Microsoft's official documentation and community contributions
-- **12 unlisted roles** - present in the Graph API but not yet in Microsoft's public documentation
+- **9 unlisted roles** - present in the Graph API but not yet in Microsoft's public documentation
 - **0 partially documented roles** - in roles reference but missing from task mappings
 - **Nightly diff** - every permission change Microsoft makes is logged to the role_changes D1 table
 - **Self-healing pipeline** - validation gate prevents bad data reaching production

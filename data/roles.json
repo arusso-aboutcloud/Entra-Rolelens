@@ -2508,6 +2508,54 @@
     "docsReviewedDate": "2026-01-26"
   },
   {
+    "id": "c0c46a03-c257-4f91-ab71-3c7e59c89d97",
+    "displayName": "Resource Policy Administrator",
+    "description": "Can manage resource policy definitions, assignments, tenant-wide configuration, and evaluation.",
+    "isBuiltIn": true,
+    "isPrivileged": false,
+    "permissions": [
+      "microsoft.directory/resourcePolicy/assignments/basic/update",
+      "microsoft.directory/resourcePolicy/assignments/create",
+      "microsoft.directory/resourcePolicy/assignments/delete",
+      "microsoft.directory/resourcePolicy/assignments/standard/read",
+      "microsoft.directory/resourcePolicy/configuration/basic/update",
+      "microsoft.directory/resourcePolicy/configuration/standard/read",
+      "microsoft.directory/resourcePolicy/definitions/basic/update",
+      "microsoft.directory/resourcePolicy/definitions/create",
+      "microsoft.directory/resourcePolicy/definitions/delete",
+      "microsoft.directory/resourcePolicy/definitions/standard/read",
+      "microsoft.directory/resourcePolicy/evaluateAssignedPolicies",
+      "microsoft.directory/resourcePolicy/evaluatePolicy"
+    ],
+    "docsReviewedDate": "2026-11-03"
+  },
+  {
+    "id": "1dae4b79-8aea-40ab-9ad0-30d3ab1fa9c1",
+    "displayName": "Resource Policy Evaluator",
+    "description": "Can evaluate a supplied resource policy without reading or changing policy definitions or assignments.",
+    "isBuiltIn": true,
+    "isPrivileged": false,
+    "permissions": [
+      "microsoft.directory/resourcePolicy/evaluatePolicy"
+    ],
+    "docsReviewedDate": "2026-11-03"
+  },
+  {
+    "id": "311877b7-9a2e-4337-81c2-068a250eaa22",
+    "displayName": "Resource Policy Reader",
+    "description": "Can read resource policy definitions, assignments, and tenant-wide configuration, and evaluate policies without making changes.",
+    "isBuiltIn": true,
+    "isPrivileged": false,
+    "permissions": [
+      "microsoft.directory/resourcePolicy/assignments/standard/read",
+      "microsoft.directory/resourcePolicy/configuration/standard/read",
+      "microsoft.directory/resourcePolicy/definitions/standard/read",
+      "microsoft.directory/resourcePolicy/evaluateAssignedPolicies",
+      "microsoft.directory/resourcePolicy/evaluatePolicy"
+    ],
+    "docsReviewedDate": "2026-11-03"
+  },
+  {
     "id": "0964bb5e-9bdb-4d7b-ac29-58e794862a40",
     "displayName": "Search Administrator",
     "description": "Can create and manage all aspects of Microsoft Search settings.",
