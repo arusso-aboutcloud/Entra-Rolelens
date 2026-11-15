@@ -51,7 +51,7 @@
   <!-- Total findings (large) -->
   <text x="20" y="80" class="mono" font-size="11" fill="#888780" letter-spacing="1.5">DEPENDENCY VULNERABILITIES (HIGH + CRITICAL)</text>
   <text x="20" y="138" class="mono bold" font-size="60" fill="#F5C065" filter="url(#glow)">
-    1
+    2
     <animate attributeName="opacity" values="0;1" dur="0.7s" fill="freeze"/>
   </text>
   <text x="20" y="160" class="sans" font-size="11" fill="#888780">across worker (npm) and pipeline (Python)</text>
@@ -79,7 +79,7 @@
     <rect width="220" height="80" fill="#241A05" stroke="#F59E0B" stroke-width="0.8" rx="8"/>
     <text x="12" y="22" class="mono bold" font-size="10" fill="#888780" letter-spacing="1">PIPELINE &#183; PYTHON</text>
     <text x="12" y="46" class="mono" font-size="10" fill="#888780">HIGH</text>
-    <text x="12" y="66" class="mono bold" font-size="26" fill="#F5C065" filter="url(#glow-soft)">1</text>
+    <text x="12" y="66" class="mono bold" font-size="26" fill="#F5C065" filter="url(#glow-soft)">2</text>
     <text x="110" y="46" class="mono" font-size="10" fill="#888780">CRITICAL</text>
     <text x="110" y="66" class="mono bold" font-size="26" fill="#F5C065" filter="url(#glow-soft)">0</text>
     <circle cx="204" cy="20" r="3" fill="#F59E0B">
@@ -94,13 +94,13 @@
     <text x="12" y="46" class="mono" font-size="10" fill="#888780">CRITICAL</text>
     <text x="12" y="66" class="mono bold" font-size="26" fill="#F5C065" filter="url(#glow-soft)">0</text>
     <text x="110" y="46" class="mono" font-size="10" fill="#888780">HIGH</text>
-    <text x="110" y="66" class="mono bold" font-size="26" fill="#F5C065" filter="url(#glow-soft)">1</text>
+    <text x="110" y="66" class="mono bold" font-size="26" fill="#F5C065" filter="url(#glow-soft)">2</text>
     <circle cx="200" cy="20" r="3" fill="#F59E0B">
       <animate attributeName="opacity" values="1;0.3;1" dur="2.4s" begin="1.6s" repeatCount="indefinite"/>
     </circle>
   </g>
 
   <!-- Verdict + timestamp -->
-  <text x="20" y="280" class="mono bold" font-size="11" fill="#F5C065" filter="url(#glow-verdict)">&#9658; 1 HIGH</text>
-  <text x="700" y="280" class="sans" font-size="9" fill="#5A5850" text-anchor="end">scanned 2026-11-13 13:39 UTC</text>
+  <text x="20" y="280" class="mono bold" font-size="11" fill="#F5C065" filter="url(#glow-verdict)">&#9658; 2 HIGH</text>
+  <text x="700" y="280" class="sans" font-size="9" fill="#5A5850" text-anchor="end">scanned 2026-11-15 13:37 UTC</text>
 </svg>
