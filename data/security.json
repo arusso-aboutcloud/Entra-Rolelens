@@ -1,10 +1,10 @@
 {
-  "scanned_at": "2026-11-15T07:26:26.727730+00:00",
+  "scanned_at": "2026-11-16T07:32:48.786683+00:00",
   "tool": "Trivy",
   "critical": 0,
-  "high": 1,
-  "medium": 1,
+  "high": 2,
+  "medium": 2,
   "low": 0,
-  "total": 2,
+  "total": 4,
   "status": "issues"
 }

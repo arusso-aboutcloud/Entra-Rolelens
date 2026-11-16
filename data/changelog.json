@@ -929,5 +929,69 @@
     "detail": "description changed: \"Users in this role can evaluate resource policies to understand their impact and outcome. This role does not grant any read or write access to the policy definitions or assignments themselves, making it ideal for developers, testers, and automated tools that need to perform policy validation as part of a development or CI/CD pipeline.\" -> \"Can evaluate a supplied resource policy without reading or changing policy definitions or assignments.\"",
     "old": "Users in this role can evaluate resource policies to understand their impact and outcome. This role does not grant any read or write access to the policy definitions or assignments themselves, making it ideal for developers, testers, and automated tools that need to perform policy validation as part of a development or CI/CD pipeline.",
     "new": "Can evaluate a supplied resource policy without reading or changing policy definitions or assignments."
+  },
+  {
+    "date": "2026-11-16",
+    "change_type": "MODIFIED",
+    "role_id": "62e90394-69f5-4237-9190-012177145e10",
+    "role_name": "Global Administrator",
+    "field": "permissions",
+    "detail": "1 permission added",
+    "added_permissions": [
+      "microsoft.directory/agentIdentityBlueprintPrincipals/idJagConfiguration/update"
+    ],
+    "undocumented_permissions": [
+      "microsoft.directory/agentIdentityBlueprintPrincipals/idJagConfiguration/update"
+    ],
+    "scenario": "When an organization needs to update the identity blueprint configuration for its agents to accommodate a change in regulatory requirements, an administrator assigned this role can now perform this update directly, enabling them to modify the configuration settings that define the identity and access management rules for these agents."
+  },
+  {
+    "date": "2026-11-16",
+    "change_type": "MODIFIED",
+    "role_id": "a0b1b346-4d3e-4e8b-98f8-753987be4970",
+    "role_name": "User",
+    "field": "permissions",
+    "detail": "1 permission added",
+    "added_permissions": [
+      "microsoft.directory/agentIdentityBlueprintPrincipals/idJagConfiguration/update"
+    ],
+    "undocumented_permissions": [
+      "microsoft.directory/agentIdentityBlueprintPrincipals/idJagConfiguration/update"
+    ],
+    "scenario": "When a specific Jag configuration update is required to synchronize identity data with an external system, a user assigned this role can now perform the update, enabling them to modify the configuration settings that were previously inaccessible to them, thus allowing for more flexible identity data management."
+  },
+  {
+    "date": "2026-11-16",
+    "change_type": "MODIFIED",
+    "role_id": "d2562ede-74db-457e-a7b6-544e236ebb61",
+    "role_name": "AI Administrator",
+    "field": "permissions",
+    "detail": "2 permissions added",
+    "added_permissions": [
+      "microsoft.directory/agentIdentities/idJagConfiguration/update",
+      "microsoft.directory/agentIdentityBlueprintPrincipals/idJagConfiguration/update"
+    ],
+    "undocumented_permissions": [
+      "microsoft.directory/agentIdentities/idJagConfiguration/update",
+      "microsoft.directory/agentIdentityBlueprintPrincipals/idJagConfiguration/update"
+    ],
+    "scenario": "When the system automatically synchronizes agent identities with updated blueprint principals during the daily identity synchronization process, the administrator assigned to this role can now update the idJag configuration for those agent identities, allowing for more efficient management of agent identity blueprints and their associated principals."
+  },
+  {
+    "date": "2026-11-16",
+    "change_type": "MODIFIED",
+    "role_id": "db506228-d27e-4b7d-95e5-295956d6615f",
+    "role_name": "Agent ID Administrator",
+    "field": "permissions",
+    "detail": "2 permissions added",
+    "added_permissions": [
+      "microsoft.directory/agentIdentities/idJagConfiguration/update",
+      "microsoft.directory/agentIdentityBlueprintPrincipals/idJagConfiguration/update"
+    ],
+    "undocumented_permissions": [
+      "microsoft.directory/agentIdentities/idJagConfiguration/update",
+      "microsoft.directory/agentIdentityBlueprintPrincipals/idJagConfiguration/update"
+    ],
+    "scenario": "When a new agent identity blueprint is deployed to the production environment and the idJag configuration needs to be updated to reflect changes in the organization's security policies, someone assigned this role can now update the idJag configuration for both agent identities and agent identity blueprint principals, allowing them to ensure consistent and secure authentication and authorization settings across all agents."
   }
 ]
