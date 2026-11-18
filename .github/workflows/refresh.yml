@@ -118,6 +118,17 @@ jobs:
         env:
           WORKER_URL: ${{ secrets.ROLELENS_WORKER_URL }}
 
+      # Pairs are parsed live out of frontend/index.html's runDiffPill(...)
+      # buttons, so this can't drift out of sync the way a hand-maintained
+      # list could -- it fails the moment a role name in an example pill
+      # stops resolving (e.g. Microsoft silently renames a role).
+      - name: Run Role Diff pill integration tests
+        id: diff_pill_tests
+        continue-on-error: true
+        run: python pipeline/test_diff_pills.py
+        env:
+          WORKER_URL: ${{ secrets.ROLELENS_WORKER_URL }}
+
       # Only fires when test_pills.py exits 1, which now means a NEW
       # regression rather than any failure. Known failures are
       # suppressed via KNOWN_FAILURES in pipeline/test_pills.py.
@@ -127,6 +138,16 @@ jobs:
           gh issue create \
             --title "Pill regression detected in nightly run $(date +%Y-%m-%d)" \
             --body "The nightly pipeline detected that one or more documented pill queries no longer return the expected top result. Check the Actions log for the specific failures and investigate before the next deploy." \
+            --label "bug,pill-regression"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Open issue on Role Diff pill regression
+        if: steps.diff_pill_tests.outcome == 'failure'
+        run: |
+          gh issue create \
+            --title "Role Diff pill regression detected in nightly run $(date +%Y-%m-%d)" \
+            --body "The nightly pipeline detected that one or more Role Diff example pairs (frontend/index.html, runDiffPill(...)) no longer resolve against /api/diff -- likely a role was renamed. Check the Actions log for the specific pair and update the pill's role name(s) before the next deploy." \
             --label "bug,pill-regression"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
