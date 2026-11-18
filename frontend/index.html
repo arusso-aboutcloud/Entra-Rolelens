@@ -2713,7 +2713,10 @@
     }
 
     showSkeleton();
-    searchTimer = setTimeout(() => doSearch(expandedQuery, q), 350);
+    searchTimer = setTimeout(() => {
+      doSearch(expandedQuery, q);
+      replaceRLState({ view: 'search', q });
+    }, 350);
   });
 
   // ── Example pill search ──────────────────────────────────────────────
@@ -3030,7 +3033,17 @@ Content-Type: application/json
   }
 
   // ── Role Diff ────────────────────────────────────────────────────────
+  // runDiff() is the user-facing entry point (Compare button, pills) and
+  // pushes a new shareable URL. State rehydration (popstate / direct link
+  // load) already owns the URL, so it calls doRunDiff() directly to avoid
+  // stacking a duplicate history entry on top of its own replaceState.
   async function runDiff() {
+    if (!selectedRoleA || !selectedRoleB) return;
+    pushRLState({ view: 'diff', a: selectedRoleA, b: selectedRoleB });
+    await doRunDiff();
+  }
+
+  async function doRunDiff() {
     if (!selectedRoleA || !selectedRoleB) return;
     const btn = document.getElementById('compare-btn');
     btn.textContent = 'Comparing…';
@@ -3127,7 +3140,6 @@ Content-Type: application/json
 
   // ── Diff example pills ───────────────────────────────────────────────
   function runDiffPill(a, b) {
-    pushRLState({ view: 'diff', a, b });
     document.getElementById('role-a-input').value = a;
     document.getElementById('role-b-input').value = b;
     selectedRoleA = a;
@@ -3737,8 +3749,30 @@ Content-Type: application/json
   // instead of exiting; a second Back then legitimately leaves, as expected.
   history.replaceState({ rl: 1, view: 'home' }, '');
 
+  // Real query-string URLs (not just in-memory history.state) so a diff or
+  // search can be copied/bookmarked/shared and land back on the same view —
+  // previously pushState() was called with no URL arg, so the address bar
+  // stayed on '/' no matter what was on screen.
+  function buildRLUrl(state) {
+    const params = new URLSearchParams();
+    params.set('view', state.view);
+    if (state.view === 'search') params.set('q', state.q || '');
+    if (state.view === 'diff') {
+      params.set('a', state.a || '');
+      params.set('b', state.b || '');
+    }
+    return '?' + params.toString();
+  }
+
   function pushRLState(state) {
-    history.pushState({ rl: 1, ...state }, '');
+    history.pushState({ rl: 1, ...state }, '', buildRLUrl(state));
+  }
+
+  // Used for continuous updates (e.g. every keystroke in search) so the URL
+  // stays shareable without flooding back-button history with one entry
+  // per character — discrete actions (pill click, Compare click) still push.
+  function replaceRLState(state) {
+    history.replaceState({ rl: 1, ...state }, '', buildRLUrl(state));
   }
 
   function resetToHome() {
@@ -3753,8 +3787,7 @@ Content-Type: application/json
     document.getElementById('diff-results').classList.remove('visible');
   }
 
-  window.addEventListener('popstate', (e) => {
-    const state = e.state;
+  function applyRLState(state) {
     if (state && state.rl && state.view === 'search') {
       switchMode('search');
       const input = document.getElementById('search-input');
@@ -3767,17 +3800,35 @@ Content-Type: application/json
       selectedRoleA = state.a || null;
       selectedRoleB = state.b || null;
       updateCompareBtn();
-      if (selectedRoleA && selectedRoleB) runDiff();
+      if (selectedRoleA && selectedRoleB) doRunDiff();
       else document.getElementById('diff-results').classList.remove('visible');
     } else {
       resetToHome();
     }
-  });
+  }
+
+  window.addEventListener('popstate', (e) => applyRLState(e.state));
+
+  // A direct/shared link (?view=diff&a=...&b=...) arrives with no
+  // history.state yet — popstate only fires on Back/Forward, never on the
+  // initial load — so parse location.search explicitly on boot too.
+  function stateFromLocation() {
+    const params = new URLSearchParams(location.search);
+    const view = params.get('view');
+    if (view === 'diff') return { rl: 1, view: 'diff', a: params.get('a') || '', b: params.get('b') || '' };
+    if (view === 'search') return { rl: 1, view: 'search', q: params.get('q') || '' };
+    return null;
+  }
 
   // ── Boot ─────────────────────────────────────────────────────────────
   initBgGraph();
   (async () => {
     await Promise.all([loadStatus(), loadRoles(), loadGitHubStats(), loadWhatsNew(), loadShadowRoleIds()]);
+    const initialState = stateFromLocation();
+    if (initialState) {
+      history.replaceState(initialState, '', location.href);
+      applyRLState(initialState);
+    }
     setInterval(loadStatus, 60000);
   })();
 </script>
