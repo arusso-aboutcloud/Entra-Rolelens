@@ -1,9 +1,9 @@
 {
-  "generated_at": "2026-11-17T08:44:21.654857+00:00",
-  "builtin_role_count": 148,
+  "generated_at": "2026-11-18T08:07:59.191874+00:00",
+  "builtin_role_count": 149,
   "covered_role_count": 50,
-  "coverage_pct": 33.8,
-  "uncovered_role_count": 98,
+  "coverage_pct": 33.6,
+  "uncovered_role_count": 99,
   "attention_count": 4,
   "attention": [
     {
@@ -97,6 +97,11 @@
       "id": "7495fdc4-34c4-4d15-a289-98788ce399fd",
       "displayName": "Azure Information Protection Administrator",
       "isShadowRole": false
+    },
+    {
+      "id": "ddc7372f-4ece-4e8d-8010-1b36d9992d23",
+      "displayName": "B2B Policy Administrator",
+      "isShadowRole": true
     },
     {
       "id": "aaf43236-0c0d-4d5f-883a-6955382ac081",

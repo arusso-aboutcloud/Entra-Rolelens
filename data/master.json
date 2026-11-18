@@ -1,8 +1,8 @@
 {
-  "generated_at": "2026-11-17T08:44:21.300657+00:00",
-  "role_count": 148,
+  "generated_at": "2026-11-18T08:07:56.502077+00:00",
+  "role_count": 149,
   "task_count": 238,
-  "shadow_role_count": 9,
+  "shadow_role_count": 10,
   "roles": [
     {
       "id": "62e90394-69f5-4237-9190-012177145e10",
@@ -6196,6 +6196,15 @@
         "microsoft.directory/users/password/update"
       ],
       "docsReviewedDate": "2026-06-17"
+    },
+    {
+      "id": "ddc7372f-4ece-4e8d-8010-1b36d9992d23",
+      "displayName": "B2B Policy Administrator",
+      "description": "Create, read, update, and delete B2B management policies, and set the tenant-default policy.",
+      "isBuiltIn": true,
+      "isPrivileged": false,
+      "permissions": [],
+      "isShadowRole": true
     }
   ],
   "tasks": [
