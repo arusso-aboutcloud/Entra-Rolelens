@@ -79,7 +79,36 @@ def get_live_models(account_id: str, token: str) -> dict[str, bool]:
     return live
 
 
+def _extract_response_text(result: dict) -> str:
+    """Pull the generated text out of a Workers AI `result` object.
+
+    Not one shape across models: older/simple completion models return
+    `result.response` as a plain string, while chat-style models return an
+    OpenAI-compatible envelope and put the text at
+    `result.choices[0].message.content`.
+
+    This matters more here than anywhere else: the whole point of this script
+    is to swap models unattended. If the smoke test can only read the old
+    shape, every chat-style candidate looks dead and the automation refuses to
+    switch to a model that actually works -- a false negative that silently
+    keeps a deprecated model in place.
+
+    Returns "" for an unrecognized shape so `smoke_test()` treats it as a
+    failed candidate rather than raising.
+    """
+    response = result.get("response")
+    if isinstance(response, str):
+        return response
+    choices = result.get("choices")
+    if isinstance(choices, list) and choices:
+        content = choices[0].get("message", {}).get("content")
+        if isinstance(content, str):
+            return content
+    return ""
+
+
 def smoke_test(account_id: str, token: str, model: str) -> bool:
+    """True only if the model is reachable AND returns usable text."""
     url = f"{CF_BASE}/accounts/{account_id}/ai/run/{model}"
     try:
         resp = requests.post(
@@ -93,10 +122,10 @@ def smoke_test(account_id: str, token: str, model: str) -> bool:
     if not resp.ok:
         return False
     try:
-        text = resp.json().get("result", {}).get("response", "")
+        result = resp.json().get("result", {})
     except ValueError:
         return False
-    return bool(text and text.strip())
+    return bool(_extract_response_text(result).strip())
 
 
 def read_current_model() -> str | None:

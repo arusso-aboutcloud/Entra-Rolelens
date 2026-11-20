@@ -44,6 +44,9 @@ jobs:
       - name: Install dependencies
         run: pip install --require-hashes -r pipeline/requirements.txt
 
+      - name: Test response-shape handling
+        run: python pipeline/test_check_ai_model.py
+
       - name: Check + patch model
         id: check
         run: |
