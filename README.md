@@ -69,6 +69,7 @@ This keeps the one remaining manual step — seeding a task for a role Microsoft
 > Auto-generated from the nightly pipeline · Last updated by GitHub Actions
 
 <!-- WHATS_NEW_START -->
+- ![New role](https://img.shields.io/badge/-New%20role-007A53?style=for-the-badge) **Organizational Data Source Reader** (2026-11-21)
 - ![New role](https://img.shields.io/badge/-New%20role-007A53?style=for-the-badge) **B2B Policy Administrator** (2026-11-18)
 - ![Permission added](https://img.shields.io/badge/-Permission%20added-007A53?style=for-the-badge) **Global Administrator** (2026-11-16)
 - ![Permission added](https://img.shields.io/badge/-Permission%20added-007A53?style=for-the-badge) **User** (2026-11-16)
@@ -299,9 +300,9 @@ entra-rolelens/
 ---
 
 ## Data quality
-- **149+ built-in roles** - covers all named Entra ID built-in roles including preview roles
+- **150+ built-in roles** - covers all named Entra ID built-in roles including preview roles
 - **238 task mappings** - sourced from Microsoft's official documentation and community contributions
-- **10 unlisted roles** - present in the Graph API but not yet in Microsoft's public documentation
+- **11 unlisted roles** - present in the Graph API but not yet in Microsoft's public documentation
 - **0 partially documented roles** - in roles reference but missing from task mappings
 - **Nightly diff** - every permission change Microsoft makes is logged to the role_changes D1 table
 - **Self-healing pipeline** - validation gate prevents bad data reaching production

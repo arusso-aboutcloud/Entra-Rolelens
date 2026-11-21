@@ -1010,5 +1010,22 @@
       "configured_via": "its own service portal (not the Entra admin center)"
     },
     "scenario": "A tenant administrator would assign this role to a team member in response to an upcoming compliance audit, where the organization needs to demonstrate control over its B2B management policies, and the assigned individual will be responsible for creating, reading, updating, and deleting these policies, as well as setting the tenant-default policy. This assignment would be made through the service portal specifically used for managing these policies, rather than the Entra admin center, to ensure the team member has the necessary access to configure and manage B2B policies in preparation for the audit."
+  },
+  {
+    "date": "2026-11-21",
+    "change_type": "ADDED",
+    "role_id": "749877fd-c267-4b82-94fd-cc50a0e4bff4",
+    "role_name": "Organizational Data Source Reader",
+    "field": null,
+    "detail": "New built-in role added: Organizational Data Source Reader",
+    "permission_count": 2,
+    "role_facts": {
+      "is_privileged": false,
+      "is_workload_role": false,
+      "pim_eligible": true,
+      "au_scopable": false,
+      "configured_via": "Microsoft Entra admin center (Roles & admins) or Microsoft Graph"
+    },
+    "scenario": "During an active compliance audit, a Microsoft Entra tenant administrator may assign this role to a member of the compliance team, allowing them to read organizational data source configurations, data quality reports, and metadata in Microsoft 365 to gather necessary information without requiring data ingestion setup. This assignment enables the team member to access the required data for the audit, such as reading all entities and properties, without needing to configure connections or settings, and can be done through the Microsoft Entra admin center or Microsoft Graph for time-bound activation."
   }
 ]

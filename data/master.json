@@ -1,8 +1,8 @@
 {
-  "generated_at": "2026-11-20T07:58:14.626549+00:00",
-  "role_count": 149,
+  "generated_at": "2026-11-21T07:55:19.088728+00:00",
+  "role_count": 150,
   "task_count": 238,
-  "shadow_role_count": 10,
+  "shadow_role_count": 11,
   "roles": [
     {
       "id": "62e90394-69f5-4237-9190-012177145e10",
@@ -6196,6 +6196,18 @@
         "microsoft.directory/users/password/update"
       ],
       "docsReviewedDate": "2026-06-17"
+    },
+    {
+      "id": "749877fd-c267-4b82-94fd-cc50a0e4bff4",
+      "displayName": "Organizational Data Source Reader",
+      "description": "Read organizational data source configurations, data quality reports, and metadata in Microsoft 365 without configuring data ingestion, connections, or settings.",
+      "isBuiltIn": true,
+      "isPrivileged": false,
+      "permissions": [
+        "microsoft.microsoft365.organizationalData/allEntities/allProperties/read",
+        "microsoft.office365.webPortal/allEntities/standard/read"
+      ],
+      "isShadowRole": true
     },
     {
       "id": "ddc7372f-4ece-4e8d-8010-1b36d9992d23",
