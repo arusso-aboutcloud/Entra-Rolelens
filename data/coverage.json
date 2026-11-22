@@ -1,19 +1,14 @@
 {
-  "generated_at": "2026-11-21T07:55:21.488960+00:00",
-  "builtin_role_count": 150,
+  "generated_at": "2026-11-22T07:40:52.588579+00:00",
+  "builtin_role_count": 149,
   "covered_role_count": 50,
-  "coverage_pct": 33.3,
-  "uncovered_role_count": 100,
-  "attention_count": 5,
+  "coverage_pct": 33.6,
+  "uncovered_role_count": 99,
+  "attention_count": 4,
   "attention": [
     {
       "id": "d35481f7-cda1-4fa2-8344-5a21f7f3724d",
       "displayName": "Entra Customer Lockbox Approver",
-      "isShadowRole": true
-    },
-    {
-      "id": "749877fd-c267-4b82-94fd-cc50a0e4bff4",
-      "displayName": "Organizational Data Source Reader",
       "isShadowRole": true
     },
     {
@@ -322,11 +317,6 @@
       "id": "9d70768a-0cbc-4b4c-aea3-2e124b2477f4",
       "displayName": "Organizational Data Source Administrator",
       "isShadowRole": false
-    },
-    {
-      "id": "749877fd-c267-4b82-94fd-cc50a0e4bff4",
-      "displayName": "Organizational Data Source Reader",
-      "isShadowRole": true
     },
     {
       "id": "e48398e2-f4bb-4074-8f31-4586725e205b",

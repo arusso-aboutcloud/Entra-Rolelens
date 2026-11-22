@@ -1027,5 +1027,13 @@
       "configured_via": "Microsoft Entra admin center (Roles & admins) or Microsoft Graph"
     },
     "scenario": "During an active compliance audit, a Microsoft Entra tenant administrator may assign this role to a member of the compliance team, allowing them to read organizational data source configurations, data quality reports, and metadata in Microsoft 365 to gather necessary information without requiring data ingestion setup. This assignment enables the team member to access the required data for the audit, such as reading all entities and properties, without needing to configure connections or settings, and can be done through the Microsoft Entra admin center or Microsoft Graph for time-bound activation."
+  },
+  {
+    "date": "2026-11-22",
+    "change_type": "REMOVED",
+    "role_id": "749877fd-c267-4b82-94fd-cc50a0e4bff4",
+    "role_name": "Organizational Data Source Reader",
+    "field": null,
+    "detail": "Built-in role removed: Organizational Data Source Reader"
   }
 ]
