@@ -3579,6 +3579,13 @@ Content-Type: application/json
     container.innerHTML = `<div class="wn-role-note">Loading…</div>`;
     try {
       const res = await fetch(`${API}/api/role/${encodeURIComponent(roleId)}`);
+      if (res.status === 404) {
+        // Microsoft has since retired this role (we prune removed roles from
+        // D1 on nightly push), so there's nothing live left to fetch -- this
+        // isn't transient, so don't tell the user to "try again".
+        container.innerHTML = `<div class="wn-role-note">This role was later removed by Microsoft, so its permissions are no longer available.</div>`;
+        return;
+      }
       if (!res.ok) throw new Error(String(res.status));
       const role = await res.json();
       const perms = role.permissions || [];
