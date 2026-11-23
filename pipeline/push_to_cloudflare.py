@@ -443,11 +443,20 @@ def push_roles(account_id: str, database_id: str, token: str,
     # case in this project's history: "Organizational Data Source Reader",
     # removed 2026-11-22, one day after it was added), which is exactly why
     # this gap went unnoticed until now.
-    current_ids = [r["id"] for r in roles]
-    if current_ids:
-        placeholders = ",".join("?" for _ in current_ids)
-        prune_sql = f"DELETE FROM roles WHERE is_built_in = 1 AND id NOT IN ({placeholders})"
-        d1_exec(account_id, database_id, token, prune_sql, current_ids)
+    #
+    # Diff against D1 in Python rather than a single DELETE ... NOT IN (...)
+    # -- D1 caps bound parameters per query at 100, which a NOT IN list of
+    # ~150 role ids blows past ("too many SQL variables").
+    current_ids = {r["id"] for r in roles}
+    existing_rows = d1_exec(account_id, database_id, token,
+                             "SELECT id FROM roles WHERE is_built_in = 1")
+    stale_ids = [row["id"] for row in existing_rows if row["id"] not in current_ids]
+    if stale_ids:
+        statements = [
+            {"sql": "DELETE FROM roles WHERE id = ?", "params": [rid]}
+            for rid in stale_ids
+        ]
+        d1_run_many(account_id, database_id, token, statements, "roles prune")
 
 
 # ---------------------------------------------------------------------------
