@@ -436,6 +436,19 @@ def push_roles(account_id: str, database_id: str, token: str,
     ]
     d1_run_many(account_id, database_id, token, statements, "roles upsert")
 
+    # Prune roles no longer present. The upsert above only ever INSERTs or
+    # UPDATEs -- it never deletes, so a role Microsoft removes stays live in
+    # D1 (search, diff, /api/role/:id) forever unless we explicitly prune it
+    # here. Microsoft very rarely retires a built-in role (the first and only
+    # case in this project's history: "Organizational Data Source Reader",
+    # removed 2026-11-22, one day after it was added), which is exactly why
+    # this gap went unnoticed until now.
+    current_ids = [r["id"] for r in roles]
+    if current_ids:
+        placeholders = ",".join("?" for _ in current_ids)
+        prune_sql = f"DELETE FROM roles WHERE is_built_in = 1 AND id NOT IN ({placeholders})"
+        d1_exec(account_id, database_id, token, prune_sql, current_ids)
+
 
 # ---------------------------------------------------------------------------
 # Push: tasks
