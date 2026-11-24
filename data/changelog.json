@@ -1035,5 +1035,22 @@
     "role_name": "Organizational Data Source Reader",
     "field": null,
     "detail": "Built-in role removed: Organizational Data Source Reader"
+  },
+  {
+    "date": "2026-11-24",
+    "change_type": "ADDED",
+    "role_id": "749877fd-c267-4b82-94fd-cc50a0e4bff4",
+    "role_name": "Organizational Data Source Reader",
+    "field": null,
+    "detail": "New built-in role added: Organizational Data Source Reader",
+    "permission_count": 2,
+    "role_facts": {
+      "is_privileged": false,
+      "is_workload_role": false,
+      "pim_eligible": true,
+      "au_scopable": false,
+      "configured_via": "Microsoft Entra admin center (Roles & admins) or Microsoft Graph"
+    },
+    "scenario": "When a security incident response team launches an investigation into a potential data breach, the Microsoft Entra tenant administrator may assign this role to a team member to allow them to quickly read organizational data source configurations, data quality reports, and metadata in Microsoft 365, providing valuable insights into the incident without requiring extensive setup or configuration of data ingestion connections. This temporary assignment, facilitated through the Microsoft Entra admin center or Microsoft Graph, enables the team member to access all entities and properties, supporting a swift and informed response to the incident."
   }
 ]
