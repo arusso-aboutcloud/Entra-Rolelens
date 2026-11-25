@@ -61,12 +61,28 @@ def diff_permissions(old: list[str], new: list[str]) -> str:
     return ", ".join(parts) if parts else "permissions reordered"
 
 
-def compute_changes(old_roles: dict, new_roles: dict) -> list[dict]:
+def last_removed_date(role_id: str, changelog: list[dict]) -> str | None:
+    """Most recent date this role_id was recorded as REMOVED, if ever.
+
+    Lets a re-add be flagged as such instead of reading as a brand-new role
+    -- Microsoft has now done this once already (Organizational Data Source
+    Reader: added 2026-11-21, removed 2026-11-22, added again 2026-11-24),
+    and a plain "New role" badge on the second add made the history look
+    like a glitch rather than what it was: Microsoft flapping on a real role.
+    """
+    dates = [e["date"] for e in changelog
+             if e.get("role_id") == role_id and e.get("change_type") == "REMOVED"]
+    return max(dates) if dates else None
+
+
+def compute_changes(old_roles: dict, new_roles: dict,
+                     existing_changelog: list[dict] | None = None) -> list[dict]:
     changes = []
+    existing_changelog = existing_changelog or []
 
     for rid, role in new_roles.items():
         if rid not in old_roles:
-            changes.append({
+            entry = {
                 "date": TODAY,
                 "change_type": "ADDED",
                 "role_id": rid,
@@ -76,7 +92,15 @@ def compute_changes(old_roles: dict, new_roles: dict) -> list[dict]:
                 # Permission count at add time — lets "What's new" show how much
                 # the new role grants (0 = a workload role governed outside Entra).
                 "permission_count": len(role.get("permissions", [])),
-            })
+            }
+            removed_date = last_removed_date(rid, existing_changelog)
+            if removed_date:
+                entry["previously_removed_date"] = removed_date
+                entry["detail"] = (
+                    f"Built-in role re-added: {role['displayName']} "
+                    f"(previously removed {removed_date})"
+                )
+            changes.append(entry)
 
     for rid, role in old_roles.items():
         if rid not in new_roles:
@@ -220,9 +244,9 @@ def main() -> None:
     old_by_id = roles_by_id(prev_roles)
     new_by_id = roles_by_id(today_roles)
 
-    new_changes = compute_changes(old_by_id, new_by_id)
-
     existing = load_existing_changelog()
+    new_changes = compute_changes(old_by_id, new_by_id, existing)
+
     combined = existing + new_changes
 
     resolved = recheck_undocumented_permissions(combined, new_by_id)

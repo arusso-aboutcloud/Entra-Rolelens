@@ -3428,7 +3428,13 @@ Content-Type: application/json
       // see Microsoft's own info before the illustrative/computed extras.
       const scenarioAttr = c.scenario ? ` data-scenario="${esc(c.scenario)}"` : '';
       const factsAttr = c.role_facts ? ` data-facts="${esc(JSON.stringify(c.role_facts))}"` : '';
-      return `<div class="wn-lazy" data-role="${esc(c.role_id)}"${scenarioAttr}${factsAttr}></div>`;
+      // Flag a re-add up front -- without this, seeing the identical role
+      // show up as "new" again right after a "role removed" row reads like
+      // a bug rather than what it is: Microsoft re-adding the same role.
+      const reAddedNote = c.previously_removed_date
+        ? `<div class="wn-role-note">Previously removed on ${esc(c.previously_removed_date)}; Microsoft has re-added this same role.</div>`
+        : '';
+      return reAddedNote + `<div class="wn-lazy" data-role="${esc(c.role_id)}"${scenarioAttr}${factsAttr}></div>`;
     }
     if (c.field === 'permissions') {
       // AI scenario goes last, same convention as the new-role detail view --
@@ -3491,7 +3497,7 @@ Content-Type: application/json
       const titleAttr = tparts.length ? ` title="${tparts.join(' · ')}"` : '';
       const handlers  = exp ? ' role="button" tabindex="0" aria-expanded="false" onclick="_wnToggle(this)" onkeydown="_wnKey(event,this)"' : '';
       const glyphHtml = type === 'ADDED'
-        ? `<span class="wn-glow-badge add">New role</span>`
+        ? `<span class="wn-glow-badge add">${c.previously_removed_date ? 'Re-added role' : 'New role'}</span>`
         : (type === 'MODIFIED' && c.field === 'permissions')
           ? _wnPermGlowBadge(c)
           : type === 'MODIFIED'
@@ -3695,7 +3701,8 @@ Content-Type: application/json
       if (todayItems.length) {
         const first   = todayItems[0];
         const action  = first.change_type?.toLowerCase() === 'removed' ? 'removed' :
-                        first.change_type?.toLowerCase() === 'modified' ? 'updated' : 'added';
+                        first.change_type?.toLowerCase() === 'modified' ? 'updated' :
+                        first.previously_removed_date ? 're-added' : 'added';
         const storyEl = document.getElementById('stat-wn-story');
         const storySep = document.getElementById('stat-wn-sep');
         if (storyEl) { storyEl.textContent = `today: ${first.role_name ?? ''} ${action}`; storyEl.style.display = ''; }
